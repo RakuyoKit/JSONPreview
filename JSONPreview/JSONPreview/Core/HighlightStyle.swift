@@ -19,8 +19,8 @@ public struct HighlightStyle {
     ///   - expandIcon: The icon of the expand button.
     ///   - foldIcon: The icon of the fold button.
     ///   - color: Color-related configuration. See `HighlightColor` for details.
-    public init(expandIcon: UIImage? = nil, foldIcon: UIImage? = nil, color: HighlightColor) {
-
+    public init(expandIcon: UIImage? = nil, foldIcon: UIImage? = nil, color: HighlightColor = .default) {
+        
         self.expandIcon = expandIcon ?? UIImage(name: "expand")!
         self.foldIcon = foldIcon ?? UIImage(name: "fold")!
         self.color = color
