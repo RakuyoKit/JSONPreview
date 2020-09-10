@@ -36,7 +36,19 @@ public struct HighlightStyle {
     public let color: HighlightColor
 }
 
- fileprivate extension UIImage {
+public extension HighlightStyle {
+    
+    /// Default style configuration.
+    static let `default` = HighlightStyle()
+    
+    /// Built-in dark mode.
+    static let dark = HighlightStyle(color: .dark)
+    
+    /// A darker style scheme that the author likes.
+    static let mariana = HighlightStyle(color: .mariana)
+}
+
+fileprivate extension UIImage {
     
     convenience init?(name: String) {
         
