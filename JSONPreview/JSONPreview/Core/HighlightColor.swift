@@ -12,23 +12,23 @@ import UIKit
 public struct HighlightColor {
     
     public init(
-        keyWord: UIColor,
-        key: UIColor,
-        link: UIColor,
-        string: UIColor,
-        number: UIColor,
-        jsonBackground: UIColor,
-        lineBackground: UIColor,
-        lineText: UIColor
+        keyWord: ConvertibleToColor,
+        key: ConvertibleToColor,
+        link: ConvertibleToColor,
+        string: ConvertibleToColor,
+        number: ConvertibleToColor,
+        jsonBackground: ConvertibleToColor,
+        lineBackground: ConvertibleToColor,
+        lineText: ConvertibleToColor
     ) {
-        self.keyWord = keyWord
-        self.key = key
-        self.link = link
-        self.string = string
-        self.number = number
-        self.jsonBackground = jsonBackground
-        self.lineBackground = lineBackground
-        self.lineText = lineText
+        self.keyWord = keyWord.color
+        self.key = key.color
+        self.link = link.color
+        self.string = string.color
+        self.number = number.color
+        self.jsonBackground = jsonBackground.color
+        self.lineBackground = lineBackground.color
+        self.lineText = lineText.color
     }
     
     /// Keyword color. Including `{}`, `[]`, `:`, `,`
@@ -56,67 +56,103 @@ public struct HighlightColor {
     public let lineText: UIColor
 }
 
+// MARK: - Built-in color style
+
 public extension HighlightColor {
     
-    typealias ColorTuple = (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat)
+    /// Default color configuration.
+    static let `default` = HighlightColor(
+        keyWord: UIColor.black,
+        key: [0.72, 0.18, 0.13],
+        link: [0.12, 0.29, 0.61],
+        string: [0.18, 0.41, 0.30],
+        number: [0.80, 0.57, 0.08],
+        jsonBackground: UIColor.white,
+        lineBackground: [0.93, 0.93, 0.93],
+        lineText: [0.64, 0.64, 0.64]
+    )
     
-    init(
-        keyWord: ColorTuple,
-        key: ColorTuple,
-        link: ColorTuple,
-        string: ColorTuple,
-        number: ColorTuple,
-        jsonBackground: ColorTuple,
-        lineBackground: ColorTuple,
-        lineText: ColorTuple
-    ) {
+    /// Built-in dark mode.
+    static let dark = HighlightColor(
+        keyWord: 0x5E7987,
+        key: 0xC04851,
+        link: 0x5497C7,
+        string: 0x248067,
+        number: 0xCC9114,
+        jsonBackground: 0x0F2E41,
+        lineBackground: 0x082332,
+        lineText: 0x20455C
+    )
+    
+    /// A darker color scheme that the author likes.
+    static let mariana = HighlightColor(
+        keyWord: 0x88B0BF,
+        key: 0xF2777B,
+        link: 0x73AAD4,
+        string: 0xA3D0A5,
+        number: 0xF9BC6B,
+        jsonBackground: 0x3E444C,
+        lineBackground: 0x363C43,
+        lineText: 0x88B0BF
+    )
+}
+
+// MARK: - ConvertibleToColor
+
+/// Used to convert some types to UIColor types
+public protocol ConvertibleToColor {
+    
+    /// The converted color will be read through this attribute
+    var color: UIColor { get }
+}
+
+extension UIColor: ConvertibleToColor {
+    
+    public var color: UIColor { self }
+}
+
+/// Like `0x88B0BF`
+extension Int: ConvertibleToColor {
+    
+    public var color: UIColor {
         
-        self.keyWord = UIColor(keyWord)
-        self.key = UIColor(key)
-        self.link = UIColor(link)
-        self.string = UIColor(string)
-        self.number = UIColor(number)
-        self.jsonBackground = UIColor(jsonBackground)
-        self.lineBackground = UIColor(lineBackground)
-        self.lineText = UIColor(lineText)
-    }
-    
-    typealias ColorHexTuple = (hex: Int, alpha: CGFloat)
-    
-    init(
-        keyWord: ColorHexTuple,
-        key: ColorHexTuple,
-        link: ColorHexTuple,
-        string: ColorHexTuple,
-        number: ColorHexTuple,
-        jsonBackground: ColorHexTuple,
-        lineBackground: ColorHexTuple,
-        lineText: ColorHexTuple
-    ) {
+        let red   = CGFloat((self & 0xFF0000) >> 16) / 255.0
+        let green = CGFloat((self & 0xFF00) >> 8) / 255.0
+        let blue  = CGFloat(self & 0xFF) / 255.0
         
-        self.keyWord = UIColor(hex: keyWord.hex, alpha: keyWord.alpha)
-        self.key = UIColor(hex: key.hex, alpha: key.alpha)
-        self.link = UIColor(hex: link.hex, alpha: link.alpha)
-        self.string = UIColor(hex: string.hex, alpha: string.alpha)
-        self.number = UIColor(hex: number.hex, alpha: number.alpha)
-        self.jsonBackground = UIColor(hex: jsonBackground.hex, alpha: jsonBackground.alpha)
-        self.lineBackground = UIColor(hex: lineBackground.hex, alpha: lineBackground.alpha)
-        self.lineText = UIColor(hex: lineText.hex, alpha: lineText.alpha)
+        return UIColor(red: red, green: green, blue: blue, alpha: 1)
     }
 }
 
-fileprivate extension UIColor {
+/// Like `#FF7F20`
+extension String: ConvertibleToColor {
     
-    convenience init(_ colorTuple: HighlightColor.ColorTuple) {
-        self.init(red: colorTuple.red, green: colorTuple.green, blue: colorTuple.blue, alpha: colorTuple.alpha)
-    }
-    
-    convenience init(hex: Int, alpha: CGFloat = 1) {
+    public var color: UIColor {
+        
+        let hex: Int = {
+            
+            var sum = 0
+            
+            uppercased().utf8.forEach {
+                sum = sum * 16 + Int($0) - 48
+                if $0 >= 65 { sum -= 7 }
+            }
+            
+            return sum
+        }()
         
         let red   = CGFloat((hex & 0xFF0000) >> 16) / 255.0
         let green = CGFloat((hex & 0xFF00) >> 8) / 255.0
         let blue  = CGFloat(hex & 0xFF) / 255.0
         
-        self.init(red: red, green: green, blue: blue, alpha: alpha)
+        return UIColor(red: red, green: green, blue: blue, alpha: 1)
+    }
+}
+
+/// Like `[0.72, 0.18, 0.13]`. Will not check for out-of-bounds behavior.
+extension Array: ConvertibleToColor where Element == CGFloat {
+    
+    public var color: UIColor {
+        return UIColor(red: self[0], green: self[1], blue: self[2], alpha: 1)
     }
 }
