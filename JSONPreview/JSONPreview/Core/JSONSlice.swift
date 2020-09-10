@@ -32,7 +32,7 @@ public struct JSONSlice {
         
         self.state = .expand
         self.level = level
-        self.lineNumber = lineNumber
+        self.lineNumber = "\(lineNumber)"
         self.expand = expand
         self.folded = folded
     }
@@ -53,7 +53,7 @@ public struct JSONSlice {
         
         self.state = .expand
         self.level = level
-        self.lineNumber = lineNumber
+        self.lineNumber = "\(lineNumber)"
         
         self.expand = NSAttributedString(string: expand.0, attributes: expand.1)
         
@@ -68,7 +68,7 @@ public struct JSONSlice {
     public var state: State
     
     /// Position in the complete structure.
-    public let lineNumber: Int
+    public let lineNumber: String
     
     /// Indentation level.
     public let level: Int
