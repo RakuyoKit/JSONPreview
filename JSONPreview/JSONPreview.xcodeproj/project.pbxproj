@@ -16,6 +16,7 @@
 		3A1F06C02508D1DD00C16862 /* JSONPreviewUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1F06BF2508D1DD00C16862 /* JSONPreviewUITests.swift */; };
 		3A1F06D02508D74A00C16862 /* JSONPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1F06CF2508D74A00C16862 /* JSONPreview.swift */; };
 		3A1F06D22508D78B00C16862 /* JSONDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1F06D12508D78B00C16862 /* JSONDecorator.swift */; };
+		3A8F1AB42509C50C003BAC09 /* JSONSlice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8F1AB32509C50C003BAC09 /* JSONSlice.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		3A1F06C12508D1DD00C16862 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A1F06CF2508D74A00C16862 /* JSONPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONPreview.swift; sourceTree = "<group>"; };
 		3A1F06D12508D78B00C16862 /* JSONDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDecorator.swift; sourceTree = "<group>"; };
+		3A8F1AB32509C50C003BAC09 /* JSONSlice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONSlice.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 		3A1F06CD2508D20700C16862 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				3A8F1AB32509C50C003BAC09 /* JSONSlice.swift */,
 				3A1F06D12508D78B00C16862 /* JSONDecorator.swift */,
 				3A1F06CF2508D74A00C16862 /* JSONPreview.swift */,
 			);
@@ -281,6 +284,7 @@
 				3A1F06D02508D74A00C16862 /* JSONPreview.swift in Sources */,
 				3A1F06A22508D1D800C16862 /* ViewController.swift in Sources */,
 				3A1F069E2508D1D800C16862 /* AppDelegate.swift in Sources */,
+				3A8F1AB42509C50C003BAC09 /* JSONSlice.swift in Sources */,
 				3A1F06D22508D78B00C16862 /* JSONDecorator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
