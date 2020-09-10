@@ -10,17 +10,17 @@ import UIKit
 
 // MARK: - TableView
 
-final class LineNumberTableView: UITableView {
+open class LineNumberTableView: UITableView {
     
-    static let tag = 1
+    public static let tag = 1
     
-    override init(frame: CGRect, style: UITableView.Style) {
+    public override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         
         config()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         config()
@@ -58,22 +58,22 @@ private extension LineNumberTableView {
 
 // MARK: - Cell
 
-final class LineNumberTableViewCell: UITableViewCell {
+open class LineNumberTableViewCell: UITableViewCell {
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         config()
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
         
         config()
     }
     
     /// Label for show line numbers
-    lazy var numberLabel: UILabel = {
+    open lazy var numberLabel: UILabel = {
         
         let label = UILabel()
         

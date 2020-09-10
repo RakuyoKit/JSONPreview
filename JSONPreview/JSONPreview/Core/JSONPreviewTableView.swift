@@ -10,17 +10,17 @@ import UIKit
 
 // MARK: - TableView
 
-final class JSONPreviewTableView: UITableView {
+open class JSONPreviewTableView: UITableView {
     
-    static let tag = 2
+    public static let tag = 2
     
-    override init(frame: CGRect, style: UITableView.Style) {
+    public override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         
         config()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
         config()
@@ -59,22 +59,22 @@ private extension JSONPreviewTableView {
 
 // MARK: - Cell
 
-final class JSONPreviewTableViewCell: UITableViewCell {
+open class JSONPreviewTableViewCell: UITableViewCell {
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         config()
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
         
         config()
     }
     
     /// A label with JSON content
-    lazy var jsonLabel: UILabel = {
+    open lazy var jsonLabel: UILabel = {
         
         let label = UILabel()
         
@@ -84,10 +84,6 @@ final class JSONPreviewTableViewCell: UITableViewCell {
         
         return label
     }()
-    
-    override var tag: Int {
-        didSet { jsonLabel.tag = tag }
-    }
 }
 
 private extension JSONPreviewTableViewCell {
