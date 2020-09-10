@@ -89,6 +89,7 @@ private extension LineNumberTableViewCell {
     func config() {
         
         backgroundColor = .clear
+        contentView.backgroundColor = .clear
         
         contentView.addSubview(numberLabel)
         
