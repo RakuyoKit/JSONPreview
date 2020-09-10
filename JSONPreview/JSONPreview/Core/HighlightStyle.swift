@@ -11,12 +11,42 @@ import UIKit
 /// Highlight style configuration
 public struct HighlightStyle {
     
-    /// Expand the icon of the button. Default icon will be used when `nil`.
-    public let expandIcon: UIImage?
+    /// Initialization method
+    ///
+    /// For all the following parameters, the default configuration will be used when it is `nil`
+    ///
+    /// - Parameters:
+    ///   - expandIcon: The icon of the expand button.
+    ///   - foldIcon: The icon of the fold button.
+    ///   - color: Color-related configuration. See `HighlightColor` for details.
+    public init(expandIcon: UIImage? = nil, foldIcon: UIImage? = nil, color: HighlightColor) {
+
+        self.expandIcon = expandIcon ?? UIImage(name: "expand")!
+        self.foldIcon = foldIcon ?? UIImage(name: "fold")!
+        self.color = color
+    }
     
-    /// The icon of the fold button. Default icon will be used when nil
-    public let foldedIcon: UIImage?
+    /// The icon of the expand button.
+    public let expandIcon: UIImage
+    
+    /// The icon of the fold button.
+    public let foldIcon: UIImage
     
     /// Color-related configuration, see `HighlightColor` for details
     public let color: HighlightColor
+}
+
+ fileprivate extension UIImage {
+    
+    convenience init?(name: String) {
+        
+        if let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
+            let bundle = Bundle(path: resourcePath + "JSONPreview.bundle") {
+            
+            self.init(named: name, in: bundle, compatibleWith: nil)
+            
+        } else {
+            self.init(named: name)
+        }
+    }
 }
