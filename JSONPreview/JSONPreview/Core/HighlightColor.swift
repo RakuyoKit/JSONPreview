@@ -12,26 +12,26 @@ import UIKit
 public struct HighlightColor {
     
     /// Keyword color. Including `{}`, `[]`, `:`, `,`
-    let keyWord: UIColor
+    public let keyWord: UIColor
     
     /// The color of the key of the object
-    let key: UIColor
+    public let key: UIColor
     
     /// The color of the link in the object value
-    let link: UIColor
+    public let link: UIColor
     
     /// The color of the string in the object value
-    let string: UIColor
+    public let string: UIColor
     
     /// The color of the number in the object value
-    let number: UIColor
+    public let number: UIColor
     
     /// The background color of the JSON preview area
-    let jsonBackground: UIColor
+    public let jsonBackground: UIColor
     
     /// The background color of the line number area
-    let lineBackground: UIColor
+    public let lineBackground: UIColor
     
     /// Text color in line number area
-    let lineText: UIColor
+    public let lineText: UIColor
 }
