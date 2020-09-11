@@ -200,26 +200,20 @@ private extension JSONDecorator {
                 
                 let indentation = createIndentedString(level: level)
                 
-                // 配置折叠时显示的富文本内容
                 let foldString = NSMutableAttributedString(
                     string: indentation + " [Array...]",
                     attributes: placeholderStyle
                 )
                 
-                // 插入折叠图标
                 foldString.insert(foldIconString, at: indentation.count)
                 
-                // 存在上一个节点，且上一个节点为冒号。
-                // 需要将当前节点拼接到上一个节点上。
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
                     
-                    // 配置展开时显示的富文本内容
                     let expandString = NSMutableAttributedString(
                         string: " [",
                         attributes: startStyle
                     )
                     
-                    // 插入展开图标
                     expandString.insert(expandIconString, at: 0)
                     
                     let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
@@ -234,10 +228,8 @@ private extension JSONDecorator {
                         expand: lastExpand,
                         folded: lastFolded
                     )
-                }
-                
-                // 不满足条件时，创建新节点
-                else {
+                    
+                } else {
                     
                     let expandString = NSMutableAttributedString(
                         string: indentation + " [",
