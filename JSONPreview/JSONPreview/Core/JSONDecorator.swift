@@ -159,7 +159,9 @@ private extension JSONDecorator {
                 level += 1
                 
             case .objectEnd:
-                break
+                
+                
+                level -= 1
                 
             case .objectKey(let key):
                 
@@ -171,10 +173,64 @@ private extension JSONDecorator {
                 _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString))
                 
             case .arrayBegin:
-                break
+                
+                // 配置折叠时显示的富文本内容
+                let foldString = NSMutableAttributedString(
+                    string: indentation + " [Array...]",
+                    attributes: placeholderStyle
+                )
+                
+                // 插入折叠图标
+                foldString.insert(foldIconString, at: indentation.count)
+                
+                // 存在上一个节点，且上一个节点为冒号。
+                // 需要将当前节点拼接到上一个节点上。
+                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
+                    
+                    // 配置展开时显示的富文本内容
+                    let expandString = NSMutableAttributedString(
+                        string: " [",
+                        attributes: startStyle
+                    )
+                    
+                    // 插入展开图标
+                    expandString.insert(expandIconString, at: 0)
+                    
+                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    lastExpand.append(expandString)
+                    
+                    let lastFolded = NSMutableAttributedString(attributedString: lastSlices.folded!)
+                    lastFolded.append(foldString)
+                    
+                    _slices[_slices.count - 1] = JSONSlice(
+                        level: lastSlices.level,
+                        lineNumber: lastSlices.lineNumber,
+                        expand: lastExpand,
+                        folded: lastFolded
+                    )
+                }
+                
+                // 不满足条件时，创建新节点
+                else {
+                    
+                    // 配置展开时显示的富文本内容
+                    let expandString = NSMutableAttributedString(
+                        string: indentation + " [",
+                        attributes: startStyle
+                    )
+                    
+                    // 插入展开图标
+                    expandString.insert(expandIconString, at: indentation.count)
+                    
+                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString, folded: foldString))
+                }
+                
+                level += 1
                 
             case .arrayEnd:
-                break
+                
+                
+                level -= 1
                 
             case .colon:
                 
@@ -211,7 +267,6 @@ private extension JSONDecorator {
                 
             case .unknown(_):
                 break
-                
             }
             
             lastToken = $1
