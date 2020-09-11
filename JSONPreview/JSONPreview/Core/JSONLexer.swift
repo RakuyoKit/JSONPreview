@@ -11,6 +11,10 @@ import Foundation
 /// JSON lexical analyzer
 public class JSONLexer {
     
+    private init() {
+        // Do not want the caller to directly initialize the object
+    }
+    
     private lazy var tokens: [Token] = []
     
     /// Storage hierarchy, used to analyze the type of data structure of the current token, and used for syntax analysis
