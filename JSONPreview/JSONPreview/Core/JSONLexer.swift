@@ -65,7 +65,6 @@ public extension JSONLexer {
     /// When `json` meets the following conditions, an empty array will be returned:
     ///
     /// 1. `json` is empty.
-    /// 2. `json` does not start with `{` or `[`.
     ///
     /// - Parameter json: JSON to be processed.
     /// - Returns: Parsed Token array. See `JSONLexer.Token` for details.
@@ -75,10 +74,10 @@ public extension JSONLexer {
         
         let lexer = JSONLexer()
         
-        var json = json
+        var _json = json
         
         // Processing initial data
-        switch json.removeFirst() {
+        switch _json.removeFirst() {
             
         case "{":
             lexer.beginNodes.append(.object)
@@ -88,11 +87,13 @@ public extension JSONLexer {
             lexer.beginNodes.append(.array)
             lexer.tokens.append(.arrayBegin)
             
-        default: return []
+        default:
+            lexer.tokens.append(.unknown(json))
+            return lexer.tokens
         }
         
         // Parse the remaining content
-        lexer.findNextToken(in: json)
+        lexer.findNextToken(in: _json)
         
         return lexer.tokens
     }
