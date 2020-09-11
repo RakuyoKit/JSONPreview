@@ -109,13 +109,11 @@ private extension JSONDecorator {
         
         var lastToken: JSONLexer.Token? = nil
         
-        // 1. Lexical analysis of JSON
-        let tokens = JSONLexer.getTokens(of: json)
-        
-        // 2. Traverse, create the corresponding slice
-        tokens.enumerated().forEach {
+        JSONLexer.getTokens(of: json).forEach {
             
-            switch $1 {
+            let lineNumber = String(_slices.count + 1)
+            
+            switch $0 {
             
             case .objectBegin:
                 
@@ -169,7 +167,7 @@ private extension JSONDecorator {
                     // 插入展开图标
                     expandString.insert(expandIconString, at: indentation.count)
                     
-                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString, folded: foldString))
+                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString, folded: foldString))
                 }
                 
                 level += 1
@@ -185,7 +183,7 @@ private extension JSONDecorator {
                     attributes: startStyle
                 )
                 
-                _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString))
+                _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
                 
             case .objectKey(let key):
                 
@@ -196,7 +194,7 @@ private extension JSONDecorator {
                     attributes: keyStyle
                 )
                 
-                _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString))
+                _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
                 
             case .arrayBegin:
                 
@@ -241,16 +239,14 @@ private extension JSONDecorator {
                 // 不满足条件时，创建新节点
                 else {
                     
-                    // 配置展开时显示的富文本内容
                     let expandString = NSMutableAttributedString(
                         string: indentation + " [",
                         attributes: startStyle
                     )
                     
-                    // 插入展开图标
                     expandString.insert(expandIconString, at: indentation.count)
                     
-                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString, folded: foldString))
+                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString, folded: foldString))
                 }
                 
                 level += 1
@@ -266,7 +262,7 @@ private extension JSONDecorator {
                     attributes: startStyle
                 )
                 
-                _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString))
+                _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
                 
             case .colon:
                 
@@ -328,7 +324,7 @@ private extension JSONDecorator {
                     let indentation = createIndentedString(level: level)
                     let string = NSAttributedString(string: indentation + value, attributes: stringStyle)
                     
-                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: string))
+                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: string))
                 }
                 
             case .number(let number):
@@ -350,7 +346,7 @@ private extension JSONDecorator {
                     let indentation = createIndentedString(level: level)
                     let numberString = NSAttributedString(string: indentation + "\(number)", attributes: numberStyle)
                     
-                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: numberString))
+                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: numberString))
                 }
                 
             case .boolean(let bool):
@@ -374,7 +370,7 @@ private extension JSONDecorator {
                     let indentation = createIndentedString(level: level)
                     let boolString = NSAttributedString(string: indentation + value, attributes: boolStyle)
                     
-                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: boolString))
+                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: boolString))
                 }
                 
             case .null:
@@ -396,14 +392,14 @@ private extension JSONDecorator {
                     let indentation = createIndentedString(level: level)
                     let nullString = NSAttributedString(string: indentation + "null", attributes: nullStyle)
                     
-                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: nullString))
+                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: nullString))
                 }
                 
             case .unknown(_):
                 break
             }
             
-            lastToken = $1
+            lastToken = $0
         }
         
         return _slices
