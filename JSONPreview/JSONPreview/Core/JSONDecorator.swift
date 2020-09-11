@@ -166,7 +166,22 @@ private extension JSONDecorator {
                 break
                 
             case .colon:
-                break
+                
+                guard let lastSlices = _slices.last else { break }
+                
+                let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                
+                lastExpand.append(NSAttributedString(
+                    string: " : ",
+                    attributes: keyWordStyle
+                ))
+                
+                _slices[_slices.count - 1] = JSONSlice(
+                    level: lastSlices.level,
+                    lineNumber: lastSlices.lineNumber,
+                    expand: lastExpand,
+                    folded: lastExpand
+                )
                 
             case .comma:
                 break
