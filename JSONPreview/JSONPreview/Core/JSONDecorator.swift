@@ -29,15 +29,21 @@ public class JSONDecorator {
     /// The string used to hold the icon of the fold button
     private lazy var foldIconString = createIconAttributedString(with: style.foldIcon)
     
-    
-    
-    private lazy var  keyWordStyle: [NSAttributedString.Key : Any] = [
+    private lazy var startStyle: [NSAttributedString.Key : Any] = [
         .foregroundColor : style.color.keyWord
     ]
     
-    private lazy var  placeholderStyle: [NSAttributedString.Key : Any] = [
+    private lazy var keyWordStyle: [NSAttributedString.Key : Any] = [
+        .foregroundColor : style.color.keyWord
+    ]
+    
+    private lazy var placeholderStyle: [NSAttributedString.Key : Any] = [
         .foregroundColor : style.color.lineText,
         .backgroundColor : style.color.lineBackground,
+    ]
+    
+    private lazy var keyStyle: [NSAttributedString.Key : Any] = [
+        .foregroundColor : style.color.key
     ]
 }
 
