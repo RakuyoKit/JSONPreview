@@ -216,7 +216,7 @@ private extension JSONDecorator {
         let expandAttach = NSTextAttachment()
         
         expandAttach.image = image
-        expandAttach.bounds = CGRect(x: 0, y: 0, width: 18, height: 18)
+        expandAttach.bounds = CGRect(x: 0, y: -4.5, width: 20, height: 20)
         
         return NSAttributedString(attachment: expandAttach)
     }
