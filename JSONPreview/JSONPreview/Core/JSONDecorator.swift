@@ -267,7 +267,27 @@ private extension JSONDecorator {
                 )
                 
             case .comma:
-                break
+                
+                guard let lastSlices = _slices.last else { break }
+                
+                let commaString = NSAttributedString(string: ",", attributes: keyWordStyle)
+                
+                let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                lastExpand.append(commaString)
+                
+                var lastFolded: NSMutableAttributedString? = nil
+                
+                if let _folded = lastSlices.folded {
+                    lastFolded = NSMutableAttributedString(attributedString: _folded)
+                    lastFolded?.append(commaString)
+                }
+                
+                _slices[_slices.count - 1] = JSONSlice(
+                    level: lastSlices.level,
+                    lineNumber: lastSlices.lineNumber,
+                    expand: lastExpand,
+                    folded: lastFolded
+                )
                 
             case .string(let value):
                 
