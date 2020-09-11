@@ -11,9 +11,37 @@ import UIKit
 /// Responsible for beautifying JSON
 public class JSONDecorator {
     
-    private init() {
-        // Do not want the caller to directly initialize the object
+    // Do not want the caller to directly initialize the object
+    private init(json: String, style: HighlightStyle) {
+        self.json = json
+        self.style = style
     }
+    
+    /// The JSON string to be highlighted.
+    private let json: String
+    
+    /// Style of highlight. See `HighlightStyle` for details.
+    private let style: HighlightStyle
+    
+    /// The string used to hold the icon of the expand button
+    private lazy var expandIconString = createIconAttributedString(with: style.expandIcon)
+    
+    /// The string used to hold the icon of the fold button
+    private lazy var foldIconString = createIconAttributedString(with: style.foldIcon)
+    
+    
+    
+    private lazy var  keyWordStyle: [NSAttributedString.Key : Any] = [
+        .foregroundColor : style.color.keyWord
+    ]
+    
+    private lazy var  placeholderStyle: [NSAttributedString.Key : Any] = [
+        .foregroundColor : style.color.lineText,
+        .backgroundColor : style.color.lineBackground,
+    ]
+}
+
+public extension JSONDecorator {
     
     /// Highlight the incoming JSON string.
     ///
@@ -44,83 +72,118 @@ public class JSONDecorator {
     ///   - style: style of highlight. See `HighlightStyle` for details.
     /// - Returns: See `JSONSlice` for details.
     static func highlight(_ json: String, style: HighlightStyle = .default) -> [JSONSlice] {
+        return JSONDecorator(json: json, style: style).slices
+    }
+}
+
+private extension JSONDecorator {
+    
+    var slices: [JSONSlice] {
         
-        var slices: [JSONSlice] = []
+        var _slices: [JSONSlice] = []
+        
+        // Record indentation level
+        var level = 0
+        
+        var lastToken: JSONLexer.Token? = nil
         
         // 1. Lexical analysis of JSON
         let tokens = JSONLexer.getTokens(of: json)
         
+        // 2. Traverse, create the corresponding slice
+        tokens.enumerated().forEach {
+            
+            lastToken = $1
+            
+            let indentation = createIndentedString(level: level)
+            
+            switch $1 {
+            
+            case .objectBegin:
+                
+                // 配置展开时显示的富文本内容
+                let expandString = NSMutableAttributedString(
+                    string: indentation + " {",
+                    attributes: keyWordStyle
+                )
+                
+                // 插入展开图标
+                expandString.insert(expandIconString, at: indentation.count)
+                
+                // 配置折叠时显示的富文本内容
+                let foldString = NSMutableAttributedString(
+                    string: indentation + " {Object...}",
+                    attributes: placeholderStyle
+                )
+                
+                // 插入折叠图标
+                expandString.insert(foldIconString, at: indentation.count)
+                
+                // 存在上一个节点，且上一个节点为冒号。
+                // 需要将当前节点拼接到上一个节点上。
+                if let lastToken = lastToken, case .colon = lastToken, let lastSlices = slices.last {
+                    
+                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    lastExpand.append(expandString)
+                    
+                    let lastFolded = NSMutableAttributedString(attributedString: lastSlices.folded!)
+                    lastFolded.append(foldString)
+                    
+                    _slices[slices.count - 1] = JSONSlice(
+                        level: lastSlices.level,
+                        lineNumber: lastSlices.lineNumber,
+                        expand: lastExpand,
+                        folded: lastFolded
+                    )
+                }
+                
+                // 不满足条件时，创建新节点
+                else {
+                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString, folded: foldString))
+                }
+                
+                level += 1
+                
+            case .objectEnd:
+                break
+                
+            case .objectKey(let key):
+                
+                
+                
+                break
+                
+            case .arrayBegin:
+                break
+                
+            case .arrayEnd:
+                break
+                
+            case .colon:
+                break
+                
+            case .comma:
+                break
+                
+            case .string(_):
+                break
+                
+            case .number(_):
+                break
+                
+            case .boolean(_):
+                break
+                
+            case .null:
+                break
+                
+            case .unknown(_):
+                break
+                
+            }
+        }
         
-        
-        print(tokens)
-        
-        
-        
-        
-        
-        
-//        // Record indentation level
-//        var level = 0
-//
-//        let keyWordStyle: [NSAttributedString.Key : Any] = [
-//            .foregroundColor : style.color.keyWord
-//        ]
-//
-//        let placeholderStyle: [NSAttributedString.Key : Any] = [
-//            .foregroundColor : style.color.lineText,
-//            .backgroundColor : style.color.lineBackground,
-//        ]
-//
-//        let expandIconString = createIconAttributedString(with: style.expandIcon)
-//        let foldIconString = createIconAttributedString(with: style.foldIcon)
-//
-////        let commaString = NSAttributedString(string: ",", attributes: keyWordStyle)
-////
-////        // 上一个可以被折叠的节点在 `slices` 中的索引
-////        var lastFoldIndex: Int? = nil
-//
-//        json.enumerated().forEach {
-//
-//            switch $0.element {
-//
-//                // Object 的开头
-//            case "{":
-//
-//                // 计算当前层级
-//                let indentation = calculateIndent(level: level)
-//
-//                // 配置展开时显示的富文本内容
-//                let expandString = NSMutableAttributedString(
-//                    string: indentation + "{",
-//                    attributes: keyWordStyle
-//                )
-//
-//                // 插入展开图标
-//                expandString.insert(expandIconString, at: indentation.count)
-//
-//                // 配置折叠时显示的富文本内容
-//                let foldString = NSMutableAttributedString(
-//                    string: indentation + "{Object...}",
-//                    attributes: placeholderStyle
-//                )
-//
-//                // 插入折叠图标
-//                expandString.insert(foldIconString, at: indentation.count)
-//
-//                slices.append(JSONSlice(level: level, lineNumber: $0.offset + 1, expand: expandString, folded: foldString))
-//
-//                level += 1
-//
-//                // Object 的结尾
-//            case "}":
-//
-//                level -= 1
-//
-//            default: break
-//            }
-//        }
-        
-        return slices
+        return _slices
     }
 }
 
@@ -128,11 +191,11 @@ public class JSONDecorator {
 
 private extension JSONDecorator {
     
-    /// Calculate the indent.
+    /// Create a string to represent indentation.
     ///
     /// - Parameter level: Current level.
     /// - Returns: Use the indentation indicated by `"\t"`.
-    static func calculateIndent(level: Int) -> String {
+    func createIndentedString(level: Int) -> String {
         return (0 ..< level).map{ _ in "\t" }.joined()
     }
     
@@ -142,7 +205,7 @@ private extension JSONDecorator {
     ///   - image: The image to be displayed.
     ///   - size: The size of the picture to be displayed. Default is `18`.
     /// - Returns: `NSAttributedString` object.
-    static func createIconAttributedString(with image: UIImage, size: CGFloat = 18) -> NSAttributedString {
+    func createIconAttributedString(with image: UIImage, size: CGFloat = 18) -> NSAttributedString {
         
         let expandAttach = NSTextAttachment()
         
