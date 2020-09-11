@@ -155,9 +155,12 @@ private extension JSONDecorator {
                 
             case .objectKey(let key):
                 
+                let expandString = NSAttributedString(
+                    string: indentation + "\"\(key)\"",
+                    attributes: keyStyle
+                )
                 
-                
-                break
+                _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString))
                 
             case .arrayBegin:
                 break
