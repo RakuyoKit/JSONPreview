@@ -45,6 +45,22 @@ public class JSONDecorator {
     private lazy var keyStyle: [NSAttributedString.Key : Any] = [
         .foregroundColor : style.color.key
     ]
+    
+    private lazy var stringStyle: [NSAttributedString.Key : Any] = [
+        .foregroundColor : style.color.string
+    ]
+    
+    private lazy var numberStyle: [NSAttributedString.Key : Any] = [
+        .foregroundColor : style.color.number
+    ]
+    
+    private lazy var boolStyle: [NSAttributedString.Key : Any] = [
+        .foregroundColor : style.color.boolean
+    ]
+    
+    private lazy var nullStyle: [NSAttributedString.Key : Any] = [
+        .foregroundColor : style.color.null
+    ]
 }
 
 public extension JSONDecorator {
@@ -253,17 +269,87 @@ private extension JSONDecorator {
             case .comma:
                 break
                 
-            case .string(_):
-                break
+            case .string(let value):
                 
-            case .number(_):
-                break
+                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
+                    
+                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    lastExpand.append(NSAttributedString(string: value, attributes: stringStyle))
+                    
+                    _slices[_slices.count - 1] = JSONSlice(
+                        level: lastSlices.level,
+                        lineNumber: lastSlices.lineNumber,
+                        expand: lastExpand,
+                        folded: nil
+                    )
+                    
+                } else {
+                    
+                    let string = NSAttributedString(string: indentation + value, attributes: stringStyle)
+                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: string))
+                }
                 
-            case .boolean(_):
-                break
+            case .number(let number):
+                
+                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
+                    
+                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    lastExpand.append(NSAttributedString(string: "\(number)", attributes: numberStyle))
+                    
+                    _slices[_slices.count - 1] = JSONSlice(
+                        level: lastSlices.level,
+                        lineNumber: lastSlices.lineNumber,
+                        expand: lastExpand,
+                        folded: nil
+                    )
+                    
+                } else {
+                    
+                    let numberString = NSAttributedString(string: indentation + "\(number)", attributes: numberStyle)
+                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: numberString))
+                }
+                
+            case .boolean(let bool):
+                
+                let value = bool ? "true" : "false"
+                
+                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
+                    
+                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    lastExpand.append(NSAttributedString(string: value, attributes: boolStyle))
+                    
+                    _slices[_slices.count - 1] = JSONSlice(
+                        level: lastSlices.level,
+                        lineNumber: lastSlices.lineNumber,
+                        expand: lastExpand,
+                        folded: nil
+                    )
+                    
+                } else {
+                    
+                    let boolString = NSAttributedString(string: indentation + value, attributes: boolStyle)
+                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: boolString))
+                }
                 
             case .null:
-                break
+                
+                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
+                    
+                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    lastExpand.append(NSAttributedString(string: "null", attributes: nullStyle))
+                    
+                    _slices[_slices.count - 1] = JSONSlice(
+                        level: lastSlices.level,
+                        lineNumber: lastSlices.lineNumber,
+                        expand: lastExpand,
+                        folded: nil
+                    )
+                    
+                } else {
+                    
+                    let nullString = NSAttributedString(string: indentation + "null", attributes: nullStyle)
+                    _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: nullString))
+                }
                 
             case .unknown(_):
                 break
