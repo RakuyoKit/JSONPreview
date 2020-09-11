@@ -98,40 +98,22 @@ public extension HighlightColor {
         lineText: [0.64, 0.64, 0.64]
     )
     
-    /// Built-in dark mode.
-    static let dark = HighlightColor(
-        keyWord: 0x5E7987,
-        key: 0xC04851,
-        link: 0x5497C7,
-        string: 0x248067,
-        number: 0xCC9114,
-        
-        boolean: [0.80, 0.57, 0.08],
-        null: [0.80, 0.57, 0.08],
-        unknownText: [0.80, 0.57, 0.08],
-        unknownBackground: [0.80, 0.57, 0.08],
-        
-        jsonBackground: 0x0F2E41,
-        lineBackground: 0x082332,
-        lineText: 0x20455C
-    )
-    
     /// A darker color scheme that the author likes.
     static let mariana = HighlightColor(
-        keyWord: 0x88B0BF,
+        keyWord: 0x767677,
         key: 0xF2777B,
         link: 0x73AAD4,
         string: 0xA3D0A5,
         number: 0xF9BC6B,
+        boolean: 0x88B0BF,
+        null: 0xD16D71,
         
-        boolean: [0.80, 0.57, 0.08],
-        null: [0.80, 0.57, 0.08],
         unknownText: [0.80, 0.57, 0.08],
         unknownBackground: [0.80, 0.57, 0.08],
         
-        jsonBackground: 0x3E444C,
-        lineBackground: 0x363C43,
-        lineText: 0x88B0BF
+        jsonBackground: 0x3D444C,
+        lineBackground: 0x363D42,
+        lineText: 0x767677
     )
 }
 
