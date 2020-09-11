@@ -25,14 +25,14 @@ public struct JSONSlice {
     ///   - folded: The summary content of the JSON slice in the folded state.
     public init(
         level: Int,
-        lineNumber: Int,
+        lineNumber: String,
         expand: NSAttributedString,
         folded: NSAttributedString? = nil
     ) {
         
         self.state = .expand
         self.level = level
-        self.lineNumber = "\(lineNumber)"
+        self.lineNumber = lineNumber
         self.expand = expand
         self.folded = folded
     }
@@ -46,14 +46,14 @@ public struct JSONSlice {
     ///   - folded: The summary content of the JSON slice in the folded state.
     public init(
         level: Int,
-        lineNumber: Int,
+        lineNumber: String,
         expand: (String, [NSAttributedString.Key : Any]),
         folded: (String, [NSAttributedString.Key : Any])? = nil
     ) {
         
         self.state = .expand
         self.level = level
-        self.lineNumber = "\(lineNumber)"
+        self.lineNumber = lineNumber
         
         self.expand = NSAttributedString(string: expand.0, attributes: expand.1)
         
