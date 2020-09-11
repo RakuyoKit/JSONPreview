@@ -117,7 +117,7 @@ private extension JSONDecorator {
                 )
                 
                 // 插入折叠图标
-                expandString.insert(foldIconString, at: indentation.count)
+                foldString.insert(foldIconString, at: indentation.count)
                 
                 // 存在上一个节点，且上一个节点为冒号。
                 // 需要将当前节点拼接到上一个节点上。
