@@ -25,21 +25,36 @@ class ViewController: UIViewController {
         
         let json = """
         {
-            "key" : {
-                "value" : [
-                    null,
-                    "test",
-                    true,
-                    false
-                ]
-            },
-            "key2" : [],
-            "key3" : {},
-            "key4" : 3.1415926,
-            "key5" : -50,
-            "key6" : -50.0,
-            "key7" : 50
-        }
+            "key_1" : "string",
+            "key_2" : 3.1415926,
+            "key_3" : -50,
+            "key_4" : [],
+            "key_5" : {},
+            "key_6" : {
+                "key_6_1" : null,
+                "key_6_2" : [
+                    "value_1",
+                    "value_2"
+                ],
+                "key_6_3" : {
+                    "bool_1" : true,
+                    "bool_2" : false,
+                    "empty_string" : ""
+                }
+            }
+        },
+        [
+            "array_1",
+            3.1415926,
+            -50,
+            true,
+            false,
+            null
+            {},
+            {
+                "some_key" : "some_value"
+            }
+        ]
         """
         
         let jsonSlices = JSONDecorator.highlight(json, style: previewView.highlightStyle)
