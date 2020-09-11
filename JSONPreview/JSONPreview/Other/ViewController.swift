@@ -9,7 +9,9 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    lazy var previewView = JSONPreview()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,6 +34,21 @@ class ViewController: UIViewController {
         }
         """
         
-        print(JSONDecorator.highlight(json).map { $0.expand.string })
+        let jsonSlices = JSONDecorator.highlight(json)
+        
+        print(jsonSlices.map { $0.expand.string })
+        
+        
+        
+        
+        
+        previewView.dataSource = jsonSlices
+        previewView.highlightStyle = .mariana
+        
+        previewView.frame.size.width = view.frame.width - 20
+        previewView.frame.size.height = 700
+        previewView.center = view.center
+        
+        view.addSubview(previewView)
     }
 }

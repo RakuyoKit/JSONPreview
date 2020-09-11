@@ -8,8 +8,6 @@
 
 import UIKit
 
-// MARK: - TableView
-
 open class JSONPreviewTableView: UITableView {
     
     public static let tag = 2
@@ -35,6 +33,7 @@ private extension JSONPreviewTableView {
         
         delaysContentTouches = false
         canCancelContentTouches = true
+        translatesAutoresizingMaskIntoConstraints = false
         
         estimatedRowHeight = 0
         estimatedSectionFooterHeight = 0
@@ -54,57 +53,5 @@ private extension JSONPreviewTableView {
         scrollsToTop = false
         isScrollEnabled = false
         bounces = false
-    }
-}
-
-// MARK: - Cell
-
-open class JSONPreviewTableViewCell: UITableViewCell {
-    
-    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        config()
-    }
-    
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        
-        config()
-    }
-    
-    /// A label with JSON content
-    open lazy var jsonLabel: UILabel = {
-        
-        let label = UILabel()
-        
-        label.textAlignment = .left
-        label.numberOfLines = 1
-        label.isUserInteractionEnabled = true
-        
-        return label
-    }()
-}
-
-private extension JSONPreviewTableViewCell {
-    
-    func config() {
-        
-        backgroundColor = .clear
-        contentView.backgroundColor = .clear
-        
-        selectionStyle = .none
-        
-        contentView.addSubview(jsonLabel)
-        
-        let left = NSLayoutConstraint(item: jsonLabel, attribute: .left, relatedBy: .equal, toItem: contentView, attribute: .left, multiplier: 1, constant: 5)
-        let right = NSLayoutConstraint(item: jsonLabel, attribute: .right, relatedBy: .lessThanOrEqual, toItem: contentView, attribute: .right, multiplier: 1, constant: -5)
-        
-        let top = NSLayoutConstraint(item: jsonLabel, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .top, multiplier: 1, constant: 0)
-        let bottom = NSLayoutConstraint(item: jsonLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: 0)
-        
-        contentView.addConstraints([left, right, top, bottom])
-        
-        jsonLabel.setContentHuggingPriority(.required, for: .horizontal)
     }
 }

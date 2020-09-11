@@ -10,23 +10,16 @@ import UIKit
 
 open class JSONPreview: UIView {
     
-    /// Initialization method.
-    ///
-    /// - Parameters:
-    ///   - jsonSlices: The slice of the JSON to be previewed. Can be created by `JSONDecorator`.
-    ///   - style: See `HighlightStyle` for details.
-    public init(jsonSlices: [JSONSlice], style: HighlightStyle = .default) {
-        
-        self.dataSource = jsonSlices
-        self.highlightStyle = style
-        
-        super.init(frame: .zero)
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
         
         config()
     }
     
     public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+        
+        config()
     }
     
     /// ScrollView responsible for scrolling in JSON area
@@ -34,6 +27,7 @@ open class JSONPreview: UIView {
         
         let scrollView = UIScrollView()
         
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.tag = Constant.scrollViewTag
         scrollView.backgroundColor = .clear
         scrollView.bounces = false
@@ -53,7 +47,7 @@ open class JSONPreview: UIView {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(LineNumberTableViewCell.self, forCellReuseIdentifier: "LineNumberTableViewCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
         
         return tableView
     }()
@@ -68,16 +62,21 @@ open class JSONPreview: UIView {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(JSONPreviewTableViewCell.self, forCellReuseIdentifier: "JSONPreviewTableViewCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
         
         return tableView
     }()
     
     /// Data source responsible for display
-    var dataSource: [JSONSlice]
+    public lazy var dataSource: [JSONSlice] = []
     
     /// Highlight style
-    let highlightStyle: HighlightStyle
+    public var highlightStyle: HighlightStyle = .default {
+        didSet {
+            lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
+            jsonTableView.backgroundColor = highlightStyle.color.jsonBackground
+        }
+    }
 }
 
 // MARK: - Constant
@@ -113,36 +112,68 @@ private extension JSONPreview {
     
     func addInitialLayout() {
         
-//        lineNumberTableView.snp.makeConstraints {
-//
-//            $0.top.bottom.equalToSuperview()
-//            $0.width.equalTo(55)
-//
-//            if #available(iOS 11.0, *) {
-//                $0.left.equalTo(safeAreaLayoutGuide.snp.left)
-//            } else {
-//                $0.left.equalTo(snp.left)
-//            }
-//        }
-//
-//        jsonScrollView.snp.makeConstraints {
-//
-//            $0.left.equalTo(lineNumberTableView.snp.right)
-//            $0.top.bottom.equalTo(lineNumberTableView)
-//
-//            if #available(iOS 11.0, *) {
-//                $0.right.equalTo(safeAreaLayoutGuide.snp.right)
-//            } else {
-//                $0.right.equalTo(snp.right)
-//            }
-//        }
-//
-//        jsonTableView.snp.makeConstraints {
-//            $0.edges.equalToSuperview()
-//            $0.height.equalToSuperview()
-//
-//            widthConstraintEditable = $0.width.equalTo(calculateMaxWidth())
-//        }
+        // lineNumberTableView
+        addLineNumberTableViewLayout()
+        
+        // jsonScrollView
+        addJSONScrollViewLayout()
+        
+        // jsonTableView
+        addJSONTableViewLayout()
+    }
+    
+    func addLineNumberTableViewLayout() {
+        
+        var constraints = [
+            lineNumberTableView.topAnchor.constraint(equalTo: self.topAnchor),
+            lineNumberTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            lineNumberTableView.widthAnchor.constraint(equalToConstant: 55)
+        ]
+        
+        constraints.append(lineNumberTableView.leftAnchor.constraint(equalTo: {
+            if #available(iOS 11.0, *) {
+                return self.safeAreaLayoutGuide.leftAnchor
+            } else {
+                return self.leftAnchor
+            }
+        }()))
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    func addJSONScrollViewLayout() {
+        
+        var constraints = [
+            jsonScrollView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor),
+            jsonScrollView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
+            jsonScrollView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
+        ]
+        
+        constraints.append(jsonScrollView.rightAnchor.constraint(equalTo: {
+            if #available(iOS 11.0, *) {
+                return self.safeAreaLayoutGuide.rightAnchor
+            } else {
+                return self.rightAnchor
+            }
+        }()))
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    func addJSONTableViewLayout() {
+        
+        var constraints = [
+            jsonTableView.leftAnchor.constraint(equalTo: jsonScrollView.leftAnchor),
+            jsonTableView.rightAnchor.constraint(equalTo: jsonScrollView.rightAnchor),
+            jsonTableView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor),
+            jsonTableView.bottomAnchor.constraint(equalTo: jsonScrollView.bottomAnchor),
+            jsonTableView.heightAnchor.constraint(equalTo: jsonScrollView.heightAnchor),
+            
+            // widthConstraintEditable = $0.width.equalTo(calculateMaxWidth())
+            jsonTableView.widthAnchor.constraint(equalToConstant: 1000)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 }
 
@@ -167,24 +198,28 @@ extension JSONPreview: UITableViewDataSource {
         
         let slice = dataSource[indexPath.row]
         
+        let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+        
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
+        cell.textLabel?.numberOfLines = 1
+        
         if tableView.tag == JSONPreviewTableView.tag {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "JSONPreviewTableViewCell", for: indexPath) as! JSONPreviewTableViewCell
+            cell.selectionStyle = .none
             
-            cell.jsonLabel.tag = indexPath.row
-            cell.jsonLabel.attributedText = slice.showContent
-            
-            return cell
+            cell.textLabel?.textAlignment = .left
+            cell.textLabel?.isUserInteractionEnabled = true
+            cell.textLabel?.attributedText = slice.showContent
             
         } else {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "LineNumberTableViewCell", for: indexPath) as! LineNumberTableViewCell
-            
-            cell.numberLabel.text = slice.lineNumber
-            cell.numberLabel.textColor = highlightStyle.color.lineText
-            
-            return cell
+            cell.textLabel?.textAlignment = .right
+            cell.textLabel?.text = slice.lineNumber
+            cell.textLabel?.textColor = highlightStyle.color.lineText
         }
+        
+        return cell
     }
 }
 

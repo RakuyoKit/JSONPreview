@@ -8,8 +8,6 @@
 
 import UIKit
 
-// MARK: - TableView
-
 open class LineNumberTableView: UITableView {
     
     public static let tag = 1
@@ -36,6 +34,7 @@ private extension LineNumberTableView {
         
         delaysContentTouches = false
         canCancelContentTouches = true
+        translatesAutoresizingMaskIntoConstraints = false
         
         estimatedRowHeight = 0
         estimatedSectionFooterHeight = 0
@@ -53,52 +52,5 @@ private extension LineNumberTableView {
         scrollsToTop = false
         isScrollEnabled = false
         bounces = false
-    }
-}
-
-// MARK: - Cell
-
-open class LineNumberTableViewCell: UITableViewCell {
-    
-    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        config()
-    }
-    
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        
-        config()
-    }
-    
-    /// Label for show line numbers
-    open lazy var numberLabel: UILabel = {
-        
-        let label = UILabel()
-        
-        label.textAlignment = .right
-        label.numberOfLines = 1
-        
-        return label
-    }()
-}
-
-private extension LineNumberTableViewCell {
-    
-    func config() {
-        
-        backgroundColor = .clear
-        contentView.backgroundColor = .clear
-        
-        contentView.addSubview(numberLabel)
-        
-        let left = NSLayoutConstraint(item: numberLabel, attribute: .left, relatedBy: .equal, toItem: contentView, attribute: .left, multiplier: 1, constant: 5)
-        let right = NSLayoutConstraint(item: numberLabel, attribute: .right, relatedBy: .equal, toItem: contentView, attribute: .right, multiplier: 1, constant: -5)
-        
-        let top = NSLayoutConstraint(item: numberLabel, attribute: .top, relatedBy: .equal, toItem: contentView, attribute: .top, multiplier: 1, constant: 0)
-        let bottom = NSLayoutConstraint(item: numberLabel, attribute: .bottom, relatedBy: .equal, toItem: contentView, attribute: .bottom, multiplier: 1, constant: 0)
-        
-        contentView.addConstraints([left, right, top, bottom])
     }
 }
