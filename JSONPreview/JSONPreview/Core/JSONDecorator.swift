@@ -115,11 +115,11 @@ private extension JSONDecorator {
         // 2. Traverse, create the corresponding slice
         tokens.enumerated().forEach {
             
-            let indentation = createIndentedString(level: level)
-            
             switch $1 {
             
             case .objectBegin:
+                
+                let indentation = createIndentedString(level: level)
                 
                 // 配置折叠时显示的富文本内容
                 let foldString = NSMutableAttributedString(
@@ -176,10 +176,20 @@ private extension JSONDecorator {
                 
             case .objectEnd:
                 
-                
                 level -= 1
                 
+                let indentation = createIndentedString(level: level)
+                
+                let expandString = NSMutableAttributedString(
+                    string: indentation + "}",
+                    attributes: startStyle
+                )
+                
+                _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString))
+                
             case .objectKey(let key):
+                
+                let indentation = createIndentedString(level: level)
                 
                 let expandString = NSAttributedString(
                     string: indentation + "\"\(key)\"",
@@ -189,6 +199,8 @@ private extension JSONDecorator {
                 _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString))
                 
             case .arrayBegin:
+                
+                let indentation = createIndentedString(level: level)
                 
                 // 配置折叠时显示的富文本内容
                 let foldString = NSMutableAttributedString(
@@ -245,8 +257,16 @@ private extension JSONDecorator {
                 
             case .arrayEnd:
                 
-                
                 level -= 1
+                
+                let indentation = createIndentedString(level: level)
+                
+                let expandString = NSMutableAttributedString(
+                    string: indentation + "]",
+                    attributes: startStyle
+                )
+                
+                _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: expandString))
                 
             case .colon:
                 
@@ -305,7 +325,9 @@ private extension JSONDecorator {
                     
                 } else {
                     
+                    let indentation = createIndentedString(level: level)
                     let string = NSAttributedString(string: indentation + value, attributes: stringStyle)
+                    
                     _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: string))
                 }
                 
@@ -325,7 +347,9 @@ private extension JSONDecorator {
                     
                 } else {
                     
+                    let indentation = createIndentedString(level: level)
                     let numberString = NSAttributedString(string: indentation + "\(number)", attributes: numberStyle)
+                    
                     _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: numberString))
                 }
                 
@@ -347,7 +371,9 @@ private extension JSONDecorator {
                     
                 } else {
                     
+                    let indentation = createIndentedString(level: level)
                     let boolString = NSAttributedString(string: indentation + value, attributes: boolStyle)
+                    
                     _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: boolString))
                 }
                 
@@ -367,7 +393,9 @@ private extension JSONDecorator {
                     
                 } else {
                     
+                    let indentation = createIndentedString(level: level)
                     let nullString = NSAttributedString(string: indentation + "null", attributes: nullStyle)
+                    
                     _slices.append(JSONSlice(level: level, lineNumber: String($0 + 1), expand: nullString))
                 }
                 
