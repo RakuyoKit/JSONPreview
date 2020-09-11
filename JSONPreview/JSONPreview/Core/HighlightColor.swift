@@ -17,6 +17,9 @@ public struct HighlightColor {
         link: ConvertibleToColor,
         string: ConvertibleToColor,
         number: ConvertibleToColor,
+        null: ConvertibleToColor,
+        unknownText: ConvertibleToColor,
+        unknownBackground: ConvertibleToColor,
         jsonBackground: ConvertibleToColor,
         lineBackground: ConvertibleToColor,
         lineText: ConvertibleToColor
@@ -26,6 +29,9 @@ public struct HighlightColor {
         self.link = link.color
         self.string = string.color
         self.number = number.color
+        self.null = null.color
+        self.unknownText = unknownText.color
+        self.unknownBackground = unknownBackground.color
         self.jsonBackground = jsonBackground.color
         self.lineBackground = lineBackground.color
         self.lineText = lineText.color
@@ -37,14 +43,23 @@ public struct HighlightColor {
     /// The color of the key of the object
     public let key: UIColor
     
-    /// The color of the link in the object value
+    /// The color of the link
     public let link: UIColor
     
-    /// The color of the string in the object value
+    /// The color of the string
     public let string: UIColor
     
-    /// The color of the number in the object value
+    /// The color of the number
     public let number: UIColor
+    
+    /// The color of the null
+    public let null: UIColor
+    
+    /// Text color of unknown type data
+    public let unknownText: UIColor
+    
+    /// Background color of unknown type data
+    public let unknownBackground: UIColor
     
     /// The background color of the JSON preview area
     public let jsonBackground: UIColor
@@ -67,6 +82,11 @@ public extension HighlightColor {
         link: [0.12, 0.29, 0.61],
         string: [0.18, 0.41, 0.30],
         number: [0.80, 0.57, 0.08],
+        
+        null: [0.80, 0.57, 0.08],
+        unknownText: [0.80, 0.57, 0.08],
+        unknownBackground: [0.80, 0.57, 0.08],
+        
         jsonBackground: UIColor.white,
         lineBackground: [0.93, 0.93, 0.93],
         lineText: [0.64, 0.64, 0.64]
@@ -79,6 +99,9 @@ public extension HighlightColor {
         link: 0x5497C7,
         string: 0x248067,
         number: 0xCC9114,
+        null: [0.80, 0.57, 0.08],
+        unknownText: [0.80, 0.57, 0.08],
+        unknownBackground: [0.80, 0.57, 0.08],
         jsonBackground: 0x0F2E41,
         lineBackground: 0x082332,
         lineText: 0x20455C
@@ -91,6 +114,9 @@ public extension HighlightColor {
         link: 0x73AAD4,
         string: 0xA3D0A5,
         number: 0xF9BC6B,
+        null: [0.80, 0.57, 0.08],
+        unknownText: [0.80, 0.57, 0.08],
+        unknownBackground: [0.80, 0.57, 0.08],
         jsonBackground: 0x3E444C,
         lineBackground: 0x363C43,
         lineText: 0x88B0BF
