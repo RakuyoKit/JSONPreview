@@ -77,6 +77,9 @@ open class JSONPreview: UIView {
             jsonTableView.backgroundColor = highlightStyle.color.jsonBackground
         }
     }
+    
+    /// Constraint settings at the top of `jsonTableView`
+    private lazy var jsonTableViewTopConstraint: NSLayoutConstraint? = nil
 }
 
 // MARK: - Constant
@@ -91,6 +94,29 @@ extension JSONPreview {
         static let lineHeight: CGFloat = 24.0
         
         static let JSONFont = UIFont(name:"Helvetica Neue", size: 16)!
+    }
+}
+
+// MARK: - UI
+
+extension JSONPreview {
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+//        let maxWidth = calculateMaxWidth()
+//
+//        // Update width
+//        widthConstraintEditable?.constraint.update(offset: maxWidth)
+        
+        // Set it after a little delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            
+            guard let this = self else { return }
+            
+            // Set `contentSize` manually instead of automatic calculation by AutoLayout
+            this.jsonScrollView.contentSize = CGSize(width: 1000, height: Constant.lineHeight * CGFloat(this.dataSource.count))
+        }
     }
 }
 
@@ -165,13 +191,16 @@ private extension JSONPreview {
         var constraints = [
             jsonTableView.leftAnchor.constraint(equalTo: jsonScrollView.leftAnchor),
             jsonTableView.rightAnchor.constraint(equalTo: jsonScrollView.rightAnchor),
-            jsonTableView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor),
             jsonTableView.bottomAnchor.constraint(equalTo: jsonScrollView.bottomAnchor),
             jsonTableView.heightAnchor.constraint(equalTo: jsonScrollView.heightAnchor),
             
             // widthConstraintEditable = $0.width.equalTo(calculateMaxWidth())
             jsonTableView.widthAnchor.constraint(equalToConstant: 1000)
         ]
+        
+        jsonTableViewTopConstraint = jsonTableView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor)
+        
+        constraints.append(jsonTableViewTopConstraint!)
         
         NSLayoutConstraint.activate(constraints)
     }
@@ -242,9 +271,7 @@ extension JSONPreview: UIScrollViewDelegate {
         let oldContentSize = jsonScrollView.contentSize
         
         // Update constraints
-//        jsonTableView.snp.updateConstraints {
-//            $0.edges.equalToSuperview().inset(UIEdgeInsets(top: offsetY, left: 0, bottom: 0, right: 0))
-//        }
+        jsonTableViewTopConstraint?.constant = offsetY
         
         layoutIfNeeded()
         
