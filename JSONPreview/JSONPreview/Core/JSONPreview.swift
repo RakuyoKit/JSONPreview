@@ -23,7 +23,7 @@ open class JSONPreview: UIView {
     }
     
     /// ScrollView responsible for scrolling in JSON area
-    open lazy var jsonScrollView: UIScrollView = {
+    private lazy var jsonScrollView: UIScrollView = {
         
         let scrollView = UIScrollView()
         
@@ -42,8 +42,6 @@ open class JSONPreview: UIView {
         
         let tableView = LineNumberTableView(frame: .zero, style: .plain)
         
-        tableView.backgroundColor = highlightStyle.color.lineBackground
-        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -57,8 +55,6 @@ open class JSONPreview: UIView {
         
         let tableView = JSONPreviewTableView(frame: .zero, style: .plain)
         
-        tableView.backgroundColor = highlightStyle.color.jsonBackground
-        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -68,10 +64,10 @@ open class JSONPreview: UIView {
     }()
     
     /// Data source responsible for display
-    public lazy var dataSource: [JSONSlice] = []
+    private lazy var dataSource: [JSONSlice] = []
     
     /// Highlight style
-    public var highlightStyle: HighlightStyle = .default {
+    private var highlightStyle: HighlightStyle = .default {
         didSet {
             lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
             jsonTableView.backgroundColor = highlightStyle.color.jsonBackground
@@ -82,15 +78,41 @@ open class JSONPreview: UIView {
     private lazy var jsonTableViewTopConstraint: NSLayoutConstraint? = nil
 }
 
+public extension JSONPreview {
+    
+    /// Preview json.
+    ///
+    /// - Parameters:
+    ///   - json: The json to be previewed
+    ///   - style: Highlight style. See `HighlightStyle` for details.
+    func preview(_ json: String, style: HighlightStyle = .default) {
+        
+        dataSource = JSONDecorator.highlight(json, style: style)
+        highlightStyle = style
+    }
+    
+    /// Preview json.
+    ///
+    /// - Parameters:
+    ///   - slice: The slice array of json to be previewed can be obtained through `JSONDecorator`.
+    ///   - style: Highlight style. See `HighlightStyle` for details.
+    func preview(_ slice: [JSONSlice], style: HighlightStyle = .default) {
+        
+        dataSource = slice
+        highlightStyle = style
+    }
+}
+
 // MARK: - Constant
 
-extension JSONPreview {
+private extension JSONPreview {
     
     enum Constant {
         
         /// Tag of `jsonScrollView`
-        fileprivate static let scrollViewTag: Int = 0
+        static let scrollViewTag: Int = 0
         
+        /// Height of each row
         static let lineHeight: CGFloat = 24.0
     }
 }

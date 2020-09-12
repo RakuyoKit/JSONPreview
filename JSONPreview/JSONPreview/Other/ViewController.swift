@@ -15,8 +15,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        previewView.highlightStyle = .mariana
-        
         previewView.frame.size.width = view.frame.width - 20
         previewView.frame.size.height = 700
         previewView.center = view.center
@@ -88,10 +86,6 @@ class ViewController: UIViewController {
         ]
         """
         
-        let jsonSlices = JSONDecorator.highlight(json, style: previewView.highlightStyle)
-        
-        print(jsonSlices.map { $0.expand.string })
-        
-        previewView.dataSource = jsonSlices
+        previewView.preview(json, style: .mariana)
     }
 }
