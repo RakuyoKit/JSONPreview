@@ -23,6 +23,9 @@ public class JSONDecorator {
     /// Style of highlight. See `HighlightStyle` for details.
     private let style: HighlightStyle
     
+    /// Used to temporarily store the longest string after slicing
+    private lazy var maxLengthString: NSAttributedString? = nil
+    
     /// The string used to hold the icon of the expand button
     private lazy var expandIconString = createIconAttributedString(with: style.expandIcon)
     
@@ -73,6 +76,9 @@ public class JSONDecorator {
 
 public extension JSONDecorator {
     
+    /// Highlight processing result
+    typealias HighlightResult = (slice: [JSONSlice], maxLengthString: NSAttributedString?)
+    
     /// Highlight the incoming JSON string.
     ///
     /// Serve for `JSONPreview`. Will split JSON into arrays that meet the requirements of `JSONPreview` display.
@@ -81,13 +87,15 @@ public extension JSONDecorator {
     ///   - json: The JSON string to be highlighted.
     ///   - judgmentValid: Whether to check the validity of JSON.
     ///   - style: style of highlight. See `HighlightStyle` for details.
-    /// - Returns: Return `nil` when JSON is invalid, otherwise return `[JSONSlice]`. See `JSONSlice` for details.
-    static func highlight(_ json: String, judgmentValid: Bool, style: HighlightStyle = .default) -> [JSONSlice]? {
+    /// - Returns: Return `nil` when JSON is invalid. See `HighlightResult` for details.
+    static func highlight(_ json: String, judgmentValid: Bool, style: HighlightStyle = .default) -> HighlightResult? {
         
-        guard let data = json.data(using: .utf8),
-            let _ = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) else {
+        if judgmentValid {
             
-            return nil
+            guard let data = json.data(using: .utf8),
+                let _ = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) else {
+                return nil
+            }
         }
         
         return highlight(json, style: style)
@@ -100,9 +108,12 @@ public extension JSONDecorator {
     /// - Parameters:
     ///   - json: The JSON string to be highlighted.
     ///   - style: style of highlight. See `HighlightStyle` for details.
-    /// - Returns: See `JSONSlice` for details.
-    static func highlight(_ json: String, style: HighlightStyle = .default) -> [JSONSlice] {
-        return JSONDecorator(json: json, style: style).slices
+    /// - Returns: See `HighlightResult` for details.
+    static func highlight(_ json: String, style: HighlightStyle = .default) -> HighlightResult {
+        
+        let decorator = JSONDecorator(json: json, style: style)
+        
+        return (decorator.slices, decorator.maxLengthString)
     }
 }
 
@@ -117,11 +128,22 @@ private extension JSONDecorator {
         
         var lastToken: JSONLexer.Token? = nil
         
-        JSONLexer.getTokens(of: json).forEach {
+        JSONLexer.getTokens(of: json).forEach { (token) in
+            
+            defer {
+                lastToken = token
+                
+                // After each iteration, look for the longest string
+                if let lastSlice = _slices.last,
+                    lastSlice.expand.string.count > (maxLengthString?.string.count ?? 0) {
+                    
+                    maxLengthString = lastSlice.expand
+                }
+            }
             
             let lineNumber = String(_slices.count + 1)
             
-            switch $0 {
+            switch token {
             
             case .objectBegin:
                 
@@ -392,8 +414,6 @@ private extension JSONDecorator {
             case .unknown(_):
                 break
             }
-            
-            lastToken = $0
         }
         
         return _slices

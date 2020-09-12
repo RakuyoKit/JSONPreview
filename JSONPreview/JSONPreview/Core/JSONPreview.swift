@@ -63,8 +63,38 @@ open class JSONPreview: UIView {
         return tableView
     }()
     
+    /// Used to temporarily store the longest string after slicing
+    private var maxLengthString: NSAttributedString? = nil {
+        didSet {
+            
+            guard let string = maxLengthString?.string else { return }
+            
+            let maxWidth = calculateMaxWidth(of: string)
+            
+            // Update constraints
+            jsonTableViewWidthConstraint?.constant = maxWidth
+            
+            // Set it after a little delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                
+                guard let this = self else { return }
+                
+                // Set `contentSize` manually instead of automatic calculation by AutoLayout
+                this.jsonScrollView.contentSize = CGSize(
+                    width: maxWidth,
+                    height: Constant.lineHeight * CGFloat(this.dataSource.count)
+                )
+            }
+        }
+    }
+    
     /// Data source responsible for display
-    private lazy var dataSource: [JSONSlice] = []
+    private var dataSource: [JSONSlice] = [] {
+        didSet {
+            lineNumberTableView.reloadData()
+            jsonTableView.reloadData()
+        }
+    }
     
     /// Highlight style
     private var highlightStyle: HighlightStyle = .default {
@@ -76,6 +106,9 @@ open class JSONPreview: UIView {
     
     /// Constraint settings at the top of `jsonTableView`
     private lazy var jsonTableViewTopConstraint: NSLayoutConstraint? = nil
+    
+    /// Constraint settings at the width of `jsonTableView`
+    private lazy var jsonTableViewWidthConstraint: NSLayoutConstraint? = nil
 }
 
 public extension JSONPreview {
@@ -87,19 +120,19 @@ public extension JSONPreview {
     ///   - style: Highlight style. See `HighlightStyle` for details.
     func preview(_ json: String, style: HighlightStyle = .default) {
         
-        dataSource = JSONDecorator.highlight(json, style: style)
-        highlightStyle = style
-    }
-    
-    /// Preview json.
-    ///
-    /// - Parameters:
-    ///   - slice: The slice array of json to be previewed can be obtained through `JSONDecorator`.
-    ///   - style: Highlight style. See `HighlightStyle` for details.
-    func preview(_ slice: [JSONSlice], style: HighlightStyle = .default) {
-        
-        dataSource = slice
-        highlightStyle = style
+        DispatchQueue.global().async {
+            
+            let result = JSONDecorator.highlight(json, style: style)
+            
+            DispatchQueue.main.async { [weak self] in
+                
+                guard let this = self else { return }
+                
+                this.highlightStyle = style
+                this.maxLengthString = result.maxLengthString
+                this.dataSource = result.slice
+            }
+        }
     }
 }
 
@@ -113,32 +146,14 @@ private extension JSONPreview {
         static let scrollViewTag: Int = 0
         
         /// Height of each row
-        static let lineHeight: CGFloat = 24.0
+        static let lineHeight: CGFloat = 24
+        
+        /// Fixed width of `lineNumberTableView`
+        static let lineWith: CGFloat = 55
     }
 }
 
-// MARK: - UI
-
-extension JSONPreview {
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        
-//        let maxWidth = calculateMaxWidth()
-//
-//        // Update width
-//        widthConstraintEditable?.constraint.update(offset: maxWidth)
-        
-        // Set it after a little delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            
-            guard let this = self else { return }
-            
-            // Set `contentSize` manually instead of automatic calculation by AutoLayout
-            this.jsonScrollView.contentSize = CGSize(width: 1000, height: Constant.lineHeight * CGFloat(this.dataSource.count))
-        }
-    }
-}
+// MARK: - Config
 
 private extension JSONPreview {
     
@@ -167,20 +182,25 @@ private extension JSONPreview {
         // jsonTableView
         addJSONTableViewLayout()
     }
+}
+
+// MARK: - UI
+
+private extension JSONPreview {
     
     func addLineNumberTableViewLayout() {
         
         var constraints = [
-            lineNumberTableView.topAnchor.constraint(equalTo: self.topAnchor),
-            lineNumberTableView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            lineNumberTableView.widthAnchor.constraint(equalToConstant: 55)
+            lineNumberTableView.topAnchor.constraint(equalTo: topAnchor),
+            lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith)
         ]
         
         constraints.append(lineNumberTableView.leftAnchor.constraint(equalTo: {
             if #available(iOS 11.0, *) {
-                return self.safeAreaLayoutGuide.leftAnchor
+                return safeAreaLayoutGuide.leftAnchor
             } else {
-                return self.leftAnchor
+                return leftAnchor
             }
         }()))
         
@@ -197,9 +217,9 @@ private extension JSONPreview {
         
         constraints.append(jsonScrollView.rightAnchor.constraint(equalTo: {
             if #available(iOS 11.0, *) {
-                return self.safeAreaLayoutGuide.rightAnchor
+                return safeAreaLayoutGuide.rightAnchor
             } else {
-                return self.rightAnchor
+                return rightAnchor
             }
         }()))
         
@@ -213,16 +233,33 @@ private extension JSONPreview {
             jsonTableView.rightAnchor.constraint(equalTo: jsonScrollView.rightAnchor),
             jsonTableView.bottomAnchor.constraint(equalTo: jsonScrollView.bottomAnchor),
             jsonTableView.heightAnchor.constraint(equalTo: jsonScrollView.heightAnchor),
-            
-            // widthConstraintEditable = $0.width.equalTo(calculateMaxWidth())
-            jsonTableView.widthAnchor.constraint(equalToConstant: 1000)
         ]
         
         jsonTableViewTopConstraint = jsonTableView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor)
+        jsonTableViewWidthConstraint = jsonTableView.widthAnchor.constraint(equalToConstant: 1000)
         
         constraints.append(jsonTableViewTopConstraint!)
+        constraints.append(jsonTableViewWidthConstraint!)
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    /// Calculate the maximum width of `jsonTableView`.
+    ///
+    /// - Parameter string: The longest known string.
+    /// - Returns: Maximum width.
+    func calculateMaxWidth(of string: String) -> CGFloat {
+        
+        let _maxLengthString = string as NSString
+        
+        let rect = _maxLengthString.boundingRect(
+            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: Constant.lineHeight),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: [.font : highlightStyle.jsonFont],
+            context: nil
+        )
+        
+        return rect.width + 20 + 1
     }
 }
 
