@@ -19,11 +19,21 @@ public struct HighlightStyle {
     ///   - expandIcon: The icon of the expand button.
     ///   - foldIcon: The icon of the fold button.
     ///   - color: Color-related configuration. See `HighlightColor` for details.
-    public init(expandIcon: UIImage? = nil, foldIcon: UIImage? = nil, color: HighlightColor = .default) {
+    ///   - lineFont: Text font in line number area.
+    ///   - jsonFont: Text font in json preview area.
+    public init(
+        expandIcon: UIImage? = nil,
+        foldIcon: UIImage? = nil,
+        color: HighlightColor = .default,
+        lineFont: UIFont? = nil,
+        jsonFont: UIFont? = nil
+    ) {
         
         self.expandIcon = expandIcon ?? UIImage(name: "expand")!
         self.foldIcon = foldIcon ?? UIImage(name: "fold")!
         self.color = color
+        self.lineFont = lineFont ?? UIFont(name:"Helvetica Neue", size: 16)!
+        self.jsonFont = jsonFont ?? UIFont(name:"Helvetica Neue", size: 16)!
     }
     
     /// The icon of the expand button.
@@ -32,8 +42,14 @@ public struct HighlightStyle {
     /// The icon of the fold button.
     public let foldIcon: UIImage
     
-    /// Color-related configuration, see `HighlightColor` for details
+    /// Color-related configuration, see `HighlightColor` for details.
     public let color: HighlightColor
+    
+    /// Text font in line number area.
+    public let lineFont: UIFont
+    
+    /// Text font in json preview area.
+    public let jsonFont: UIFont
 }
 
 public extension HighlightStyle {

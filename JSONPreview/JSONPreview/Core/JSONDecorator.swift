@@ -30,36 +30,44 @@ public class JSONDecorator {
     private lazy var foldIconString = createIconAttributedString(with: style.foldIcon)
     
     private lazy var startStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.keyWord
+        .foregroundColor : style.color.keyWord,
+        .font : style.jsonFont
     ]
     
     private lazy var keyWordStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.keyWord
+        .foregroundColor : style.color.keyWord,
+        .font : style.jsonFont
     ]
     
     private lazy var placeholderStyle: [NSAttributedString.Key : Any] = [
         .foregroundColor : style.color.lineText,
         .backgroundColor : style.color.lineBackground,
+        .font : style.jsonFont
     ]
     
     private lazy var keyStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.key
+        .foregroundColor : style.color.key,
+        .font : style.jsonFont
     ]
     
     private lazy var stringStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.string
+        .foregroundColor : style.color.string,
+        .font : style.jsonFont
     ]
     
     private lazy var numberStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.number
+        .foregroundColor : style.color.number,
+        .font : style.jsonFont
     ]
     
     private lazy var boolStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.boolean
+        .foregroundColor : style.color.boolean,
+        .font : style.jsonFont
     ]
     
     private lazy var nullStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.null
+        .foregroundColor : style.color.null,
+        .font : style.jsonFont
     ]
 }
 
