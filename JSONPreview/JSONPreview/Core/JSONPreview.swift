@@ -62,7 +62,7 @@ open class JSONPreview: UIView {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+        tableView.register(JSONPreviewCell.self, forCellReuseIdentifier: "JSONPreviewCell")
         
         return tableView
     }()
@@ -92,8 +92,6 @@ extension JSONPreview {
         fileprivate static let scrollViewTag: Int = 0
         
         static let lineHeight: CGFloat = 24.0
-        
-        static let JSONFont = UIFont(name:"Helvetica Neue", size: 16)!
     }
 }
 
@@ -227,26 +225,22 @@ extension JSONPreview: UITableViewDataSource {
         
         let slice = dataSource[indexPath.row]
         
+        if tableView.tag == JSONPreviewTableView.tag {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "JSONPreviewCell", for: indexPath) as! JSONPreviewCell
+            cell.jsonView.attributedText = slice.showContent
+            
+            return cell
+        }
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
         
         cell.backgroundColor = .clear
-        cell.contentView.backgroundColor = .clear
-        cell.textLabel?.numberOfLines = 1
         
-        if tableView.tag == JSONPreviewTableView.tag {
-            
-            cell.selectionStyle = .none
-            
-            cell.textLabel?.textAlignment = .left
-            cell.textLabel?.isUserInteractionEnabled = true
-            cell.textLabel?.attributedText = slice.showContent
-            
-        } else {
-            
-            cell.textLabel?.textAlignment = .right
-            cell.textLabel?.text = slice.lineNumber
-            cell.textLabel?.textColor = highlightStyle.color.lineText
-        }
+        cell.textLabel?.textAlignment = .right
+        cell.textLabel?.text = slice.lineNumber
+        cell.textLabel?.font = highlightStyle.lineFont
+        cell.textLabel?.textColor = highlightStyle.color.lineText
         
         return cell
     }
