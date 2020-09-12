@@ -75,23 +75,7 @@ open class JSONPreviewCell: UITableViewCell {
     }
     
     /// `UITextView` for displaying json content
-    open lazy var jsonView: UITextView = {
-        
-        let textView = UITextView()
-        
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        
-        textView.backgroundColor = .clear
-        
-        textView.textAlignment = .left
-        textView.isEditable = false
-        textView.isScrollEnabled = false
-        
-        textView.textContainer.lineFragmentPadding = 0
-        textView.textContainerInset = .zero
-        
-        return textView
-    }()
+    open lazy var jsonView = JSONTextView()
 }
 
 extension JSONPreviewCell {
