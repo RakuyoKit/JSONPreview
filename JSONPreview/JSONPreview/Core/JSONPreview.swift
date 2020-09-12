@@ -190,7 +190,7 @@ private extension JSONPreview {
     func addJSONScrollViewLayout() {
         
         var constraints = [
-            jsonScrollView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor),
+            jsonScrollView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor, constant: -1),
             jsonScrollView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
             jsonScrollView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
         ]

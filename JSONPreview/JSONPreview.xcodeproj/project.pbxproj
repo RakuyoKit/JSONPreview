@@ -146,8 +146,8 @@
 				3A67B14D250B3E6F000903EB /* JSONLexer.swift */,
 				3A1F06D12508D78B00C16862 /* JSONDecorator.swift */,
 				3A1F06CF2508D74A00C16862 /* JSONPreview.swift */,
-				3A9DB354250A119D002E7B15 /* JSONPreviewTableView.swift */,
 				3A9DB33C250A0DB4002E7B15 /* LineNumberTableView.swift */,
+				3A9DB354250A119D002E7B15 /* JSONPreviewTableView.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
