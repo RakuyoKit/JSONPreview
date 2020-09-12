@@ -147,15 +147,6 @@ private extension JSONDecorator {
             
             case .objectBegin:
                 
-                let indentation = createIndentedString(level: level)
-                
-                let foldString = NSMutableAttributedString(
-                    string: indentation + " {Object...}",
-                    attributes: placeholderStyle
-                )
-                
-                foldString.insert(foldIconString, at: indentation.count)
-                
                 // There is a previous slice, and the previous slice is a colon.
                 // Need to splice the current slice to the previous slice.
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
@@ -165,7 +156,13 @@ private extension JSONDecorator {
                         attributes: startStyle
                     )
                     
-                    expandString.insert(expandIconString, at: 0)
+                    let foldString = NSMutableAttributedString(
+                        string: " {Object...}",
+                        attributes: placeholderStyle
+                    )
+                    
+                    expandString.insert(foldIconString, at: 0)
+                    foldString.insert(expandIconString, at: 0)
                     
                     let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
                     lastExpand.append(expandString)
@@ -184,12 +181,20 @@ private extension JSONDecorator {
                 // When the conditions are not met, create a new slice
                 else {
                     
+                    let indentation = createIndentedString(level: level)
+                    
                     let expandString = NSMutableAttributedString(
                         string: indentation + " {",
                         attributes: startStyle
                     )
                     
-                    expandString.insert(expandIconString, at: indentation.count)
+                    let foldString = NSMutableAttributedString(
+                        string: indentation + " {Object...}",
+                        attributes: placeholderStyle
+                    )
+                    
+                    foldString.insert(expandIconString, at: indentation.count)
+                    expandString.insert(foldIconString, at: indentation.count)
                     
                     _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString, folded: foldString))
                 }
@@ -222,15 +227,6 @@ private extension JSONDecorator {
                 
             case .arrayBegin:
                 
-                let indentation = createIndentedString(level: level)
-                
-                let foldString = NSMutableAttributedString(
-                    string: indentation + " [Array...]",
-                    attributes: placeholderStyle
-                )
-                
-                foldString.insert(foldIconString, at: indentation.count)
-                
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
                     
                     let expandString = NSMutableAttributedString(
@@ -238,7 +234,13 @@ private extension JSONDecorator {
                         attributes: startStyle
                     )
                     
-                    expandString.insert(expandIconString, at: 0)
+                    let foldString = NSMutableAttributedString(
+                        string: " [Array...]",
+                        attributes: placeholderStyle
+                    )
+                    
+                    foldString.insert(expandIconString, at: 0)
+                    expandString.insert(foldIconString, at: 0)
                     
                     let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
                     lastExpand.append(expandString)
@@ -255,12 +257,20 @@ private extension JSONDecorator {
                     
                 } else {
                     
+                    let indentation = createIndentedString(level: level)
+                    
                     let expandString = NSMutableAttributedString(
                         string: indentation + " [",
                         attributes: startStyle
                     )
                     
-                    expandString.insert(expandIconString, at: indentation.count)
+                    let foldString = NSMutableAttributedString(
+                        string: indentation + " [Array...]",
+                        attributes: placeholderStyle
+                    )
+                    
+                    foldString.insert(expandIconString, at: indentation.count)
+                    expandString.insert(foldIconString, at: indentation.count)
                     
                     _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString, folded: foldString))
                 }
