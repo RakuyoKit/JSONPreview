@@ -263,6 +263,31 @@ private extension JSONPreview {
     }
 }
 
+// MARK: - JSONTextViewClickDelegate
+
+extension JSONPreview: JSONTextViewClickDelegate {
+    
+    public func textViewDidClickZoom(_ textView: JSONTextView) {
+        
+        let index = textView.tag
+        
+        let slice = dataSource[index]
+        
+        switch slice.state {
+        
+        case .expand:
+            dataSource[index].state = .folded
+            textView.attributedText = slice.folded
+            
+        case .folded:
+            dataSource[index].state = .expand
+            textView.attributedText = slice.expand
+            
+        case .hidden: break
+        }
+    }
+}
+
 // MARK: - UITableViewDelegate
 
 extension JSONPreview: UITableViewDelegate {
@@ -287,6 +312,9 @@ extension JSONPreview: UITableViewDataSource {
         if tableView.tag == JSONPreviewTableView.tag {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "JSONPreviewCell", for: indexPath) as! JSONPreviewCell
+            
+            cell.jsonView.tag = indexPath.row
+            cell.jsonView.clickDelegate = self
             cell.jsonView.attributedText = slice.showContent
             
             return cell
