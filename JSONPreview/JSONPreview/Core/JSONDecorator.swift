@@ -32,46 +32,18 @@ public class JSONDecorator {
     /// The string used to hold the icon of the fold button
     private lazy var foldIconString = createIconAttributedString(with: style.foldIcon)
     
-    private lazy var startStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.keyWord,
-        .font : style.jsonFont
-    ]
+    private lazy var startStyle   = createStyle(foregroundColor: style.color.keyWord)
+    private lazy var keyWordStyle = createStyle(foregroundColor: style.color.keyWord)
+    private lazy var keyStyle     = createStyle(foregroundColor: style.color.key)
+    private lazy var stringStyle  = createStyle(foregroundColor: style.color.string)
+    private lazy var numberStyle  = createStyle(foregroundColor: style.color.number)
+    private lazy var boolStyle    = createStyle(foregroundColor: style.color.boolean)
+    private lazy var nullStyle    = createStyle(foregroundColor: style.color.null)
     
-    private lazy var keyWordStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.keyWord,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var placeholderStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.lineText,
-        .backgroundColor : style.color.lineBackground,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var keyStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.key,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var stringStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.string,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var numberStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.number,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var boolStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.boolean,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var nullStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.null,
-        .font : style.jsonFont
-    ]
+    private lazy var placeholderStyle = createStyle(
+        foregroundColor: style.color.lineText,
+        other: [.backgroundColor : style.color.lineBackground]
+    )
 }
 
 public extension JSONDecorator {
@@ -456,5 +428,34 @@ private extension JSONDecorator {
         expandAttach.bounds = CGRect(x: 0, y: -4.5, width: 20, height: 20)
         
         return NSAttributedString(attachment: expandAttach)
+    }
+    
+    func createStyle(
+        foregroundColor: UIColor,
+        other: [NSAttributedString.Key : Any]? = nil
+    ) -> [NSAttributedString.Key : Any] {
+        
+        var newStyle: [NSAttributedString.Key : Any] = [
+            .foregroundColor : foregroundColor,
+            .font : style.jsonFont
+        ]
+        
+        // Calculate line spacing
+        let lineSpacing = style.lineHeight - (style.jsonFont.lineHeight - style.jsonFont.pointSize)
+        
+        if lineSpacing > 0 {
+            
+            let paragraphStyle = NSMutableParagraphStyle()
+            
+            paragraphStyle.lineSpacing = lineSpacing
+            
+            newStyle[.paragraphStyle] = paragraphStyle
+        }
+        
+        if let other = other {
+            other.forEach { newStyle[$0] = $1 }
+        }
+        
+        return newStyle
     }
 }
