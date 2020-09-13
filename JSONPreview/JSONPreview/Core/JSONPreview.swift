@@ -49,18 +49,15 @@ open class JSONPreview: UIView {
         
         return tableView
     }()
-
-    /// TableView responsible for displaying JSON
-    open lazy var jsonTableView: JSONPreviewTableView = {
+    
+    /// TextView responsible for displaying JSON
+    open lazy var jsonTextView: JSONTextView = {
         
-        let tableView = JSONPreviewTableView(frame: .zero, style: .plain)
+        let textView = JSONTextView()
         
-        tableView.delegate = self
-        tableView.dataSource = self
+        textView.delegate = self
         
-        tableView.register(JSONPreviewCell.self, forCellReuseIdentifier: "JSONPreviewCell")
-        
-        return tableView
+        return textView
     }()
     
     /// Used to temporarily store the longest string after slicing
@@ -92,7 +89,15 @@ open class JSONPreview: UIView {
     private var dataSource: [JSONSlice] = [] {
         didSet {
             lineNumberTableView.reloadData()
-            jsonTableView.reloadData()
+            
+            let tmp = NSMutableAttributedString(string: "")
+            
+            dataSource.forEach {
+                tmp.append($0.expand)
+                tmp.append(NSAttributedString(string: "\n"))
+            }
+            
+            jsonTextView.attributedText = tmp
         }
     }
     
@@ -100,7 +105,7 @@ open class JSONPreview: UIView {
     private var highlightStyle: HighlightStyle = .default {
         didSet {
             lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
-            jsonTableView.backgroundColor = highlightStyle.color.jsonBackground
+            jsonTextView.backgroundColor = highlightStyle.color.jsonBackground
         }
     }
     
@@ -168,7 +173,7 @@ private extension JSONPreview {
         addSubview(lineNumberTableView)
         addSubview(jsonScrollView)
         
-        jsonScrollView.addSubview(jsonTableView)
+        jsonScrollView.addSubview(jsonTextView)
     }
     
     func addInitialLayout() {
@@ -179,8 +184,8 @@ private extension JSONPreview {
         // jsonScrollView
         addJSONScrollViewLayout()
         
-        // jsonTableView
-        addJSONTableViewLayout()
+        // jsonTextView
+        addJSONTextViewLayout()
     }
 }
 
@@ -191,8 +196,8 @@ private extension JSONPreview {
     func addLineNumberTableViewLayout() {
         
         var constraints = [
-            lineNumberTableView.topAnchor.constraint(equalTo: topAnchor),
-            lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            lineNumberTableView.topAnchor.constraint(equalTo: topAnchor, constant: jsonTextView.textContainerInset.top),
+            lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: jsonTextView.textContainerInset.bottom),
             lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith)
         ]
         
@@ -226,22 +231,23 @@ private extension JSONPreview {
         NSLayoutConstraint.activate(constraints)
     }
     
-    func addJSONTableViewLayout() {
+    func addJSONTextViewLayout() {
         
         var constraints = [
-            jsonTableView.leftAnchor.constraint(equalTo: jsonScrollView.leftAnchor),
-            jsonTableView.rightAnchor.constraint(equalTo: jsonScrollView.rightAnchor),
-            jsonTableView.bottomAnchor.constraint(equalTo: jsonScrollView.bottomAnchor),
-            jsonTableView.heightAnchor.constraint(equalTo: jsonScrollView.heightAnchor),
+            jsonTextView.leftAnchor.constraint(equalTo: jsonScrollView.leftAnchor),
+            jsonTextView.rightAnchor.constraint(equalTo: jsonScrollView.rightAnchor),
+            jsonTextView.bottomAnchor.constraint(equalTo: jsonScrollView.bottomAnchor),
         ]
         
-        jsonTableViewTopConstraint = jsonTableView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor)
-        jsonTableViewWidthConstraint = jsonTableView.widthAnchor.constraint(equalToConstant: 1000)
+        jsonTableViewTopConstraint = jsonTextView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor)
+        jsonTableViewWidthConstraint = jsonTextView.widthAnchor.constraint(equalToConstant: 1000)
         
         constraints.append(jsonTableViewTopConstraint!)
         constraints.append(jsonTableViewWidthConstraint!)
         
         NSLayoutConstraint.activate(constraints)
+        
+        jsonTextView.setContentHuggingPriority(.required, for: .vertical)
     }
     
     /// Calculate the maximum width of `jsonTableView`.
@@ -288,6 +294,10 @@ extension JSONPreview: JSONTextViewClickDelegate {
     }
 }
 
+// MARK: - UITextViewDelegate
+
+extension JSONPreview: UITextViewDelegate { }
+
 // MARK: - UITableViewDelegate
 
 extension JSONPreview: UITableViewDelegate {
@@ -308,17 +318,6 @@ extension JSONPreview: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let slice = dataSource[indexPath.row]
-        
-        if tableView.tag == JSONPreviewTableView.tag {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "JSONPreviewCell", for: indexPath) as! JSONPreviewCell
-            
-            cell.jsonView.tag = indexPath.row
-            cell.jsonView.clickDelegate = self
-            cell.jsonView.attributedText = slice.showContent
-            
-            return cell
-        }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
         
@@ -346,14 +345,13 @@ extension JSONPreview: UIScrollViewDelegate {
         
         // Slide the JSON ScrollView to scroll the row number and TableView up and down
         lineNumberTableView.contentOffset = offset
-        jsonTableView.contentOffset = offset
+        jsonTextView.contentOffset = offset
         
         // Record the original ContentSize
         let oldContentSize = jsonScrollView.contentSize
         
         // Update constraints
         jsonTableViewTopConstraint?.constant = offsetY
-        
         layoutIfNeeded()
         
         // Restore the original ContentSize

@@ -18,6 +18,8 @@ public protocol JSONTextViewClickDelegate: class {
 
 open class JSONTextView: UITextView {
     
+    public static let tag = 2
+    
     public override init(frame: CGRect, textContainer: NSTextContainer? = nil) {
         super.init(frame: frame, textContainer: textContainer)
         
@@ -38,16 +40,26 @@ private extension JSONTextView {
     
     func config() {
         
+        tag = Self.tag
+        
+        delaysContentTouches = false
+        canCancelContentTouches = true
         translatesAutoresizingMaskIntoConstraints = false
         
         backgroundColor = .clear
         
         textAlignment = .left
         isEditable = false
+        
+        showsVerticalScrollIndicator = false
+        showsHorizontalScrollIndicator = false
+        
+        scrollsToTop = false
         isScrollEnabled = false
+        bounces = false
         
         textContainer.lineFragmentPadding = 0
-        textContainerInset = .zero
+        textContainerInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
     }
 }
 
