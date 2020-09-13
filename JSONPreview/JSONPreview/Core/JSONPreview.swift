@@ -106,6 +106,18 @@ open class JSONPreview: UIView {
         didSet {
             lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
             jsonTextView.backgroundColor = highlightStyle.color.jsonBackground
+            
+            let lineSpacing = highlightStyle.lineSpacing
+            
+            jsonTextView.textContainerInset = UIEdgeInsets(
+                top: lineSpacing,
+                left: 10,
+                bottom: lineSpacing,
+                right: 10
+            )
+            
+            lineNumberTableViewTopConstraint?.constant = lineSpacing
+            lineNumberTableViewBottomConstraint?.constant = -lineSpacing
         }
     }
     
@@ -114,6 +126,10 @@ open class JSONPreview: UIView {
     
     /// Constraint settings at the width of `jsonTableView`
     private lazy var jsonTableViewWidthConstraint: NSLayoutConstraint? = nil
+    
+    
+    private lazy var lineNumberTableViewTopConstraint: NSLayoutConstraint? = nil
+    private lazy var lineNumberTableViewBottomConstraint: NSLayoutConstraint? = nil
 }
 
 public extension JSONPreview {
@@ -196,10 +212,14 @@ private extension JSONPreview {
     func addLineNumberTableViewLayout() {
         
         var constraints = [
-            lineNumberTableView.topAnchor.constraint(equalTo: topAnchor, constant: jsonTextView.textContainerInset.top),
-            lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: jsonTextView.textContainerInset.bottom),
             lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith)
         ]
+        
+        lineNumberTableViewTopConstraint = lineNumberTableView.topAnchor.constraint(equalTo: topAnchor)
+        lineNumberTableViewBottomConstraint = lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        
+        constraints.append(lineNumberTableViewTopConstraint!)
+        constraints.append(lineNumberTableViewBottomConstraint!)
         
         constraints.append(lineNumberTableView.leftAnchor.constraint(equalTo: {
             if #available(iOS 11.0, *) {
@@ -303,7 +323,8 @@ extension JSONPreview: UITextViewDelegate { }
 extension JSONPreview: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Constant.lineHeight
+        
+        return highlightStyle.jsonFont.lineHeight + highlightStyle.lineSpacing
     }
 }
 

@@ -59,7 +59,6 @@ private extension JSONTextView {
         bounces = false
         
         textContainer.lineFragmentPadding = 0
-        textContainerInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
     }
 }
 

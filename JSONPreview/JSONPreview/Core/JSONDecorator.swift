@@ -442,13 +442,11 @@ private extension JSONDecorator {
         
         let paragraphStyle = NSMutableParagraphStyle()
         
-        paragraphStyle.maximumLineHeight = style.lineHeight
-        paragraphStyle.minimumLineHeight = style.lineHeight
-        paragraphStyle.lineSpacing = 0
+        paragraphStyle.lineSpacing = style.lineSpacing
         
         newStyle[.paragraphStyle] = paragraphStyle
         
-        newStyle[.baselineOffset] = (style.lineHeight - style.jsonFont.lineHeight) * 0.25
+//        newStyle[.baselineOffset] = (style.lineHeight - style.jsonFont.lineHeight) * 0.25
         
         if let other = other {
             other.forEach { newStyle[$0] = $1 }
