@@ -416,16 +416,17 @@ private extension JSONDecorator {
     
     /// Create an `NSAttributedString` object for displaying image.
     ///
-    /// - Parameters:
-    ///   - image: The image to be displayed.
-    ///   - size: The size of the picture to be displayed. Default is `18`.
+    /// - Parameter image: The image to be displayed.
     /// - Returns: `NSAttributedString` object.
-    func createIconAttributedString(with image: UIImage, size: CGFloat = 18) -> NSAttributedString {
+    func createIconAttributedString(with image: UIImage) -> NSAttributedString {
         
         let expandAttach = NSTextAttachment()
         
         expandAttach.image = image
-        expandAttach.bounds = CGRect(x: 0, y: -4.5, width: 20, height: 20)
+        
+        let font = style.jsonFont
+        
+        expandAttach.bounds = CGRect(x: 0, y: font.descender, width: font.ascender, height: font.ascender)
         
         return NSAttributedString(attachment: expandAttach)
     }
