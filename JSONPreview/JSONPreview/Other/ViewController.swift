@@ -15,11 +15,32 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        previewView.frame.size.width = view.frame.width - 20
-        previewView.frame.size.height = 700
-        previewView.center = view.center
-        
         view.addSubview(previewView)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        previewView.translatesAutoresizingMaskIntoConstraints = false
+        
+        var constraints = [
+            previewView.heightAnchor.constraint(equalToConstant: 300),
+            previewView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ]
+        
+        constraints.append(previewView.leftAnchor.constraint(equalTo: {
+            if #available(iOS 11.0, *) {
+                return view.safeAreaLayoutGuide.leftAnchor
+            } else {
+                return view.leftAnchor
+            }
+        }()))
+        
+        constraints.append(previewView.rightAnchor.constraint(equalTo: {
+            if #available(iOS 11.0, *) {
+                return view.safeAreaLayoutGuide.rightAnchor
+            } else {
+                return view.rightAnchor
+            }
+        }()))
+        
+        NSLayoutConstraint.activate(constraints)
         
         let json = """
         {
@@ -86,6 +107,6 @@ class ViewController: UIViewController {
         ]
         """
         
-        previewView.preview(json, style: .mariana)
+        previewView.preview(json, style: .default)
     }
 }
