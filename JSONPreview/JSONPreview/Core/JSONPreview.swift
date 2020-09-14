@@ -64,24 +64,24 @@ open class JSONPreview: UIView {
     private var maxLengthString: NSAttributedString? = nil {
         didSet {
             
-            guard let string = maxLengthString?.string else { return }
-            
-            let maxWidth = calculateMaxWidth(of: string)
-            
-            // Update constraints
-            jsonTableViewWidthConstraint?.constant = maxWidth
-            
-            // Set it after a little delay
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-                
-                guard let this = self else { return }
-                
-                // Set `contentSize` manually instead of automatic calculation by AutoLayout
-                this.jsonScrollView.contentSize = CGSize(
-                    width: maxWidth,
-                    height: Constant.lineHeight * CGFloat(this.dataSource.count)
-                )
-            }
+//            guard let string = maxLengthString?.string else { return }
+//
+//            let maxWidth = calculateMaxWidth(of: string)
+//
+//            // Update constraints
+//            jsonTableViewWidthConstraint?.constant = maxWidth
+//
+//            // Set it after a little delay
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+//
+//                guard let this = self else { return }
+//
+//                // Set `contentSize` manually instead of automatic calculation by AutoLayout
+//                this.jsonScrollView.contentSize = CGSize(
+//                    width: maxWidth,
+//                    height: Constant.lineHeight * CGFloat(this.dataSource.count)
+//                )
+//            }
         }
     }
     
@@ -107,29 +107,14 @@ open class JSONPreview: UIView {
             lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
             jsonTextView.backgroundColor = highlightStyle.color.jsonBackground
             
-            let lineSpacing = highlightStyle.lineSpacing
-            
             jsonTextView.textContainerInset = UIEdgeInsets(
-                top: lineSpacing,
-                left: 10,
-                bottom: lineSpacing,
-                right: 10
+                top: 0, left: 10, bottom: 0, right: 10
             )
-            
-            lineNumberTableViewTopConstraint?.constant = lineSpacing
-            lineNumberTableViewBottomConstraint?.constant = -lineSpacing
         }
     }
     
-    /// Constraint settings at the top of `jsonTableView`
-    private lazy var jsonTableViewTopConstraint: NSLayoutConstraint? = nil
-    
-    /// Constraint settings at the width of `jsonTableView`
-    private lazy var jsonTableViewWidthConstraint: NSLayoutConstraint? = nil
-    
-    
-    private lazy var lineNumberTableViewTopConstraint: NSLayoutConstraint? = nil
-    private lazy var lineNumberTableViewBottomConstraint: NSLayoutConstraint? = nil
+    /// Constraint settings at the top of `jsonTextView`
+    private lazy var jsonTextViewTopConstraint: NSLayoutConstraint? = nil
 }
 
 public extension JSONPreview {
@@ -212,14 +197,10 @@ private extension JSONPreview {
     func addLineNumberTableViewLayout() {
         
         var constraints = [
-            lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith)
+            lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith),
+            lineNumberTableView.topAnchor.constraint(equalTo: topAnchor),
+            lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
-        
-        lineNumberTableViewTopConstraint = lineNumberTableView.topAnchor.constraint(equalTo: topAnchor)
-        lineNumberTableViewBottomConstraint = lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        
-        constraints.append(lineNumberTableViewTopConstraint!)
-        constraints.append(lineNumberTableViewBottomConstraint!)
         
         constraints.append(lineNumberTableView.leftAnchor.constraint(equalTo: {
             if #available(iOS 11.0, *) {
@@ -236,8 +217,8 @@ private extension JSONPreview {
         
         var constraints = [
             jsonScrollView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor, constant: -1),
-            jsonScrollView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
-            jsonScrollView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
+            jsonScrollView.topAnchor.constraint(equalTo: topAnchor),
+            jsonScrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
         
         constraints.append(jsonScrollView.rightAnchor.constraint(equalTo: {
@@ -259,15 +240,14 @@ private extension JSONPreview {
             jsonTextView.bottomAnchor.constraint(equalTo: jsonScrollView.bottomAnchor),
         ]
         
-        jsonTableViewTopConstraint = jsonTextView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor)
-        jsonTableViewWidthConstraint = jsonTextView.widthAnchor.constraint(equalToConstant: 1000)
+        jsonTextViewTopConstraint = jsonTextView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor)
         
-        constraints.append(jsonTableViewTopConstraint!)
-        constraints.append(jsonTableViewWidthConstraint!)
+        constraints.append(jsonTextViewTopConstraint!)
         
         NSLayoutConstraint.activate(constraints)
         
         jsonTextView.setContentHuggingPriority(.required, for: .vertical)
+        jsonTextView.setContentHuggingPriority(.required, for: .horizontal)
     }
     
     /// Calculate the maximum width of `jsonTableView`.
@@ -372,7 +352,7 @@ extension JSONPreview: UIScrollViewDelegate {
         let oldContentSize = jsonScrollView.contentSize
         
         // Update constraints
-        jsonTableViewTopConstraint?.constant = offsetY
+        jsonTextViewTopConstraint?.constant = offsetY
         layoutIfNeeded()
         
         // Restore the original ContentSize
