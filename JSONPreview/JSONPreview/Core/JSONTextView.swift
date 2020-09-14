@@ -117,4 +117,24 @@ extension JSONTextView {
             return
         }
     }
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        
+        switch action {
+        case #selector(cut(_:)): return false
+        case #selector(paste(_:)): return false
+        case #selector(select(_:)): return false
+        case #selector(delete(_:)): return false
+        case #selector(copy(_:)): return true
+        case #selector(selectAll(_:)): return true
+        default:
+            return super.canPerformAction(action, withSender: sender)
+        }
+    }
+    
+    open override func copy(_ sender: Any?) {
+        super.copy(sender)
+        
+        selectedTextRange = nil
+    }
 }
