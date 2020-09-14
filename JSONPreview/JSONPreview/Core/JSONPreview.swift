@@ -261,26 +261,47 @@ private extension JSONPreview {
 
 extension JSONPreview: JSONTextViewClickDelegate {
     
-    public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat) {
+    public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat, characterIndex: Int) {
         
-        let index = Int(floor(pointY / lineHeight))
+        // Get the number of rows
+        let row = Int(floor(pointY / lineHeight))
         
-        guard index < dataSource.count else { return }
+        let slices = decorator.slices
         
-        let slice = dataSource[index]
+        guard row < slices.count else { return }
         
-//        switch slice.state {
-//
-//        case .expand:
-//            dataSource[index].state = .folded
-//            textView.attributedText = slice.folded
-//            
-//        case .folded:
-//            dataSource[index].state = .expand
-//            textView.attributedText = slice.expand
-//
-//        case .hidden: break
-//        }
+        // Record the current offset to restore the offset after modifying the text
+        let oldOffset = textView.contentOffset
+        
+        defer {
+            
+            // Need to delay a small number of seconds,
+            // otherwise the modification will not take effect
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                
+                // Restore offset
+                textView.contentOffset = oldOffset
+            }
+        }
+        
+//        let prefixString = textView.attributedText.attributedSubstring(from: NSRange(location: 0, length: characterIndex))
+        
+        let slice = slices[row]
+        
+        switch slice.state {
+            
+        case .expand:
+            print("点击了折叠按钮")
+            
+            decorator.slices[row].state = .folded
+//            textView.attributedText = prefixString
+            
+        case .folded:
+            print("点击了展开按钮")
+            
+            decorator.slices[row].state = .expand
+//            textView.attributedText = prefixString
+        }
     }
 }
 

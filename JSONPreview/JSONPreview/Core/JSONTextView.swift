@@ -15,7 +15,8 @@ public protocol JSONTextViewClickDelegate: class {
     /// - Parameters:
     ///   - textView: Currently displayed textView
     ///   - pointY: Y value of the clicked coordinate
-    func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat)
+    ///   - characterIndex: The index of the clicked character in the string
+    func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat, characterIndex: Int)
 }
 
 open class JSONTextView: UITextView {
@@ -57,6 +58,7 @@ private extension JSONTextView {
         bounces = false
         
         textContainer.lineFragmentPadding = 0
+        layoutManager.allowsNonContiguousLayout = false
     }
 }
 
@@ -81,7 +83,7 @@ extension JSONTextView {
         )
         
         let callbackBlock = {
-            self.clickDelegate?.textView(self, didClickZoomAt: point.y)
+            self.clickDelegate?.textView(self, didClickZoomAt: point.y, characterIndex: characterIndex)
         }
         
         // Clicked on the fold area
