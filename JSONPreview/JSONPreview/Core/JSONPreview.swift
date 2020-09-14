@@ -136,9 +136,6 @@ private extension JSONPreview {
         /// Tag of `jsonScrollView`
         static let scrollViewTag: Int = 0
         
-        /// Height of each row
-        static let lineHeight: CGFloat = 24
-        
         /// Fixed width of `lineNumberTableView`
         static let lineWith: CGFloat = 55
     }
@@ -202,8 +199,8 @@ private extension JSONPreview {
         
         var constraints = [
             jsonScrollView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor, constant: -1),
-            jsonScrollView.topAnchor.constraint(equalTo: topAnchor),
-            jsonScrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            jsonScrollView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
+            jsonScrollView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
         ]
         
         constraints.append(jsonScrollView.rightAnchor.constraint(equalTo: {
