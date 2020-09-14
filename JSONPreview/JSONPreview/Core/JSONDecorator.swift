@@ -135,9 +135,11 @@ private extension JSONDecorator {
                     )
                     
                     let foldString = NSMutableAttributedString(
-                        string: " {Object...}",
+                        string: "{Object...}",
                         attributes: placeholderStyle
                     )
+                    
+                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: 0)
                     
                     expandString.insert(foldIconString, at: 0)
                     foldString.insert(expandIconString, at: 0)
@@ -167,9 +169,12 @@ private extension JSONDecorator {
                     )
                     
                     let foldString = NSMutableAttributedString(
-                        string: indentation + " {Object...}",
+                        string: "{Object...}",
                         attributes: placeholderStyle
                     )
+                    
+                    foldString.insert(NSAttributedString(string: indentation, attributes: keyWordStyle), at: 0)
+                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: indentation.count)
                     
                     foldString.insert(expandIconString, at: indentation.count)
                     expandString.insert(foldIconString, at: indentation.count)
@@ -213,9 +218,11 @@ private extension JSONDecorator {
                     )
                     
                     let foldString = NSMutableAttributedString(
-                        string: " [Array...]",
+                        string: "[Array...]",
                         attributes: placeholderStyle
                     )
+                    
+                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: 0)
                     
                     foldString.insert(expandIconString, at: 0)
                     expandString.insert(foldIconString, at: 0)
@@ -243,9 +250,12 @@ private extension JSONDecorator {
                     )
                     
                     let foldString = NSMutableAttributedString(
-                        string: indentation + " [Array...]",
+                        string: "[Array...]",
                         attributes: placeholderStyle
                     )
+                    
+                    foldString.insert(NSAttributedString(string: indentation, attributes: keyWordStyle), at: 0)
+                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: indentation.count)
                     
                     foldString.insert(expandIconString, at: indentation.count)
                     expandString.insert(foldIconString, at: indentation.count)
