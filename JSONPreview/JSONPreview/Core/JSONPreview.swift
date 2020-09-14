@@ -261,14 +261,7 @@ private extension JSONPreview {
 
 extension JSONPreview: JSONTextViewClickDelegate {
     
-    public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat, characterIndex: Int) {
-        
-        // Get the number of rows
-        let row = Int(floor(pointY / lineHeight))
-        
-        let slices = decorator.slices
-        
-        guard row < slices.count else { return }
+    public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat) {
         
         // Record the current offset to restore the offset after modifying the text
         let oldOffset = textView.contentOffset
@@ -284,23 +277,119 @@ extension JSONPreview: JSONTextViewClickDelegate {
             }
         }
         
-//        let prefixString = textView.attributedText.attributedSubstring(from: NSRange(location: 0, length: characterIndex))
+        // Get the number of rows
+        let row = Int(floor(pointY / lineHeight))
         
-        let slice = slices[row]
+        let slices = decorator.slices
+        
+        // Add the number of hidden rows to get the actual number of rows
+        let realRow = row + slices.reduce(into: 0) {
+            
+            if Int($1.lineNumber)! < Int(lineDataSource[row])! && $1.isHidden {
+                $0 += 1
+            }
+        }
+        
+        // Clicked slice
+        let slice = slices[realRow]
         
         switch slice.state {
             
         case .expand:
-            print("点击了折叠按钮")
             
-            decorator.slices[row].state = .folded
-//            textView.attributedText = prefixString
+            guard let folded = slice.folded else { return }
+            
+            decorator.slices[realRow].state = .folded
+            
+            // Determine whether to hide child
+            var isHideChild = true
+            
+            // Determine whether to display the current slice
+            let canAppend: (Int, JSONSlice) -> Bool = {
+                
+                guard !$1.isHidden else { return false }
+                
+                if isHideChild && (Int($1.lineNumber)! > Int(slice.lineNumber)!) {
+                    
+                    if $1.level > slice.level {
+                        self.decorator.slices[$0].isHidden = true
+                        
+                        if let index = self.lineDataSource.firstIndex(of: $1.lineNumber) {
+                            self.lineDataSource.remove(at: index)
+                        }
+                        
+                        return false
+                    }
+                    
+                    if $1.level == slice.level {
+                        
+                        self.decorator.slices[$0].isHidden = true
+                        
+                        if let index = self.lineDataSource.firstIndex(of: $1.lineNumber) {
+                            self.lineDataSource.remove(at: index)
+                        }
+                        
+                        isHideChild = false
+                        
+                        return false
+                    }
+                }
+                
+                return true
+            }
+            
+            // Combine the slice result into a string
+            let tmpString = NSMutableAttributedString(string: "")
+            
+            for i in 0 ..< slices.count {
+                
+                let _slice = slices[i]
+                
+                // 遍历到当前节点
+                guard _slice.lineNumber != slice.lineNumber else {
+                    tmpString.append(folded)
+                    tmpString.append(decorator.wrapString)
+                    continue
+                }
+                
+                switch _slice.state {
+                    
+                case .expand:
+                    
+                    if canAppend(i, _slice) {
+                        tmpString.append(_slice.expand)
+                        tmpString.append(decorator.wrapString)
+                    }
+                    
+                case .folded:
+                    
+                    if canAppend(i, _slice), let _folded = _slice.folded {
+                        tmpString.append(_folded)
+                        tmpString.append(decorator.wrapString)
+                    }
+                }
+            }
+            
+            textView.attributedText = tmpString
             
         case .folded:
+            
+            guard let folded = slice.folded else { return }
+            
             print("点击了展开按钮")
             
-            decorator.slices[row].state = .expand
-//            textView.attributedText = prefixString
+//            decorator.slices[realRow].state = .expand
+//
+//            let length = newLineIndex - folded.length
+//
+//            let prefixString = textView.attributedText.attributedSubstring(from: NSRange(location: 0, length: length))
+//
+//            let tmpString = NSMutableAttributedString(attributedString: prefixString)
+//
+//            tmpString.append(slice.expand)
+//            tmpString.append(decorator.wrapString)
+//
+//            textView.attributedText = tmpString
         }
     }
 }

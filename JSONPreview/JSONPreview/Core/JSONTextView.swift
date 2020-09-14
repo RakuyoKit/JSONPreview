@@ -10,13 +10,12 @@ import UIKit
 
 public protocol JSONTextViewClickDelegate: class {
     
-    /// Execute when zoom is triggered
+    /// Execute when zoom is triggered.
     ///
     /// - Parameters:
-    ///   - textView: Currently displayed textView
-    ///   - pointY: Y value of the clicked coordinate
-    ///   - characterIndex: The index of the clicked character in the string
-    func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat, characterIndex: Int)
+    ///   - textView: Currently displayed textView.
+    ///   - pointY: Y value of the clicked coordinate.
+    func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat)
 }
 
 open class JSONTextView: UITextView {
@@ -83,7 +82,7 @@ extension JSONTextView {
         )
         
         let callbackBlock = {
-            self.clickDelegate?.textView(self, didClickZoomAt: point.y, characterIndex: characterIndex)
+            self.clickDelegate?.textView(self, didClickZoomAt: point.y)
         }
         
         // Clicked on the fold area

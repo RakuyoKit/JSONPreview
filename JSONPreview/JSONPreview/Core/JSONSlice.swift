@@ -31,6 +31,7 @@ public struct JSONSlice {
     ) {
         
         self.state = .expand
+        self.isHidden = false
         self.level = level
         self.lineNumber = lineNumber
         self.expand = expand
@@ -52,6 +53,7 @@ public struct JSONSlice {
     ) {
         
         self.state = .expand
+        self.isHidden = false
         self.level = level
         self.lineNumber = lineNumber
         
@@ -66,6 +68,9 @@ public struct JSONSlice {
     
     /// The current display state of the slice. The default is `.expand`.
     public var state: State
+    
+    /// Is it hidden
+    public var isHidden: Bool
     
     /// Position in the complete structure.
     public let lineNumber: String
