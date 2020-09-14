@@ -60,10 +60,11 @@ open class JSONPreview: UIView {
         return textView
     }()
     
+    /// Line number view, height of each row.
     private lazy var lineHeight: CGFloat = 0
     
-    /// Data source responsible for display
-    private var dataSource: [JSONSlice] = [] {
+    /// Data source for line number view
+    private var lineDataSource: [String] = [] {
         didSet { lineNumberTableView.reloadData() }
     }
     
@@ -76,6 +77,32 @@ open class JSONPreview: UIView {
             jsonTextView.textContainerInset = UIEdgeInsets(
                 top: 0, left: 10, bottom: 0, right: 10
             )
+        }
+    }
+    
+    /// JSON Decoder
+    private var decorator: JSONDecorator! {
+        didSet {
+            
+            // Calculate the line height of the line number display area
+            calculateLineHeight()
+            
+            // Combine the slice result into a string
+            let tmp = NSMutableAttributedString(string: "")
+            
+            decorator.slices.forEach {
+                tmp.append($0.expand)
+                tmp.append(decorator.wrapString)
+            }
+            
+            // Switch to the main thread to update the UI
+            DispatchQueue.main.async { [weak self] in
+                
+                guard let this = self else { return }
+                
+                this.jsonTextView.attributedText = tmp
+                this.lineDataSource = (1 ... this.decorator.slices.count).map(String.init)
+            }
         }
     }
     
@@ -92,48 +119,10 @@ public extension JSONPreview {
     ///   - style: Highlight style. See `HighlightStyle` for details.
     func preview(_ json: String, style: HighlightStyle = .default) {
         
+        highlightStyle = style
+        
         DispatchQueue.global().async { [weak self] in
-            
-            guard let this = self else { return }
-            
-            let result = JSONDecorator.highlight(json, style: style)
-            
-            // Combine the slice result into a string
-            let tmp = NSMutableAttributedString(string: "")
-            
-            result.slices.forEach {
-                tmp.append($0.expand)
-                tmp.append(result.wrapString)
-            }
-            
-            // Calculate the height of each row
-            let attString = result.slices[0].expand
-            
-            var tmpAtt: [NSAttributedString.Key : Any] = [:]
-            
-            attString.enumerateAttributes(in: NSRange(location: 0, length: attString.length)) { (values, _, _) in
-                values.forEach { tmpAtt[$0] = $1 }
-            }
-            
-            let rect = (attString.string as NSString).boundingRect(
-                with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
-                options: [.usesLineFragmentOrigin, .usesFontLeading],
-                attributes: tmpAtt,
-                context: nil
-            )
-            
-            this.lineHeight = rect.height
-            
-            // Switch to the main thread to update the UI
-            DispatchQueue.main.async { [weak this] in
-                
-                guard let safeThis = this else { return }
-                
-                safeThis.highlightStyle = style
-                safeThis.dataSource = result.slices
-                
-                safeThis.jsonTextView.attributedText = tmp
-            }
+            self?.decorator = JSONDecorator.highlight(json, style: style)
         }
     }
 }
@@ -245,6 +234,27 @@ private extension JSONPreview {
         jsonTextView.setContentHuggingPriority(.required, for: .vertical)
         jsonTextView.setContentHuggingPriority(.required, for: .horizontal)
     }
+    
+    /// Calculate the line height of the line number display area
+    func calculateLineHeight() {
+        
+        let attString = decorator.slices[0].expand
+        
+        var tmpAtt: [NSAttributedString.Key : Any] = [:]
+        
+        attString.enumerateAttributes(in: NSRange(location: 0, length: attString.length)) { (values, _, _) in
+            values.forEach { tmpAtt[$0] = $1 }
+        }
+        
+        let rect = (attString.string as NSString).boundingRect(
+            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: tmpAtt,
+            context: nil
+        )
+        
+        lineHeight = rect.height
+    }
 }
 
 // MARK: - JSONTextViewClickDelegate
@@ -288,19 +298,19 @@ extension JSONPreview: UITableViewDelegate {
 extension JSONPreview: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource.count
+        return lineDataSource.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let slice = dataSource[indexPath.row]
+        let row = lineDataSource[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
         
         cell.backgroundColor = .clear
         
+        cell.textLabel?.text = row
         cell.textLabel?.textAlignment = .right
-        cell.textLabel?.text = slice.lineNumber
         cell.textLabel?.font = highlightStyle.lineFont
         cell.textLabel?.textColor = highlightStyle.color.lineText
         

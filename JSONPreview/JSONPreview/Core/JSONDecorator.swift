@@ -35,7 +35,9 @@ public class JSONDecorator {
     /// The string used to hold the icon of the fold button
     private lazy var foldIconString = createIconAttributedString(with: style.foldIcon)
     
-    lazy var wrapString = NSAttributedString(string: "\n", attributes: createStyle(foregroundColor: nil))
+    /// A newline string with the same style as JSON.
+    /// Can be used to splice slices into a complete string.
+    private(set) lazy var wrapString = NSAttributedString(string: "\n", attributes: createStyle(foregroundColor: nil))
     
     private lazy var startStyle   = createStyle(foregroundColor: style.color.keyWord)
     private lazy var keyWordStyle = createStyle(foregroundColor: style.color.keyWord)

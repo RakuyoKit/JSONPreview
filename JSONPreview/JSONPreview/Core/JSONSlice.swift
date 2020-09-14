@@ -13,7 +13,7 @@ public struct JSONSlice {
     
     /// The current display state of the slice
     public enum State {
-        case expand, folded, hidden
+        case expand, folded
     }
     
     /// Initialization method.
@@ -88,7 +88,6 @@ public extension JSONSlice {
         switch state {
         case .expand: return expand
         case .folded: return folded
-        case .hidden: return nil
         }
     }
 }
