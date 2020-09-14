@@ -23,6 +23,9 @@ public class JSONDecorator {
     /// Style of highlight. See `HighlightStyle` for details.
     private let style: HighlightStyle
     
+    /// JSON slice. See `JSONSlice` for details.
+    public var slices: [JSONSlice] = []
+    
     /// Used to temporarily store the longest string after slicing
     private lazy var maxLengthString: NSAttributedString? = nil
     
@@ -31,6 +34,8 @@ public class JSONDecorator {
     
     /// The string used to hold the icon of the fold button
     private lazy var foldIconString = createIconAttributedString(with: style.foldIcon)
+    
+    lazy var wrapString = NSAttributedString(string: "\n", attributes: createStyle(foregroundColor: nil))
     
     private lazy var startStyle   = createStyle(foregroundColor: style.color.keyWord)
     private lazy var keyWordStyle = createStyle(foregroundColor: style.color.keyWord)
@@ -48,9 +53,6 @@ public class JSONDecorator {
 
 public extension JSONDecorator {
     
-    /// Highlight processing result
-    typealias HighlightResult = (slice: [JSONSlice], maxLengthString: NSAttributedString?)
-    
     /// Highlight the incoming JSON string.
     ///
     /// Serve for `JSONPreview`. Will split JSON into arrays that meet the requirements of `JSONPreview` display.
@@ -59,8 +61,8 @@ public extension JSONDecorator {
     ///   - json: The JSON string to be highlighted.
     ///   - judgmentValid: Whether to check the validity of JSON.
     ///   - style: style of highlight. See `HighlightStyle` for details.
-    /// - Returns: Return `nil` when JSON is invalid. See `HighlightResult` for details.
-    static func highlight(_ json: String, judgmentValid: Bool, style: HighlightStyle = .default) -> HighlightResult? {
+    /// - Returns: Return `nil` when JSON is invalid. See `JSONDecorator` for details.
+    static func highlight(_ json: String, judgmentValid: Bool, style: HighlightStyle = .default) -> JSONDecorator? {
         
         if judgmentValid {
             
@@ -80,18 +82,20 @@ public extension JSONDecorator {
     /// - Parameters:
     ///   - json: The JSON string to be highlighted.
     ///   - style: style of highlight. See `HighlightStyle` for details.
-    /// - Returns: See `HighlightResult` for details.
-    static func highlight(_ json: String, style: HighlightStyle = .default) -> HighlightResult {
+    /// - Returns: See `JSONDecorator` for details.
+    static func highlight(_ json: String, style: HighlightStyle = .default) -> JSONDecorator {
         
         let decorator = JSONDecorator(json: json, style: style)
         
-        return (decorator.slices, decorator.maxLengthString)
+        decorator.slices = decorator._slices
+        
+        return decorator
     }
 }
 
 private extension JSONDecorator {
     
-    var slices: [JSONSlice] {
+    var _slices: [JSONSlice] {
         
         var _slices: [JSONSlice] = []
         
@@ -426,28 +430,36 @@ private extension JSONDecorator {
         
         let font = style.jsonFont
         
-        expandAttach.bounds = CGRect(x: 0, y: font.descender, width: font.ascender, height: font.ascender)
+        let y = (style.lineHeight - font.lineHeight + 1) + font.descender
+        
+        expandAttach.bounds = CGRect(x: 0, y: y, width: font.ascender, height: font.ascender)
         
         return NSAttributedString(attachment: expandAttach)
     }
     
     func createStyle(
-        foregroundColor: UIColor,
+        foregroundColor: UIColor?,
         other: [NSAttributedString.Key : Any]? = nil
     ) -> [NSAttributedString.Key : Any] {
         
-        var newStyle: [NSAttributedString.Key : Any] = [
-            .foregroundColor : foregroundColor,
-            .font : style.jsonFont
-        ]
+        var newStyle: [NSAttributedString.Key : Any] = [.font : style.jsonFont]
+        
+        if let color = foregroundColor {
+            newStyle[.foregroundColor] = color
+        }
+        
+        let lineHeightMultiple: CGFloat = 1
         
         let paragraphStyle = NSMutableParagraphStyle()
         
-        paragraphStyle.lineSpacing = style.lineSpacing
+        paragraphStyle.lineHeightMultiple = lineHeightMultiple
+        paragraphStyle.maximumLineHeight = style.lineHeight
+        paragraphStyle.minimumLineHeight = style.lineHeight
+        paragraphStyle.lineSpacing = 0
         
         newStyle[.paragraphStyle] = paragraphStyle
         
-//        newStyle[.baselineOffset] = (style.lineHeight - style.jsonFont.lineHeight) * 0.25
+        newStyle[.baselineOffset] = (style.lineHeight - style.jsonFont.lineHeight) + 1
         
         if let other = other {
             other.forEach { newStyle[$0] = $1 }

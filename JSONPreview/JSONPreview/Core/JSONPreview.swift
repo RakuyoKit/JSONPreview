@@ -60,45 +60,11 @@ open class JSONPreview: UIView {
         return textView
     }()
     
-    /// Used to temporarily store the longest string after slicing
-    private var maxLengthString: NSAttributedString? = nil {
-        didSet {
-            
-//            guard let string = maxLengthString?.string else { return }
-//
-//            let maxWidth = calculateMaxWidth(of: string)
-//
-//            // Update constraints
-//            jsonTableViewWidthConstraint?.constant = maxWidth
-//
-//            // Set it after a little delay
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-//
-//                guard let this = self else { return }
-//
-//                // Set `contentSize` manually instead of automatic calculation by AutoLayout
-//                this.jsonScrollView.contentSize = CGSize(
-//                    width: maxWidth,
-//                    height: Constant.lineHeight * CGFloat(this.dataSource.count)
-//                )
-//            }
-        }
-    }
+    private lazy var lineHeight: CGFloat = 0
     
     /// Data source responsible for display
     private var dataSource: [JSONSlice] = [] {
-        didSet {
-            lineNumberTableView.reloadData()
-            
-            let tmp = NSMutableAttributedString(string: "")
-            
-            dataSource.forEach {
-                tmp.append($0.expand)
-                tmp.append(NSAttributedString(string: "\n"))
-            }
-            
-            jsonTextView.attributedText = tmp
-        }
+        didSet { lineNumberTableView.reloadData() }
     }
     
     /// Highlight style
@@ -126,17 +92,47 @@ public extension JSONPreview {
     ///   - style: Highlight style. See `HighlightStyle` for details.
     func preview(_ json: String, style: HighlightStyle = .default) {
         
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
+            
+            guard let this = self else { return }
             
             let result = JSONDecorator.highlight(json, style: style)
             
-            DispatchQueue.main.async { [weak self] in
+            // Combine the slice result into a string
+            let tmp = NSMutableAttributedString(string: "")
+            
+            result.slices.forEach {
+                tmp.append($0.expand)
+                tmp.append(result.wrapString)
+            }
+            
+            // Calculate the height of each row
+            let attString = result.slices[0].expand
+            
+            var tmpAtt: [NSAttributedString.Key : Any] = [:]
+            
+            attString.enumerateAttributes(in: NSRange(location: 0, length: attString.length)) { (values, _, _) in
+                values.forEach { tmpAtt[$0] = $1 }
+            }
+            
+            let rect = (attString.string as NSString).boundingRect(
+                with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
+                options: [.usesLineFragmentOrigin, .usesFontLeading],
+                attributes: tmpAtt,
+                context: nil
+            )
+            
+            this.lineHeight = rect.height
+            
+            // Switch to the main thread to update the UI
+            DispatchQueue.main.async { [weak this] in
                 
-                guard let this = self else { return }
+                guard let safeThis = this else { return }
                 
-                this.highlightStyle = style
-                this.maxLengthString = result.maxLengthString
-                this.dataSource = result.slice
+                safeThis.highlightStyle = style
+                safeThis.dataSource = result.slices
+                
+                safeThis.jsonTextView.attributedText = tmp
             }
         }
     }
@@ -249,24 +245,6 @@ private extension JSONPreview {
         jsonTextView.setContentHuggingPriority(.required, for: .vertical)
         jsonTextView.setContentHuggingPriority(.required, for: .horizontal)
     }
-    
-    /// Calculate the maximum width of `jsonTableView`.
-    ///
-    /// - Parameter string: The longest known string.
-    /// - Returns: Maximum width.
-    func calculateMaxWidth(of string: String) -> CGFloat {
-        
-        let _maxLengthString = string as NSString
-        
-        let rect = _maxLengthString.boundingRect(
-            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: Constant.lineHeight),
-            options: [.usesLineFragmentOrigin, .usesFontLeading],
-            attributes: [.font : highlightStyle.jsonFont],
-            context: nil
-        )
-        
-        return rect.width + 20 + 1
-    }
 }
 
 // MARK: - JSONTextViewClickDelegate
@@ -303,8 +281,7 @@ extension JSONPreview: UITextViewDelegate { }
 extension JSONPreview: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        return highlightStyle.jsonFont.lineHeight + highlightStyle.lineSpacing
+        return lineHeight
     }
 }
 
