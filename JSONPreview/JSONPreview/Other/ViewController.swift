@@ -99,7 +99,7 @@ class ViewController: UIViewController {
             -50,
             true,
             false,
-            null
+            null,
             {},
             {
                 "some_key" : "A very very very very very very very very very very very very very very very long string"
