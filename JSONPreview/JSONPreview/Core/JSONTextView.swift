@@ -12,13 +12,13 @@ public protocol JSONTextViewClickDelegate: class {
     
     /// Execute when zoom is triggered
     ///
-    /// - Parameter textView: Currently displayed textView
-    func textViewDidClickZoom(_ textView: JSONTextView)
+    /// - Parameters:
+    ///   - textView: Currently displayed textView
+    ///   - pointY: Y value of the clicked coordinate
+    func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat)
 }
 
 open class JSONTextView: UITextView {
-    
-    public static let tag = 2
     
     public override init(frame: CGRect, textContainer: NSTextContainer? = nil) {
         super.init(frame: frame, textContainer: textContainer)
@@ -39,8 +39,6 @@ open class JSONTextView: UITextView {
 private extension JSONTextView {
     
     func config() {
-        
-        tag = Self.tag
         
         delaysContentTouches = false
         canCancelContentTouches = true
@@ -83,7 +81,7 @@ extension JSONTextView {
         )
         
         let callbackBlock = {
-            self.clickDelegate?.textViewDidClickZoom(self)
+            self.clickDelegate?.textView(self, didClickZoomAt: point.y)
         }
         
         // Clicked on the fold area

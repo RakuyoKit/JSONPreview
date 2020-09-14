@@ -55,7 +55,7 @@ open class JSONPreview: UIView {
         
         let textView = JSONTextView()
         
-        textView.delegate = self
+        textView.clickDelegate = self
         
         return textView
     }()
@@ -251,30 +251,28 @@ private extension JSONPreview {
 
 extension JSONPreview: JSONTextViewClickDelegate {
     
-    public func textViewDidClickZoom(_ textView: JSONTextView) {
+    public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat) {
         
-        let index = textView.tag
+        let index = Int(floor(pointY / lineHeight))
+        
+        guard index < dataSource.count else { return }
         
         let slice = dataSource[index]
         
-        switch slice.state {
-        
-        case .expand:
-            dataSource[index].state = .folded
-            textView.attributedText = slice.folded
-            
-        case .folded:
-            dataSource[index].state = .expand
-            textView.attributedText = slice.expand
-            
-        case .hidden: break
-        }
+//        switch slice.state {
+//
+//        case .expand:
+//            dataSource[index].state = .folded
+//            textView.attributedText = slice.folded
+//            
+//        case .folded:
+//            dataSource[index].state = .expand
+//            textView.attributedText = slice.expand
+//
+//        case .hidden: break
+//        }
     }
 }
-
-// MARK: - UITextViewDelegate
-
-extension JSONPreview: UITextViewDelegate { }
 
 // MARK: - UITableViewDelegate
 
