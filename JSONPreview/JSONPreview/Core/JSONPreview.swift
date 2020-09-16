@@ -302,9 +302,10 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
             guard let this = self, ($2 && !$1.isHidden) || (!$2 && $1.isHidden) else { return !$2 }
             
-            guard isExecution && ($1.lineNumber > slice.lineNumber)
+            guard isExecution
+                && ($1.lineNumber > slice.lineNumber)
                 && $1.level >= slice.level else {
-                    
+                
                 return $2
             }
             
