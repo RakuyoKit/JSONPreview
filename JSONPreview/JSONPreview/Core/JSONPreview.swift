@@ -298,9 +298,9 @@ extension JSONPreview: JSONTextViewClickDelegate {
         var isExecution = true
         
         // Determine whether to display the current slice
-        let canAppend: (Int, JSONSlice, _ isExpand: Bool) -> Bool = {
+        let canAppend: (Int, JSONSlice, _ isExpand: Bool) -> Bool = { [weak self] in
             
-            guard ($2 && !$1.isHidden) || (!$2 && $1.isHidden) else { return !$2 }
+            guard let this = self, ($2 && !$1.isHidden) || (!$2 && $1.isHidden) else { return !$2 }
             
             guard isExecution && (Int($1.lineNumber)! > Int(slice.lineNumber)!)
                 && $1.level >= slice.level else {
@@ -308,21 +308,21 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 return $2
             }
             
-            self.decorator.slices[$0].isHidden = $2
+            this.decorator.slices[$0].isHidden = $2
             
             if $2 {
                 
-                if let index = self.lineDataSource.firstIndex(of: $1.lineNumber) {
-                    self.lineDataSource.remove(at: index)
+                if let index = this.lineDataSource.firstIndex(of: $1.lineNumber) {
+                    this.lineDataSource.remove(at: index)
                 }
                 
             } else {
                 
                 let tmp = $1
                 
-                let index = self.lineDataSource.firstIndex { Int($0)! > Int(tmp.lineNumber)! } ?? self.lineDataSource.count
+                let index = this.lineDataSource.firstIndex { Int($0)! > Int(tmp.lineNumber)! } ?? this.lineDataSource.count
                 
-                self.lineDataSource.insert($1.lineNumber, at: index)
+                this.lineDataSource.insert($1.lineNumber, at: index)
             }
             
             if $1.level == slice.level {
@@ -336,7 +336,9 @@ extension JSONPreview: JSONTextViewClickDelegate {
         let tmpString = NSMutableAttributedString(string: "")
         
         // Perform stitching operation
-        let append: (Int, _ isExpand: Bool) -> Void = {
+        let append: (Int, _ isExpand: Bool) -> Void = { [weak self] in
+            
+            guard let this = self else { return }
             
             let _slice = slices[$0]
             
@@ -345,13 +347,13 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 
                 if !$1 {
                     tmpString.append(slice.expand)
-                    tmpString.append(self.decorator.wrapString)
+                    tmpString.append(this.decorator.wrapString)
                     return
                 }
                 
                 if let _folded = slice.folded {
                     tmpString.append(_folded)
-                    tmpString.append(self.decorator.wrapString)
+                    tmpString.append(this.decorator.wrapString)
                 }
                 
                 return
@@ -363,14 +365,14 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 
                 if canAppend($0, _slice, $1) {
                     tmpString.append(_slice.expand)
-                    tmpString.append(self.decorator.wrapString)
+                    tmpString.append(this.decorator.wrapString)
                 }
                 
             case .folded:
                 
                 if canAppend($0, _slice, $1), let _folded = _slice.folded {
                     tmpString.append(_folded)
-                    tmpString.append(self.decorator.wrapString)
+                    tmpString.append(this.decorator.wrapString)
                 }
             }
         }
