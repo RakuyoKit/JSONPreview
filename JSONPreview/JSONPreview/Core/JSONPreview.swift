@@ -64,7 +64,7 @@ open class JSONPreview: UIView {
     private lazy var lineHeight: CGFloat = 0
     
     /// Data source for line number view
-    private var lineDataSource: [String] = [] {
+    private var lineDataSource: [Int] = [] {
         didSet { lineNumberTableView.reloadData() }
     }
     
@@ -101,7 +101,7 @@ open class JSONPreview: UIView {
                 guard let this = self else { return }
                 
                 this.jsonTextView.attributedText = tmp
-                this.lineDataSource = (1 ... this.decorator.slices.count).map(String.init)
+                this.lineDataSource = (1 ... this.decorator.slices.count).map { $0 }
             }
         }
     }
@@ -287,7 +287,7 @@ extension JSONPreview: JSONTextViewClickDelegate {
         // Add the number of hidden rows to get the actual number of rows
         let realRow = row + slices.reduce(into: 0) {
             
-            if Int($1.lineNumber)! < Int(lineDataSource[row])! && $1.isHidden {
+            if ($1.lineNumber < lineDataSource[row]) && $1.isHidden {
                 $0 += 1
             }
         }
@@ -302,7 +302,7 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
             guard let this = self, ($2 && !$1.isHidden) || (!$2 && $1.isHidden) else { return !$2 }
             
-            guard isExecution && (Int($1.lineNumber)! > Int(slice.lineNumber)!)
+            guard isExecution && ($1.lineNumber > slice.lineNumber)
                 && $1.level >= slice.level else {
                     
                 return $2
@@ -320,7 +320,7 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 
                 let tmp = $1
                 
-                let index = this.lineDataSource.firstIndex { Int($0)! > Int(tmp.lineNumber)! } ?? this.lineDataSource.count
+                let index = this.lineDataSource.firstIndex { $0 > tmp.lineNumber } ?? this.lineDataSource.count
                 
                 this.lineDataSource.insert($1.lineNumber, at: index)
             }
@@ -429,7 +429,7 @@ extension JSONPreview: UITableViewDataSource {
         
         cell.backgroundColor = .clear
         
-        cell.textLabel?.text = row
+        cell.textLabel?.text = "\(row)"
         cell.textLabel?.textAlignment = .right
         cell.textLabel?.font = highlightStyle.lineFont
         cell.textLabel?.textColor = highlightStyle.color.lineText

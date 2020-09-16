@@ -119,7 +119,7 @@ private extension JSONDecorator {
                 }
             }
             
-            let lineNumber = String(_slices.count + 1)
+            let lineNumber = _slices.count + 1
             
             switch token {
             

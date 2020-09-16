@@ -25,7 +25,7 @@ public struct JSONSlice {
     ///   - folded: The summary content of the JSON slice in the folded state.
     public init(
         level: Int,
-        lineNumber: String,
+        lineNumber: Int,
         expand: NSAttributedString,
         folded: NSAttributedString? = nil
     ) {
@@ -47,7 +47,7 @@ public struct JSONSlice {
     ///   - folded: The summary content of the JSON slice in the folded state.
     public init(
         level: Int,
-        lineNumber: String,
+        lineNumber: Int,
         expand: (String, [NSAttributedString.Key : Any]),
         folded: (String, [NSAttributedString.Key : Any])? = nil
     ) {
@@ -73,7 +73,7 @@ public struct JSONSlice {
     public var isHidden: Bool
     
     /// Position in the complete structure.
-    public let lineNumber: String
+    public let lineNumber: Int
     
     /// Indentation level.
     public let level: Int
