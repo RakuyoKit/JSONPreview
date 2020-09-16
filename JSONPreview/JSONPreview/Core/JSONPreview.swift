@@ -267,10 +267,15 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
             // Need to delay a small number of seconds,
             // otherwise the modification will not take effect
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
+                
+                guard let this = self else { return }
                 
                 // Restore offset
                 textView.contentOffset = oldOffset
+                
+                // Align contentSize. Need to be set after the offset is restored
+                this.jsonScrollView.contentSize = textView.contentSize
             }
         }
         
