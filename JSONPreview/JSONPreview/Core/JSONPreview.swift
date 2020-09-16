@@ -302,35 +302,34 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
             guard ($2 && !$1.isHidden) || (!$2 && $1.isHidden) else { return !$2 }
             
-            if isExecution && (Int($1.lineNumber)! > Int(slice.lineNumber)!) {
+            guard isExecution && (Int($1.lineNumber)! > Int(slice.lineNumber)!)
+                && $1.level >= slice.level else {
+                    
+                return $2
+            }
+            
+            self.decorator.slices[$0].isHidden = $2
+            
+            if $2 {
                 
-                if $1.level >= slice.level {
-                    self.decorator.slices[$0].isHidden = $2
-                    
-                    if $2 {
-                        
-                        if let index = self.lineDataSource.firstIndex(of: $1.lineNumber) {
-                            self.lineDataSource.remove(at: index)
-                        }
-                        
-                    } else {
-                        
-                        let tmp = $1
-                        
-                        if let index = self.lineDataSource.firstIndex(where: { Int($0)! > Int(tmp.lineNumber)! }) {
-                            self.lineDataSource.insert($1.lineNumber, at: index)
-                        }
-                    }
-                    
-                    if $1.level == slice.level {
-                        isExecution = false
-                    }
-                    
-                    return !$2
+                if let index = self.lineDataSource.firstIndex(of: $1.lineNumber) {
+                    self.lineDataSource.remove(at: index)
+                }
+                
+            } else {
+                
+                let tmp = $1
+                
+                if let index = self.lineDataSource.firstIndex(where: { Int($0)! > Int(tmp.lineNumber)! }) {
+                    self.lineDataSource.insert($1.lineNumber, at: index)
                 }
             }
             
-            return $2
+            if $1.level == slice.level {
+                isExecution = false
+            }
+            
+            return !$2
         }
         
         // Combine the slice result into a string
@@ -395,6 +394,10 @@ extension JSONPreview: JSONTextViewClickDelegate {
             }
         }
         
+//        textView.textStorage.replaceCharacters(
+//            in: NSRange(location: 0, length: textView.attributedText.length),
+//            with: tmpString
+//        )
         textView.attributedText = tmpString
     }
 }
