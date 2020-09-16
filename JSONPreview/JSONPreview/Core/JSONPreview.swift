@@ -304,10 +304,11 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
             if isExecution && (Int($1.lineNumber)! > Int(slice.lineNumber)!) {
                 
-                if $1.level > slice.level {
+                if $1.level >= slice.level {
                     self.decorator.slices[$0].isHidden = $2
                     
                     if $2 {
+                        
                         if let index = self.lineDataSource.firstIndex(of: $1.lineNumber) {
                             self.lineDataSource.remove(at: index)
                         }
@@ -321,28 +322,9 @@ extension JSONPreview: JSONTextViewClickDelegate {
                         }
                     }
                     
-                    return !$2
-                }
-                
-                if $1.level == slice.level {
-                    
-                    self.decorator.slices[$0].isHidden = $2
-                    
-                    if $2 {
-                        if let index = self.lineDataSource.firstIndex(of: $1.lineNumber) {
-                            self.lineDataSource.remove(at: index)
-                        }
-                        
-                    } else {
-                        
-                        let tmp = $1
-                        
-                        if let index = self.lineDataSource.firstIndex(where: { Int($0)! > Int(tmp.lineNumber)! }) {
-                            self.lineDataSource.insert($1.lineNumber, at: index)
-                        }
+                    if $1.level == slice.level {
+                        isExecution = false
                     }
-                    
-                    isExecution = false
                     
                     return !$2
                 }
