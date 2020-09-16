@@ -466,14 +466,11 @@ extension JSONPreview: UIScrollViewDelegate {
         lineNumberTableView.contentOffset = offset
         jsonTextView.contentOffset = offset
         
-        // Record the original ContentSize
-        let oldContentSize = jsonScrollView.contentSize
-        
         // Update constraints
         jsonTextViewTopConstraint?.constant = offsetY
         layoutIfNeeded()
         
-        // Restore the original ContentSize
-        jsonScrollView.contentSize = oldContentSize
+        // Restore the ContentSize
+        jsonScrollView.contentSize = jsonTextView.contentSize
     }
 }
