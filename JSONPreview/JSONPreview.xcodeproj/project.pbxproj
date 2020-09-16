@@ -140,10 +140,10 @@
 		3A1F06CD2508D20700C16862 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				3A8F1AB32509C50C003BAC09 /* JSONSlice.swift */,
 				3A9DB22C2509D7F4002E7B15 /* HighlightColor.swift */,
 				3A9DB22E2509DA7A002E7B15 /* HighlightStyle.swift */,
 				3A67B14D250B3E6F000903EB /* JSONLexer.swift */,
+				3A8F1AB32509C50C003BAC09 /* JSONSlice.swift */,
 				3A1F06D12508D78B00C16862 /* JSONDecorator.swift */,
 				3A1F06CF2508D74A00C16862 /* JSONPreview.swift */,
 				3A9DB33C250A0DB4002E7B15 /* LineNumberTableView.swift */,
