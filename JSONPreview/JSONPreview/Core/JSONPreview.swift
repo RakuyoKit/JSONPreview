@@ -320,9 +320,9 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 
                 let tmp = $1
                 
-                if let index = self.lineDataSource.firstIndex(where: { Int($0)! > Int(tmp.lineNumber)! }) {
-                    self.lineDataSource.insert($1.lineNumber, at: index)
-                }
+                let index = self.lineDataSource.firstIndex { Int($0)! > Int(tmp.lineNumber)! } ?? self.lineDataSource.count
+                
+                self.lineDataSource.insert($1.lineNumber, at: index)
             }
             
             if $1.level == slice.level {
