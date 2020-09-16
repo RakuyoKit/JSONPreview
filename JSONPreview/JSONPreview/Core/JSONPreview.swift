@@ -300,7 +300,16 @@ extension JSONPreview: JSONTextViewClickDelegate {
         // Determine whether to display the current slice
         let canAppend: (Int, JSONSlice, _ isExpand: Bool) -> Bool = { [weak self] in
             
-            guard let this = self, ($2 && !$1.isHidden) || (!$2 && $1.isHidden) else { return !$2 }
+            guard let this = self,
+                
+                // When performing an expand operation, filter the slices in the hidden state.
+                ($2 && !$1.isHidden)
+                
+                // When performing a folding operation, filter the slices in the non-hidden state.
+                || (!$2 && $1.isHidden) else {
+                
+                return !$2
+            }
             
             guard isExecution
                 && ($1.lineNumber > slice.lineNumber)
