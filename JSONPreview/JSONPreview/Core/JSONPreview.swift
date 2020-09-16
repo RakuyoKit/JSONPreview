@@ -298,14 +298,14 @@ extension JSONPreview: JSONTextViewClickDelegate {
         var isExecution = true
         
         // Determine whether to display the current slice
-        let canAppend: (Int, JSONSlice, _ isExpand: Bool) -> Bool = { [weak self] in
+        let canAppend: (Int, JSONSlice, _ isFolded: Bool) -> Bool = { [weak self] in
             
             guard let this = self,
                 
-                // When performing an expand operation, filter the slices in the hidden state.
+                // When performing a folding operation, filter the hidden slices.
                 ($2 && !$1.isHidden)
                 
-                // When performing a folding operation, filter the slices in the non-hidden state.
+                // When performing the expand operation, filter the slices in the display state.
                 || (!$2 && $1.isHidden) else {
                 
                 return !$2
@@ -320,13 +320,16 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
             this.decorator.slices[$0].isHidden = $2
             
+            // fold
             if $2 {
                 
                 if let index = this.lineDataSource.firstIndex(of: $1.lineNumber) {
                     this.lineDataSource.remove(at: index)
                 }
-                
-            } else {
+            }
+            
+            // expand
+            else {
                 
                 let tmp = $1
                 
@@ -346,7 +349,7 @@ extension JSONPreview: JSONTextViewClickDelegate {
         let tmpString = NSMutableAttributedString(string: "")
         
         // Perform stitching operation
-        let append: (Int, _ isExpand: Bool) -> Void = { [weak self] in
+        let append: (Int, _ isFolded: Bool) -> Void = { [weak self] in
             
             guard let this = self else { return }
             
