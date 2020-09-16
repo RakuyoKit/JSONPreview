@@ -91,29 +91,17 @@ extension JSONTextView {
             return
         }
         
-        guard characterIndex + 2 < text.count else { return }
-        
-        let char = text[text.index(text.startIndex, offsetBy: characterIndex + 2)]
-        
-        if char == "[" || char == "{" {
+        // Blur the scope of the click.
+        for i in -1 ... 2 {
+            
+            guard characterIndex + i < text.count else { break }
+            
+            let char = text[text.index(text.startIndex, offsetBy: characterIndex + i)]
+            
+            guard char == "[" || char == "{" else { continue }
+            
             callbackBlock()
-            return
-        }
-        
-        guard characterIndex + 3 < text.count else { return }
-        
-        let _char = text[text.index(text.startIndex, offsetBy: characterIndex + 3)]
-        
-        if _char == "[" || _char == "{" {
-            callbackBlock()
-            return
-        }
-        
-        let __char = text[text.index(text.startIndex, offsetBy: characterIndex + 1)]
-        
-        if __char == "[" || __char == "{" {
-            callbackBlock()
-            return
+            break
         }
     }
     
