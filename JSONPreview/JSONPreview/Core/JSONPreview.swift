@@ -279,141 +279,103 @@ extension JSONPreview: JSONTextViewClickDelegate {
             }
         }
         
-        // Get the number of rows
-        let row = Int(floor(pointY / lineHeight))
-        
         let slices = decorator.slices
         
-        // Add the number of hidden rows to get the actual number of rows
-        let realRow = row + slices.reduce(into: 0) {
+        // 1. Get the number of rows
+        let row = Int(floor(pointY / lineHeight))
+        
+        // 1.1. Count the number of rows that are folded,
+        //      and get the actual number of rows at the clicked position
+        let realRow = slices.reduce(into: row) {
             
-            if ($1.lineNumber < lineDataSource[row]) && $1.isHidden {
+            if row < lineDataSource.count
+                && ($1.lineNumber < lineDataSource[row])
+                && $1.foldedTimes > 0 {
+                
                 $0 += 1
             }
         }
         
-        // Clicked slice
-        let slice = slices[realRow]
+        // 2. Get the clicked slice
+        let clickSlice = slices[realRow]
         
-        var isExecution = true
+        // 3. Perform different operations based on slice status
+        switch clickSlice.state {
         
-        // Determine whether to display the current slice
-        let canAppend: (Int, JSONSlice, _ isFolded: Bool) -> Bool = { [weak self] in
-            
-            guard let this = self,
-                
-                // When performing a folding operation, filter the hidden slices.
-                ($2 && !$1.isHidden)
-                
-                // When performing the expand operation, filter the slices in the display state.
-                || (!$2 && $1.isHidden) else {
-                
-                return !$2
-            }
-            
-            guard isExecution
-                && ($1.lineNumber > slice.lineNumber)
-                && $1.level >= slice.level else {
-                
-                return $2
-            }
-            
-            this.decorator.slices[$0].isHidden = $2
-            
-            // fold
-            if $2 {
-                
-                if let index = this.lineDataSource.firstIndex(of: $1.lineNumber) {
-                    this.lineDataSource.remove(at: index)
-                }
-            }
-            
-            // expand
-            else {
-                
-                let tmp = $1
-                
-                let index = this.lineDataSource.firstIndex { $0 > tmp.lineNumber } ?? this.lineDataSource.count
-                
-                this.lineDataSource.insert($1.lineNumber, at: index)
-            }
-            
-            if $1.level == slice.level {
-                isExecution = false
-            }
-            
-            return !$2
-        }
-        
-        // Combine the slice result into a string
-        let tmpString = NSMutableAttributedString(string: "")
-        
-        // Perform stitching operation
-        let append: (Int, _ isFolded: Bool) -> Void = { [weak self] in
-            
-            guard let this = self else { return }
-            
-            let _slice = slices[$0]
-            
-            // Traverse to the current slice
-            guard _slice.lineNumber != slice.lineNumber else {
-                
-                if !$1 {
-                    tmpString.append(slice.expand)
-                    tmpString.append(this.decorator.wrapString)
-                    return
-                }
-                
-                if let _folded = slice.folded {
-                    tmpString.append(_folded)
-                    tmpString.append(this.decorator.wrapString)
-                }
-                
-                return
-            }
-            
-            switch _slice.state {
-                
-            case .expand:
-                
-                if canAppend($0, _slice, $1) {
-                    tmpString.append(_slice.expand)
-                    tmpString.append(this.decorator.wrapString)
-                }
-                
-            case .folded:
-                
-                if canAppend($0, _slice, $1), let _folded = _slice.folded {
-                    tmpString.append(_folded)
-                    tmpString.append(this.decorator.wrapString)
-                }
-            }
-        }
-        
-        switch slice.state {
-            
+        // 3.1. Expanded state: perform folded operation
         case .expand:
+            
+            guard let folded = clickSlice.folded else { return }
             
             decorator.slices[realRow].state = .folded
             
-            for i in 0 ..< slices.count {
-                append(i, true)
+            let location = slices[0 ..< realRow].reduce(0) {
+                
+                guard $1.foldedTimes == 0 else { return $0 }
+                
+                return $0 + 1 /* Wrap */ + {
+                    switch $0.state {
+                    case .expand: return $0.expand.length
+                    case .folded: return $0.folded?.length ?? 0
+                    }
+                }($1)
             }
             
-        case .folded:
+            var isExecution = true
+            var length = clickSlice.expand.length
+            var lines: [Int] = []
             
-            decorator.slices[realRow].state = .expand
-            
-            for i in 0 ..< slices.count {
-                append(i, false)
+            for i in realRow + 1 ..< slices.count {
+                
+                guard isExecution else { break }
+                
+                let _slices = slices[i]
+                
+                guard _slices.level >= clickSlice.level,
+                      _slices.foldedTimes == 0 else { continue }
+                
+                if _slices.level == clickSlice.level { isExecution = false }
+                
+                // Increase the number of times being folded
+                decorator.slices[i].foldedTimes += 1
+                
+                // Record the line number to be hidden
+                lines.append(_slices.lineNumber)
+                
+                // Accumulate the length of the string to be hidden
+                length = length + 1 /* Wrap */ + {
+                    switch _slices.state {
+                    case .expand: return _slices.expand.length
+                    case .folded: return _slices.folded?.length ?? 0
+                    }
+                }()
             }
+            
+            // 4. Delete the hidden line number
+            var tmpDataSource = lineDataSource
+            
+            lines.forEach {
+                guard let index = tmpDataSource.firstIndex(of: $0) else { return }
+                tmpDataSource.remove(at: index)
+            }
+            
+            lineDataSource = tmpDataSource
+            
+            // 5. Replacement string
+            textView.textStorage.replaceCharacters(
+                in: NSRange(location: location, length: length),
+                with: folded
+            )
+            
+        // 3.2. Folded state: perform expand operation
+        case .folded: break
+            
+//            decorator.slices[realRow].state = .expand
+            
+            
         }
         
-//        textView.textStorage.replaceCharacters(
-//            in: NSRange(location: 0, length: textView.attributedText.length),
-//            with: tmpString
-//        )
-        textView.attributedText = tmpString
+        
     }
 }
 
