@@ -30,8 +30,6 @@ public struct JSONSlice {
         folded: NSAttributedString? = nil
     ) {
         
-        self.state = .expand
-        self.isHidden = false
         self.level = level
         self.lineNumber = lineNumber
         self.expand = expand
@@ -52,8 +50,6 @@ public struct JSONSlice {
         folded: (String, [NSAttributedString.Key : Any])? = nil
     ) {
         
-        self.state = .expand
-        self.isHidden = false
         self.level = level
         self.lineNumber = lineNumber
         
@@ -67,10 +63,13 @@ public struct JSONSlice {
     }
     
     /// The current display state of the slice. The default is `.expand`.
-    public var state: State
+    public var state: State = .expand
     
-    /// Is it hidden
-    public var isHidden: Bool
+    /// The number of times the slice was folded.
+    ///
+    /// The initial value is 0, which means it is not folded.
+    /// Each time the slice is folded, the value increases by 1.
+    public var foldedTimes: Int = 0
     
     /// Position in the complete structure.
     public let lineNumber: Int
