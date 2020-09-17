@@ -94,9 +94,11 @@ extension JSONTextView {
         // Blur the scope of the click.
         for i in -1 ... 2 {
             
-            guard characterIndex + i < text.count else { break }
+            let offset = characterIndex + i
             
-            let char = text[text.index(text.startIndex, offsetBy: characterIndex + i)]
+            guard offset >= 0 && offset < text.count else { break }
+            
+            let char = text[text.index(text.startIndex, offsetBy: offset)]
             
             guard char == "[" || char == "{" else { continue }
             
