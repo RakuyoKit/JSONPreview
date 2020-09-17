@@ -260,9 +260,6 @@ extension JSONPreview: JSONTextViewClickDelegate {
     
     public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat) {
         
-        // Record the current offset to restore the offset after modifying the text
-        let oldOffset = textView.contentOffset
-        
         defer {
             
             // Need to delay a small number of seconds,
@@ -271,8 +268,8 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 
                 guard let this = self else { return }
                 
-                // Restore offset
-                textView.contentOffset = oldOffset
+                // Synchronous Offset
+                textView.contentOffset = this.lineNumberTableView.contentOffset
                 
                 // Align contentSize. Need to be set after the offset is restored
                 this.jsonScrollView.contentSize = textView.contentSize
