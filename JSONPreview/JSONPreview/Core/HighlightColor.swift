@@ -105,10 +105,8 @@ public extension HighlightColor {
         number: 0xF9BC6B,
         boolean: 0x88B0BF,
         null: 0xD16D71,
-        
-        unknownText: [0.80, 0.57, 0.08],
-        unknownBackground: [0.80, 0.57, 0.08],
-        
+        unknownText: 0xD5412E,
+        unknownBackground: 0xFBE3E4,
         jsonBackground: 0x3D444C,
         lineBackground: 0x363D42,
         lineText: 0x767677
