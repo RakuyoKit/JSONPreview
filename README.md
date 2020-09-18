@@ -43,7 +43,7 @@ pod 'JSONPreview'
 - [x] Provide **fold** and **expand** functions for `Array` and `Object`.
 - [x] Based on `UITextView`, you can copy any content in `JSONPreview`.
 
-- `JSONPreview` provides a limited and incomplete format check function, so this function is not provided as a main function. For details, please refer to: [Format check](#format_check)
+- `JSONPreview` provides a limited and incomplete format check function, so this function is not provided as a main function. For details, please refer to: [Format check](#format-check)
 
 ## Usage
 
@@ -112,7 +112,7 @@ previewView.preview(json, style: style)
 - `]` must be paired with `[`.
 - `"` must appear in pairs.
 - The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
--Spell check for `null`, `true` and `false`.
+- Spell check for `null`, `true` and `false`.
 
 ## Known issues
 
