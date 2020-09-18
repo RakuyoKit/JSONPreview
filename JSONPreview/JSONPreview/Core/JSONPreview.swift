@@ -293,34 +293,35 @@ extension JSONPreview: JSONTextViewClickDelegate {
             }
         }
         
-        // 2. Get the clicked slice
+        // 2. Calculate the starting point of the replacement range
+        let location = slices[0 ..< realRow].reduce(0) {
+            
+            guard $1.foldedTimes == 0 else { return $0 }
+            
+            return $0 + 1 /* Wrap */ + {
+                switch $0.state {
+                case .expand: return $0.expand.length
+                case .folded: return $0.folded?.length ?? 0
+                }
+            }($1)
+        }
+        
+        // 3. Get the clicked slice
         let clickSlice = slices[realRow]
         
-        // 3. Perform different operations based on slice status
+        // 4. Perform different operations based on slice status
         switch clickSlice.state {
         
-        // 3.1. Expanded state: perform folded operation
+        // 4.1. Expanded state: perform folded operation
         case .expand:
             
             guard let folded = clickSlice.folded else { return }
             
             decorator.slices[realRow].state = .folded
             
-            let location = slices[0 ..< realRow].reduce(0) {
-                
-                guard $1.foldedTimes == 0 else { return $0 }
-                
-                return $0 + 1 /* Wrap */ + {
-                    switch $0.state {
-                    case .expand: return $0.expand.length
-                    case .folded: return $0.folded?.length ?? 0
-                    }
-                }($1)
-            }
-            
             var isExecution = true
-            var length = clickSlice.expand.length
             var lines: [Int] = []
+            var length = clickSlice.expand.length
             
             for i in realRow + 1 ..< slices.count {
                 
@@ -328,13 +329,14 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 
                 let _slices = slices[i]
                 
-                guard _slices.level >= clickSlice.level,
-                      _slices.foldedTimes == 0 else { continue }
+                guard _slices.level >= clickSlice.level else { continue }
                 
                 if _slices.level == clickSlice.level { isExecution = false }
                 
                 // Increase the number of times being folded
                 decorator.slices[i].foldedTimes += 1
+                
+                guard _slices.foldedTimes == 0 else { continue }
                 
                 // Record the line number to be hidden
                 lines.append(_slices.lineNumber)
@@ -348,7 +350,7 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 }()
             }
             
-            // 4. Delete the hidden line number
+            // 5. Delete the hidden line number
             var tmpDataSource = lineDataSource
             
             lines.forEach {
@@ -358,21 +360,19 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
             lineDataSource = tmpDataSource
             
-            // 5. Replacement string
+            // 6. Replacement string
             textView.textStorage.replaceCharacters(
                 in: NSRange(location: location, length: length),
                 with: folded
             )
             
-        // 3.2. Folded state: perform expand operation
         case .folded: break
+        // 4.2. Folded state: perform expand operation
             
 //            decorator.slices[realRow].state = .expand
             
             
         }
-        
-        
     }
 }
 
