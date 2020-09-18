@@ -23,6 +23,9 @@ public class JSONDecorator {
     /// Style of highlight. See `HighlightStyle` for details.
     private let style: HighlightStyle
     
+    /// JSON slice. See `JSONSlice` for details.
+    public var slices: [JSONSlice] = []
+    
     /// Used to temporarily store the longest string after slicing
     private lazy var maxLengthString: NSAttributedString? = nil
     
@@ -32,52 +35,25 @@ public class JSONDecorator {
     /// The string used to hold the icon of the fold button
     private lazy var foldIconString = createIconAttributedString(with: style.foldIcon)
     
-    private lazy var startStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.keyWord,
-        .font : style.jsonFont
-    ]
+    /// A newline string with the same style as JSON.
+    /// Can be used to splice slices into a complete string.
+    private(set) lazy var wrapString = NSAttributedString(string: "\n", attributes: createStyle(foregroundColor: nil))
     
-    private lazy var keyWordStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.keyWord,
-        .font : style.jsonFont
-    ]
+    private lazy var startStyle   = createStyle(foregroundColor: style.color.keyWord)
+    private lazy var keyWordStyle = createStyle(foregroundColor: style.color.keyWord)
+    private lazy var keyStyle     = createStyle(foregroundColor: style.color.key)
+    private lazy var stringStyle  = createStyle(foregroundColor: style.color.string)
+    private lazy var numberStyle  = createStyle(foregroundColor: style.color.number)
+    private lazy var boolStyle    = createStyle(foregroundColor: style.color.boolean)
+    private lazy var nullStyle    = createStyle(foregroundColor: style.color.null)
     
-    private lazy var placeholderStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.lineText,
-        .backgroundColor : style.color.lineBackground,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var keyStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.key,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var stringStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.string,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var numberStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.number,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var boolStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.boolean,
-        .font : style.jsonFont
-    ]
-    
-    private lazy var nullStyle: [NSAttributedString.Key : Any] = [
-        .foregroundColor : style.color.null,
-        .font : style.jsonFont
-    ]
+    private lazy var placeholderStyle = createStyle(
+        foregroundColor: style.color.lineText,
+        other: [.backgroundColor : style.color.lineBackground]
+    )
 }
 
 public extension JSONDecorator {
-    
-    /// Highlight processing result
-    typealias HighlightResult = (slice: [JSONSlice], maxLengthString: NSAttributedString?)
     
     /// Highlight the incoming JSON string.
     ///
@@ -87,8 +63,8 @@ public extension JSONDecorator {
     ///   - json: The JSON string to be highlighted.
     ///   - judgmentValid: Whether to check the validity of JSON.
     ///   - style: style of highlight. See `HighlightStyle` for details.
-    /// - Returns: Return `nil` when JSON is invalid. See `HighlightResult` for details.
-    static func highlight(_ json: String, judgmentValid: Bool, style: HighlightStyle = .default) -> HighlightResult? {
+    /// - Returns: Return `nil` when JSON is invalid. See `JSONDecorator` for details.
+    static func highlight(_ json: String, judgmentValid: Bool, style: HighlightStyle = .default) -> JSONDecorator? {
         
         if judgmentValid {
             
@@ -108,18 +84,20 @@ public extension JSONDecorator {
     /// - Parameters:
     ///   - json: The JSON string to be highlighted.
     ///   - style: style of highlight. See `HighlightStyle` for details.
-    /// - Returns: See `HighlightResult` for details.
-    static func highlight(_ json: String, style: HighlightStyle = .default) -> HighlightResult {
+    /// - Returns: See `JSONDecorator` for details.
+    static func highlight(_ json: String, style: HighlightStyle = .default) -> JSONDecorator {
         
         let decorator = JSONDecorator(json: json, style: style)
         
-        return (decorator.slices, decorator.maxLengthString)
+        decorator.slices = decorator._slices
+        
+        return decorator
     }
 }
 
 private extension JSONDecorator {
     
-    var slices: [JSONSlice] {
+    var _slices: [JSONSlice] {
         
         var _slices: [JSONSlice] = []
         
@@ -141,7 +119,7 @@ private extension JSONDecorator {
                 }
             }
             
-            let lineNumber = String(_slices.count + 1)
+            let lineNumber = _slices.count + 1
             
             switch token {
             
@@ -157,9 +135,11 @@ private extension JSONDecorator {
                     )
                     
                     let foldString = NSMutableAttributedString(
-                        string: " {Object...}",
+                        string: "{Object...}",
                         attributes: placeholderStyle
                     )
+                    
+                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: 0)
                     
                     expandString.insert(foldIconString, at: 0)
                     foldString.insert(expandIconString, at: 0)
@@ -189,9 +169,12 @@ private extension JSONDecorator {
                     )
                     
                     let foldString = NSMutableAttributedString(
-                        string: indentation + " {Object...}",
+                        string: "{Object...}",
                         attributes: placeholderStyle
                     )
+                    
+                    foldString.insert(NSAttributedString(string: indentation, attributes: keyWordStyle), at: 0)
+                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: indentation.count)
                     
                     foldString.insert(expandIconString, at: indentation.count)
                     expandString.insert(foldIconString, at: indentation.count)
@@ -235,9 +218,11 @@ private extension JSONDecorator {
                     )
                     
                     let foldString = NSMutableAttributedString(
-                        string: " [Array...]",
+                        string: "[Array...]",
                         attributes: placeholderStyle
                     )
+                    
+                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: 0)
                     
                     foldString.insert(expandIconString, at: 0)
                     expandString.insert(foldIconString, at: 0)
@@ -265,9 +250,12 @@ private extension JSONDecorator {
                     )
                     
                     let foldString = NSMutableAttributedString(
-                        string: indentation + " [Array...]",
+                        string: "[Array...]",
                         attributes: placeholderStyle
                     )
+                    
+                    foldString.insert(NSAttributedString(string: indentation, attributes: keyWordStyle), at: 0)
+                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: indentation.count)
                     
                     foldString.insert(expandIconString, at: indentation.count)
                     expandString.insert(foldIconString, at: indentation.count)
@@ -444,17 +432,51 @@ private extension JSONDecorator {
     
     /// Create an `NSAttributedString` object for displaying image.
     ///
-    /// - Parameters:
-    ///   - image: The image to be displayed.
-    ///   - size: The size of the picture to be displayed. Default is `18`.
+    /// - Parameter image: The image to be displayed.
     /// - Returns: `NSAttributedString` object.
-    func createIconAttributedString(with image: UIImage, size: CGFloat = 18) -> NSAttributedString {
+    func createIconAttributedString(with image: UIImage) -> NSAttributedString {
         
         let expandAttach = NSTextAttachment()
         
         expandAttach.image = image
-        expandAttach.bounds = CGRect(x: 0, y: -4.5, width: 20, height: 20)
+        
+        let font = style.jsonFont
+        
+        let y = (style.lineHeight - font.lineHeight + 1) + font.descender
+        
+        expandAttach.bounds = CGRect(x: 0, y: y, width: font.ascender, height: font.ascender)
         
         return NSAttributedString(attachment: expandAttach)
+    }
+    
+    func createStyle(
+        foregroundColor: UIColor?,
+        other: [NSAttributedString.Key : Any]? = nil
+    ) -> [NSAttributedString.Key : Any] {
+        
+        var newStyle: [NSAttributedString.Key : Any] = [.font : style.jsonFont]
+        
+        if let color = foregroundColor {
+            newStyle[.foregroundColor] = color
+        }
+        
+        let lineHeightMultiple: CGFloat = 1
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        
+        paragraphStyle.lineHeightMultiple = lineHeightMultiple
+        paragraphStyle.maximumLineHeight = style.lineHeight
+        paragraphStyle.minimumLineHeight = style.lineHeight
+        paragraphStyle.lineSpacing = 0
+        
+        newStyle[.paragraphStyle] = paragraphStyle
+        
+        newStyle[.baselineOffset] = (style.lineHeight - style.jsonFont.lineHeight) + 1
+        
+        if let other = other {
+            other.forEach { newStyle[$0] = $1 }
+        }
+        
+        return newStyle
     }
 }

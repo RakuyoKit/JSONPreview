@@ -21,12 +21,14 @@ public struct HighlightStyle {
     ///   - color: Color-related configuration. See `HighlightColor` for details.
     ///   - lineFont: Text font in line number area.
     ///   - jsonFont: Text font in json preview area.
+    ///   - lineHeight: Line height of JSON preview area.
     public init(
         expandIcon: UIImage? = nil,
         foldIcon: UIImage? = nil,
         color: HighlightColor = .default,
         lineFont: UIFont? = nil,
-        jsonFont: UIFont? = nil
+        jsonFont: UIFont? = nil,
+        lineHeight: CGFloat = 24
     ) {
         
         self.expandIcon = expandIcon ?? UIImage(name: "expand")!
@@ -34,6 +36,7 @@ public struct HighlightStyle {
         self.color = color
         self.lineFont = lineFont ?? UIFont(name:"Helvetica Neue", size: 16)!
         self.jsonFont = jsonFont ?? UIFont(name:"Helvetica Neue", size: 16)!
+        self.lineHeight = lineHeight
     }
     
     /// The icon of the expand button.
@@ -50,6 +53,9 @@ public struct HighlightStyle {
     
     /// Text font in json preview area.
     public let jsonFont: UIFont
+    
+    /// Line height of JSON preview area.
+    public let lineHeight: CGFloat
 }
 
 public extension HighlightStyle {

@@ -83,19 +83,19 @@ public extension HighlightColor {
     /// Default color configuration.
     static let `default` = HighlightColor(
         keyWord: UIColor.black,
-        key: [0.72, 0.18, 0.13],
-        link: [0.12, 0.29, 0.61],
-        string: [0.18, 0.41, 0.30],
-        number: [0.80, 0.57, 0.08],
+        key: 0xB72E22,
+        link: 0x1E4A9C,
+        string: 0x2D694C,
+        number: 0xCC9115,
+        boolean: 0x72AAD3,
+        null: 0xEA2E22,
         
-        boolean: [0.80, 0.57, 0.08],
-        null: [0.80, 0.57, 0.08],
         unknownText: [0.80, 0.57, 0.08],
         unknownBackground: [0.80, 0.57, 0.08],
         
         jsonBackground: UIColor.white,
-        lineBackground: [0.93, 0.93, 0.93],
-        lineText: [0.64, 0.64, 0.64]
+        lineBackground: 0xEDEDED,
+        lineText: 0xA3A3A3
     )
     
     /// A darker color scheme that the author likes.

@@ -10,10 +10,12 @@ import UIKit
 
 public protocol JSONTextViewClickDelegate: class {
     
-    /// Execute when zoom is triggered
+    /// Execute when zoom is triggered.
     ///
-    /// - Parameter textView: Currently displayed textView
-    func textViewDidClickZoom(_ textView: JSONTextView)
+    /// - Parameters:
+    ///   - textView: Currently displayed textView.
+    ///   - pointY: Y value of the clicked coordinate.
+    func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat)
 }
 
 open class JSONTextView: UITextView {
@@ -38,16 +40,24 @@ private extension JSONTextView {
     
     func config() {
         
+        delaysContentTouches = false
+        canCancelContentTouches = true
         translatesAutoresizingMaskIntoConstraints = false
         
         backgroundColor = .clear
         
         textAlignment = .left
         isEditable = false
+        
+        showsVerticalScrollIndicator = false
+        showsHorizontalScrollIndicator = false
+        
+        scrollsToTop = false
         isScrollEnabled = false
+        bounces = false
         
         textContainer.lineFragmentPadding = 0
-        textContainerInset = .zero
+        layoutManager.allowsNonContiguousLayout = false
     }
 }
 
@@ -71,8 +81,13 @@ extension JSONTextView {
             fractionOfDistanceBetweenInsertionPoints: nil
         )
         
+        let startIndex = text.startIndex
+        
+        // Prevent the click logic from triggering when the line break is clicked.
+        guard text[text.index(startIndex, offsetBy: characterIndex)] != "\n" else { return }
+        
         let callbackBlock = {
-            self.clickDelegate?.textViewDidClickZoom(self)
+            self.clickDelegate?.textView(self, didClickZoomAt: point.y)
         }
         
         // Clicked on the fold area
@@ -81,29 +96,39 @@ extension JSONTextView {
             return
         }
         
-        guard characterIndex + 2 < text.count else { return }
-        
-        let char = text[text.index(text.startIndex, offsetBy: characterIndex + 2)]
-        
-        if char == "[" || char == "{" {
+        // Blur the scope of the click.
+        for i in -1 ... 2 {
+            
+            let offset = characterIndex + i
+            
+            guard offset >= 0 && offset < text.count else { break }
+            
+            let char = text[text.index(startIndex, offsetBy: offset)]
+            
+            guard char == "[" || char == "{" else { continue }
+            
             callbackBlock()
-            return
+            break
         }
+    }
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         
-        guard characterIndex + 3 < text.count else { return }
-        
-        let _char = text[text.index(text.startIndex, offsetBy: characterIndex + 3)]
-        
-        if _char == "[" || _char == "{" {
-            callbackBlock()
-            return
+        switch action {
+        case #selector(cut(_:)): return false
+        case #selector(paste(_:)): return false
+        case #selector(select(_:)): return false
+        case #selector(delete(_:)): return false
+        case #selector(copy(_:)): return true
+        case #selector(selectAll(_:)): return true
+        default:
+            return super.canPerformAction(action, withSender: sender)
         }
+    }
+    
+    open override func copy(_ sender: Any?) {
+        super.copy(sender)
         
-        let __char = text[text.index(text.startIndex, offsetBy: characterIndex + 1)]
-        
-        if __char == "[" || __char == "{" {
-            callbackBlock()
-            return
-        }
+        selectedTextRange = nil
     }
 }

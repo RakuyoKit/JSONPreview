@@ -13,7 +13,7 @@ public struct JSONSlice {
     
     /// The current display state of the slice
     public enum State {
-        case expand, folded, hidden
+        case expand, folded
     }
     
     /// Initialization method.
@@ -25,12 +25,11 @@ public struct JSONSlice {
     ///   - folded: The summary content of the JSON slice in the folded state.
     public init(
         level: Int,
-        lineNumber: String,
+        lineNumber: Int,
         expand: NSAttributedString,
         folded: NSAttributedString? = nil
     ) {
         
-        self.state = .expand
         self.level = level
         self.lineNumber = lineNumber
         self.expand = expand
@@ -46,12 +45,11 @@ public struct JSONSlice {
     ///   - folded: The summary content of the JSON slice in the folded state.
     public init(
         level: Int,
-        lineNumber: String,
+        lineNumber: Int,
         expand: (String, [NSAttributedString.Key : Any]),
         folded: (String, [NSAttributedString.Key : Any])? = nil
     ) {
         
-        self.state = .expand
         self.level = level
         self.lineNumber = lineNumber
         
@@ -65,10 +63,16 @@ public struct JSONSlice {
     }
     
     /// The current display state of the slice. The default is `.expand`.
-    public var state: State
+    public var state: State = .expand
+    
+    /// The number of times the slice was folded.
+    ///
+    /// The initial value is 0, which means it is not folded.
+    /// Each time the slice is folded, the value increases by 1.
+    public var foldedTimes: Int = 0
     
     /// Position in the complete structure.
-    public let lineNumber: String
+    public let lineNumber: Int
     
     /// Indentation level.
     public let level: Int
@@ -88,7 +92,6 @@ public extension JSONSlice {
         switch state {
         case .expand: return expand
         case .folded: return folded
-        case .hidden: return nil
         }
     }
 }
