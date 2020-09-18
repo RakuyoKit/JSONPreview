@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3A134BCD251486B3002AAFA6 /* JSONPreview.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 3A134BCB251486B3002AAFA6 /* JSONPreview.podspec */; };
 		3A134BCE251486B3002AAFA6 /* push.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3A134BCC251486B3002AAFA6 /* push.sh */; };
+		3A134C6625148A31002AAFA6 /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = 3A134C6525148A31002AAFA6 /* default.png */; };
 		3A1F069E2508D1D800C16862 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1F069D2508D1D800C16862 /* AppDelegate.swift */; };
 		3A1F06A22508D1D800C16862 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1F06A12508D1D800C16862 /* ViewController.swift */; };
 		3A1F06A52508D1D800C16862 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3A1F06A32508D1D800C16862 /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 /* Begin PBXFileReference section */
 		3A134BCB251486B3002AAFA6 /* JSONPreview.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = JSONPreview.podspec; sourceTree = SOURCE_ROOT; };
 		3A134BCC251486B3002AAFA6 /* push.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = push.sh; sourceTree = SOURCE_ROOT; };
+		3A134C6525148A31002AAFA6 /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default.png; sourceTree = SOURCE_ROOT; };
 		3A1F069A2508D1D800C16862 /* JSONPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JSONPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A1F069D2508D1D800C16862 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3A1F06A12508D1D800C16862 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 			children = (
 				3A134BCC251486B3002AAFA6 /* push.sh */,
 				3A134BCB251486B3002AAFA6 /* JSONPreview.podspec */,
+				3A134C6525148A31002AAFA6 /* default.png */,
 				3A1F06CD2508D20700C16862 /* Core */,
 				3A1F06CE2508D20C00C16862 /* Other */,
 			);
@@ -280,6 +283,7 @@
 				3A1F06A52508D1D800C16862 /* Main.storyboard in Resources */,
 				3A134BCE251486B3002AAFA6 /* push.sh in Resources */,
 				3A134BCD251486B3002AAFA6 /* JSONPreview.podspec in Resources */,
+				3A134C6625148A31002AAFA6 /* default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
