@@ -72,7 +72,7 @@ open class JSONPreview: UIView {
     private var highlightStyle: HighlightStyle = .default {
         didSet {
             lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
-            jsonTextView.backgroundColor = highlightStyle.color.jsonBackground
+            jsonScrollView.backgroundColor = highlightStyle.color.jsonBackground
             
             jsonTextView.textContainerInset = UIEdgeInsets(
                 top: 0, left: 10, bottom: 0, right: 10
