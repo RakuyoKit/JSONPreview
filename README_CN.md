@@ -16,6 +16,10 @@
 
 `JSONPreview` 的全部功能都使用**原生方法**编写，这意味着您可以在 Apple 平台获得较好的使用体验。
 
+## 预览
+
+![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
+
 ## 基本要求
 
 - 运行 **iOS 10** 及以上版本的设备。
@@ -32,9 +36,12 @@ pod 'JSONPreview'
 
 ## 功能
 
-1. 支持**格式化**显示 JSON 数据。
-2. 支持**高亮** JSON 数据，提供多种颜色与字体配置选项。
-3. 针对 `Array` 与 `Object` 提供**折叠**与**展开**功能。
+- [x] 支持**格式化**显示 JSON 数据。
+- [x] 支持**高亮** JSON 数据，提供多种颜色与字体配置选项。
+- [x] 针对 `Array` 与 `Object` 提供**折叠**与**展开**功能。
+- [x] 基于 `UITextView`，您可以复制 `JSONPreview` 中的任意内容。
+
+- `JSONPreview` 提供有限的，不完整的格式检查功能，故该功能不作为主要功能提供。详情可以参考：[格式检查](#格式检查)
 
 ## 使用
 
@@ -58,8 +65,7 @@ preview(json)
 
 3. 如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 类型进行设置：
 
-> 其中，[`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/HighlightColor.swift#L119) 是一个用于提供颜色的协议。
-
+> 其中，[`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/HighlightColor.swift#L119) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
 
 ```swift
 let highlightColor = HighlightColor(
@@ -88,3 +94,36 @@ let style = HighlightStyle(
 
 previewView.preview(json, style: style)
 ```
+
+## 格式检查
+
+`JSONPreview` 只提供有限的格式检查功能，包括：
+
+> 以下所提到的 “上一个节点” 均不包括 ` `、`\t` 以及 `\n`
+
+- 所要预览的JSON必须以 `{` 或 `[` 开头。
+- `:` 的上一个节点必须是 `String`。
+- `,` 的上一个节点只能是 `null`、`String`、`Number`、`Boolean`、`}` 以及 `]` 中的一个。
+- `{` 必须存在上一个节点，同时上一个节点不能为 `{`。
+- `}` 必须与 `{` 成对出现。
+- `[` 必须存在上一个节点，同时上一个节点不能为 `]`。
+- `]` 必须与 `[` 成对出现。
+- `"` 必须成对出现。
+- `"` 的上一个节点只能是 `{`、`[`、`,` 以及 `:`  中的一个。
+- 针对 `null`、`true` 以及 `false` 的拼写检查。
+
+## 已知问题
+
+1. 首次显示后，滑动到非结尾位置，旋转屏幕，子视图将出现错位问题。产生滑动后恢复正常。禁止屏幕转转时该问题不会发生。
+2. 折叠/展开节点时，有概率发生 JSON 闪烁的问题。
+
+## TODO
+
+- [x] 修复已知问题。
+- [x] 增加新的集成方式，例如 `Carthage` 与 `Swift Package Manager`。
+- [x] 支持 MacOS。
+- [x] 更完善的复制操作。
+
+## License
+
+`License` 在 **MIT** 许可下可用。 有关更多信息，请参见 [LICENSE](https://github.com/rakuyoMo/License/blob/master/LICENSE) 文件。

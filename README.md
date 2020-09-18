@@ -18,6 +18,10 @@ At the same time, `JSONPreview` also provides **folding and unfolding** function
 
 All functions of `JSONPreview` are written using **native methods**, which means you can get a better experience on the Apple platform.
 
+## Screenshot
+
+![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
+
 ## Prerequisites
 
 - **iOS 10 or later**.
@@ -37,6 +41,9 @@ pod 'JSONPreview'
 - [x] Support formatting and displaying JSON data.
 - [x] Support highlighting JSON data, and provide a variety of color and font configuration options.
 - [x] Provide **fold** and **expand** functions for `Array` and `Object`.
+- [x] Based on `UITextView`, you can copy any content in `JSONPreview`.
+
+- `JSONPreview` provides a limited and incomplete format check function, so this function is not provided as a main function. For details, please refer to: [Format check](#format_check)
 
 ## Usage
 
@@ -60,7 +67,7 @@ preview(json)
 
 3. If you want to customize the highlight style, you can set it through the `HighlightStyle` and `HighlightColor` types:
 
-> Among them, [`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/HighlightColor.swift#L119) is a protocol for providing colors.
+> Among them, [`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/HighlightColor.swift#L119) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
 
 ```swift
 let highlightColor = HighlightColor(
@@ -89,3 +96,36 @@ let style = HighlightStyle(
 
 previewView.preview(json, style: style)
 ```
+
+## Format Check
+
+`JSONPreview` only provides limited format checking functions, including:
+
+> The "previous node" mentioned below does not include ` `, `\t` and `\n`
+
+- The JSON to be previewed must start with `{` or `[`.
+- The previous node of `:` must be `String`.
+- The previous node of `,` can only be one of `null`, `String`, `Number`, `Boolean`, `}` and `]`.
+- `{` must have the previous node, and the previous node cannot be `{`.
+- `}` must be paired with `{`.
+- `[` The previous node must exist, and the previous node cannot be `]`.
+- `]` must be paired with `[`.
+- `"` must appear in pairs.
+- The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
+-Spell check for `null`, `true` and `false`.
+
+## Known issues
+
+1. After the first display, slide to a non-end position, rotate the screen, and the sub-view will be misaligned. Return to normal after sliding. This problem does not occur when screen rotation is prohibited.
+2. When collapsing/expanding nodes, there is a possibility of JSON flickering.
+
+## TODO
+
+- [x] Fix known issues.
+- [x] Add new integration methods, such as `Carthage` and `Swift Package Manager`.
+- [x] Support MacOS.
+- [x] More complete copy operation.
+
+## License
+
+`JSONPreview` is available under the **MIT** license. See the [LICENSE](https://github.com/rakuyoMo/JSONPreview/blob/master/LICENSE) file for more info.
