@@ -31,3 +31,61 @@ All functions of `JSONPreview` are written using **native methods**, which means
 ```ruby
 pod 'JSONPreview'
 ```
+
+## Features
+
+- [x] Support formatting and displaying JSON data.
+- [x] Support highlighting JSON data, and provide a variety of color and font configuration options.
+- [x] Provide **fold** and **expand** functions for `Array` and `Object`.
+
+## Usage
+
+> After downloading the project, [`ViewController.swift`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Other/ViewController.swift) file contains part of the test code, just run the project Check the corresponding effect.
+
+1. Create a `JSONPreview` object and add it to the interface:
+
+```swift
+let previewView = JSONPreview()
+
+view.addSubview(previewView)
+```
+
+2. Call the `preview(_:style:)` method to preview the data in the default style:
+
+```swift
+let json = ...
+    
+preview(json)
+```
+
+3. If you want to customize the highlight style, you can set it through the `HighlightStyle` and `HighlightColor` types:
+
+> Among them, [`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/HighlightColor.swift#L119) is a protocol for providing colors.
+
+```swift
+let highlightColor = HighlightColor(
+    keyWord: <#T##ConvertibleToColor#>,
+    key: <#T##ConvertibleToColor#>,
+    link: <#T##ConvertibleToColor#>,
+    string: <#T##ConvertibleToColor#>,
+    number: <#T##ConvertibleToColor#>,
+    boolean: <#T##ConvertibleToColor#>,
+    null: <#T##ConvertibleToColor#>,
+    unknownText: <#T##ConvertibleToColor#>,
+    unknownBackground: <#T##ConvertibleToColor#>,
+    jsonBackground: <#T##ConvertibleToColor#>,
+    lineBackground: <#T##ConvertibleToColor#>,
+    lineText: <#T##ConvertibleToColor#>
+)
+
+let style = HighlightStyle(
+    expandIcon: <#T##UIImage?#>,
+    foldIcon: <#T##UIImage?#>,
+    color: highlightColor,
+    lineFont: <#T##UIFont?#>,
+    jsonFont: <#T##UIFont?#>,
+    lineHeight: <#T##CGFloat#>
+)
+
+previewView.preview(json, style: style)
+```
