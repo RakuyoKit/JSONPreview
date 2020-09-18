@@ -366,12 +366,73 @@ extension JSONPreview: JSONTextViewClickDelegate {
                 with: folded
             )
             
-        case .folded: break
         // 4.2. Folded state: perform expand operation
+        case .folded:
             
-//            decorator.slices[realRow].state = .expand
+            guard let folded = clickSlice.folded else { return }
             
+            decorator.slices[realRow].state = .expand
             
+            var isExecution = true
+            var lines: [Int] = []
+            
+            let replaceString = NSMutableAttributedString(string: "")
+            
+            for i in realRow + 1 ..< slices.count {
+                
+                guard isExecution else { break }
+                
+                let _slices = slices[i]
+                
+                guard _slices.level >= clickSlice.level else { continue }
+                
+                if _slices.level == clickSlice.level { isExecution = false }
+                
+                // Reduce the number of folds
+                decorator.slices[i].foldedTimes -= 1
+                
+                guard decorator.slices[i].foldedTimes == 0 else { continue }
+                
+                // Record the line number to be hidden
+                lines.append(_slices.lineNumber)
+                
+                switch _slices.state {
+                case .expand:
+                    replaceString.append(_slices.expand)
+                    replaceString.append(decorator.wrapString)
+                    
+                case .folded:
+                    
+                    if let _folded = _slices.folded {
+                        replaceString.append(_folded)
+                        replaceString.append(decorator.wrapString)
+                    }
+                }
+            }
+            
+            // 5. Add the line number to display
+            var tmpDataSource = lineDataSource
+            
+            lines.forEach { (line) in
+                
+                let index = tmpDataSource.firstIndex { $0 > line } ?? (tmpDataSource.count - 1)
+                tmpDataSource.insert(line, at: index)
+            }
+            
+            lineDataSource = tmpDataSource
+            
+            // 6. Replacement string
+            replaceString.insert(decorator.wrapString, at: 0)
+            replaceString.insert(clickSlice.expand, at: 0)
+            
+            replaceString.deleteCharacters(
+                in: NSRange(location: replaceString.length - 1, length: 1)
+            )
+            
+            textView.textStorage.replaceCharacters(
+                in: NSRange(location: location, length: folded.length),
+                with: replaceString
+            )
         }
     }
 }
