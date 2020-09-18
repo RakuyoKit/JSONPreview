@@ -26,9 +26,6 @@ public class JSONDecorator {
     /// JSON slice. See `JSONSlice` for details.
     public var slices: [JSONSlice] = []
     
-    /// Used to temporarily store the longest string after slicing
-    private lazy var maxLengthString: NSAttributedString? = nil
-    
     /// The string used to hold the icon of the expand button
     private lazy var expandIconString = createIconAttributedString(with: style.expandIcon)
     
@@ -107,17 +104,6 @@ private extension JSONDecorator {
         var lastToken: JSONLexer.Token? = nil
         
         JSONLexer.getTokens(of: json).forEach { (token) in
-            
-            defer {
-                lastToken = token
-                
-                // After each iteration, look for the longest string
-                if let lastSlice = _slices.last,
-                    lastSlice.expand.string.count > (maxLengthString?.string.count ?? 0) {
-                    
-                    maxLengthString = lastSlice.expand
-                }
-            }
             
             let lineNumber = _slices.count + 1
             
