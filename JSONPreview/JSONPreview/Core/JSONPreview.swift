@@ -281,6 +281,8 @@ extension JSONPreview: JSONTextViewClickDelegate {
         // 1. Get the number of rows
         let row = Int(floor(pointY / lineHeight))
         
+        guard row < lineDataSource.count else { return }
+        
         let tmpLineNumber = lineDataSource[row]
         
         // 1.1. Count the number of rows that are folded,
