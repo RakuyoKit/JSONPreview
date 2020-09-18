@@ -111,6 +111,7 @@ private extension JSONDecorator {
             
             switch token {
             
+            // MARK: objectBegin
             case .objectBegin:
                 
                 // There is a previous slice, and the previous slice is a colon.
@@ -172,6 +173,7 @@ private extension JSONDecorator {
                 
                 level += 1
                 
+            // MARK: objectEnd
             case .objectEnd:
                 
                 level -= 1
@@ -185,6 +187,7 @@ private extension JSONDecorator {
                 
                 _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
                 
+            // MARK: objectKey
             case .objectKey(let key):
                 
                 let indentation = createIndentedString(level: level)
@@ -196,6 +199,7 @@ private extension JSONDecorator {
                 
                 _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
                 
+            // MARK: arrayBegin
             case .arrayBegin:
                 
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
@@ -253,6 +257,7 @@ private extension JSONDecorator {
                 
                 level += 1
                 
+            // MARK: arrayEnd
             case .arrayEnd:
                 
                 level -= 1
@@ -266,6 +271,7 @@ private extension JSONDecorator {
                 
                 _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
                 
+            // MARK: colon
             case .colon:
                 
                 guard let lastSlices = _slices.last else { break }
@@ -284,6 +290,7 @@ private extension JSONDecorator {
                     folded: lastExpand
                 )
                 
+            // MARK: comma
             case .comma:
                 
                 guard let lastSlices = _slices.last else { break }
@@ -300,6 +307,7 @@ private extension JSONDecorator {
                     folded: lastSlices.folded
                 )
                 
+            // MARK: string
             case .string(let value):
                 
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
@@ -322,6 +330,7 @@ private extension JSONDecorator {
                     _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: string))
                 }
                 
+            // MARK: number
             case .number(let number):
                 
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
@@ -344,6 +353,7 @@ private extension JSONDecorator {
                     _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: numberString))
                 }
                 
+            // MARK: boolean
             case .boolean(let bool):
                 
                 let value = bool ? "true" : "false"
@@ -368,6 +378,7 @@ private extension JSONDecorator {
                     _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: boolString))
                 }
                 
+            // MARK: null
             case .null:
                 
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
@@ -390,6 +401,7 @@ private extension JSONDecorator {
                     _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: nullString))
                 }
                 
+            // MARK: unknown
             case .unknown(_):
                 break
             }
