@@ -105,6 +105,8 @@ private extension JSONDecorator {
         
         JSONLexer.getTokens(of: json).forEach { (token) in
             
+            defer { lastToken = token }
+            
             let lineNumber = _slices.count + 1
             
             switch token {
