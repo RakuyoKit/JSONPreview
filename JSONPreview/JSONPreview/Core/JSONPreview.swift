@@ -281,16 +281,12 @@ extension JSONPreview: JSONTextViewClickDelegate {
         // 1. Get the number of rows
         let row = Int(floor(pointY / lineHeight))
         
+        let tmpLineNumber = lineDataSource[row]
+        
         // 1.1. Count the number of rows that are folded,
         //      and get the actual number of rows at the clicked position
         let realRow = slices.reduce(into: row) {
-            
-            if row < lineDataSource.count
-                && ($1.lineNumber < lineDataSource[row])
-                && $1.foldedTimes > 0 {
-                
-                $0 += 1
-            }
+            if ($1.lineNumber < tmpLineNumber) && $1.foldedTimes > 0 { $0 += 1 }
         }
         
         // 2. Calculate the starting point of the replacement range
