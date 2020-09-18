@@ -290,6 +290,24 @@ private extension JSONDecorator {
                 
                 _slices[_slices.count - 1].expand = lastExpand
                 
+                // Add a comma to the beginning of the token
+                guard lastToken == .objectEnd || lastToken == .arrayEnd else { break }
+                
+                for i in (0 ..< _slices.count).reversed() {
+                    
+                    let _slice = _slices[i]
+                    
+                    guard let _folded = _slice.folded, _slice.level == lastSlices.level else {
+                        continue
+                    }
+                    
+                    let lastFolded = NSMutableAttributedString(attributedString: _folded)
+                    lastFolded.append(commaString)
+                    _slices[i].folded = lastFolded
+                    
+                    break
+                }
+                
             // MARK: string
             case .string(let value):
                 
