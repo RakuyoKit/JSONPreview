@@ -305,18 +305,11 @@ private extension JSONDecorator {
                 let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
                 lastExpand.append(commaString)
                 
-                var lastFolded: NSMutableAttributedString? = nil
-                
-                if let _folded = lastSlices.folded {
-                    lastFolded = NSMutableAttributedString(attributedString: _folded)
-                    lastFolded?.append(commaString)
-                }
-                
                 _slices[_slices.count - 1] = JSONSlice(
                     level: lastSlices.level,
                     lineNumber: lastSlices.lineNumber,
                     expand: lastExpand,
-                    folded: lastFolded
+                    folded: lastSlices.folded
                 )
                 
             case .string(let value):
