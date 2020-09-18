@@ -133,7 +133,7 @@ private extension JSONLexer {
                     
                 default:
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
             case ",":
@@ -145,7 +145,7 @@ private extension JSONLexer {
                     
                 default:
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
             case "{":
@@ -156,7 +156,7 @@ private extension JSONLexer {
                     
                 } else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
             case "}":
@@ -167,7 +167,7 @@ private extension JSONLexer {
                     
                 } else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
             case "[":
@@ -178,7 +178,7 @@ private extension JSONLexer {
                     
                 } else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
             case "]":
@@ -189,7 +189,7 @@ private extension JSONLexer {
                     
                 } else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
             case "\"":
@@ -197,7 +197,7 @@ private extension JSONLexer {
                 // Determine whether the string is a complete string node.
                 guard let index = tmpJSON.firstIndex(of: "\"") else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
                 let startIndex = tmpJSON.startIndex
@@ -219,7 +219,7 @@ private extension JSONLexer {
                     
                 default:
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
                 tmpJSON.removeSubrange(startIndex ... index)
@@ -233,7 +233,7 @@ private extension JSONLexer {
                 // If it is not `null` and it hits the `case`, it should be classified as a syntax error.
                 guard tmpJSON[bounds] == "ull" else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
                 tokens.append(.null)
@@ -248,7 +248,7 @@ private extension JSONLexer {
                 // If it is not `true` and it hits the `case`, it should be classified as a syntax error.
                 guard tmpJSON[bounds] == "rue" else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
                 tokens.append(.boolean(true))
@@ -263,7 +263,7 @@ private extension JSONLexer {
                 // If it is not `false` and it hits the `case`, it should be classified as a syntax error.
                 guard tmpJSON[bounds] == "alse" else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
                 tokens.append(.boolean(false))
@@ -289,14 +289,14 @@ private extension JSONLexer {
                 
                 guard !number.hasSuffix(".") else {
                     tokens.append(.unknown(json))
-                    return
+                    break
                 }
                 
                 tokens.append(.number(number))
                 
             default:
                 tokens.append(.unknown(json))
-                return
+                break
             }
         }
     }
