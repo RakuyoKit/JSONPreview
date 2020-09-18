@@ -48,6 +48,11 @@ public class JSONDecorator {
         foregroundColor: style.color.lineText,
         other: [.backgroundColor : style.color.lineBackground]
     )
+    
+    private lazy var unknownStyle = createStyle(
+        foregroundColor: style.color.unknownText,
+        other: [.backgroundColor : style.color.unknownBackground]
+    )
 }
 
 public extension JSONDecorator {
@@ -388,8 +393,17 @@ private extension JSONDecorator {
                 }
                 
             // MARK: unknown
-            case .unknown(_):
-                break
+            case .unknown(let string):
+                
+                let newString = string.replacingOccurrences(of: "\n", with: "")
+                
+                let indentation = createIndentedString(level: level)
+                
+                let attributedString = NSMutableAttributedString(string: indentation)
+                
+                attributedString.append(NSAttributedString(string: newString, attributes: unknownStyle))
+                
+                _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: attributedString))
             }
         }
         

@@ -132,8 +132,8 @@ private extension JSONLexer {
                     tokens.append(.colon)
                     
                 default:
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown(":" + tmpJSON))
+                    return
                 }
                 
             case ",":
@@ -144,8 +144,8 @@ private extension JSONLexer {
                     tokens.append(.comma)
                     
                 default:
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("," + tmpJSON))
+                    return
                 }
                 
             case "{":
@@ -155,8 +155,8 @@ private extension JSONLexer {
                     tokens.append(.objectBegin)
                     
                 } else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("{" + tmpJSON))
+                    return
                 }
                 
             case "}":
@@ -166,8 +166,8 @@ private extension JSONLexer {
                     tokens.append(.objectEnd)
                     
                 } else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("}" + tmpJSON))
+                    return
                 }
                 
             case "[":
@@ -177,8 +177,8 @@ private extension JSONLexer {
                     tokens.append(.arrayBegin)
                     
                 } else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("[" + tmpJSON))
+                    return
                 }
                 
             case "]":
@@ -188,16 +188,16 @@ private extension JSONLexer {
                     tokens.append(.arrayEnd)
                     
                 } else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("]" + tmpJSON))
+                    return
                 }
                 
             case "\"":
                 
                 // Determine whether the string is a complete string node.
                 guard let index = tmpJSON.firstIndex(of: "\"") else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown(tmpJSON))
+                    return
                 }
                 
                 let startIndex = tmpJSON.startIndex
@@ -218,8 +218,8 @@ private extension JSONLexer {
                     tokens.append(beginNodes.last == .object ? .objectKey(string) : .string(string))
                     
                 default:
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("\"" + tmpJSON))
+                    return
                 }
                 
                 tmpJSON.removeSubrange(startIndex ... index)
@@ -232,8 +232,8 @@ private extension JSONLexer {
                 // The character `n` should be processed in `case "\""`.
                 // If it is not `null` and it hits the `case`, it should be classified as a syntax error.
                 guard tmpJSON[bounds] == "ull" else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("n" + tmpJSON))
+                    return
                 }
                 
                 tokens.append(.null)
@@ -247,8 +247,8 @@ private extension JSONLexer {
                 // The character `t` should be processed in `case "\""`.
                 // If it is not `true` and it hits the `case`, it should be classified as a syntax error.
                 guard tmpJSON[bounds] == "rue" else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("t" + tmpJSON))
+                    return
                 }
                 
                 tokens.append(.boolean(true))
@@ -262,14 +262,19 @@ private extension JSONLexer {
                 // The character `f` should be processed in `case "\""`.
                 // If it is not `false` and it hits the `case`, it should be classified as a syntax error.
                 guard tmpJSON[bounds] == "alse" else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown("f" + tmpJSON))
+                    return
                 }
                 
                 tokens.append(.boolean(false))
                 tmpJSON.removeSubrange(bounds)
                 
-            case let value where !tmpJSON.isEmpty && (value == "-" || value.isNumber):
+            case let value:
+                
+                guard !tmpJSON.isEmpty && (value == "-" || value.isNumber) else {
+                    tokens.append(.unknown(String(value) + tmpJSON))
+                    return
+                }
                 
                 var number = String(value)
                 var _first: Character? = tmpJSON.removeFirst()
@@ -288,15 +293,11 @@ private extension JSONLexer {
                 }
                 
                 guard !number.hasSuffix(".") else {
-                    tokens.append(.unknown(json))
-                    break
+                    tokens.append(.unknown(String(value) + tmpJSON))
+                    return
                 }
                 
                 tokens.append(.number(number))
-                
-            default:
-                tokens.append(.unknown(json))
-                break
             }
         }
     }
