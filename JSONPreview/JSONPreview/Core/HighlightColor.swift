@@ -89,10 +89,8 @@ public extension HighlightColor {
         number: 0xCC9115,
         boolean: 0x72AAD3,
         null: 0xEA2E22,
-        
-        unknownText: [0.80, 0.57, 0.08],
-        unknownBackground: [0.80, 0.57, 0.08],
-        
+        unknownText: 0xD5412E,
+        unknownBackground: 0xFBE3E4,
         jsonBackground: UIColor.white,
         lineBackground: 0xEDEDED,
         lineText: 0xA3A3A3
