@@ -112,6 +112,10 @@ previewView.preview(json, style: style)
 - `"` 的上一个节点只能是 `{`、`[`、`,` 以及 `:`  中的一个。
 - 针对 `null`、`true` 以及 `false` 的拼写检查。
 
+## DFD
+
+![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
+
 ## 已知问题
 
 1. 首次显示后，滑动到非结尾位置，旋转屏幕，子视图将出现错位问题。产生滑动后恢复正常。禁止屏幕转转时该问题不会发生。
@@ -123,6 +127,10 @@ previewView.preview(json, style: style)
 - [x] 增加新的集成方式，例如 `Carthage` 与 `Swift Package Manager`。
 - [x] 支持 MacOS。
 - [x] 更完善的复制操作。
+
+## 致谢
+
+感谢 [Awhisper](https://github.com/Awhisper) 在 `JSONPreview` 的开发过程中提出的宝贵意见。
 
 ## License
 

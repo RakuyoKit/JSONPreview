@@ -114,6 +114,10 @@ previewView.preview(json, style: style)
 - The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
 - Spell check for `null`, `true` and `false`.
 
+## Data Flow Diagram
+
+![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
+
 ## Known issues
 
 1. After the first display, slide to a non-end position, rotate the screen, and the sub-view will be misaligned. Return to normal after sliding. This problem does not occur when screen rotation is prohibited.
@@ -125,6 +129,10 @@ previewView.preview(json, style: style)
 - [x] Add new integration methods, such as `Carthage` and `Swift Package Manager`.
 - [x] Support MacOS.
 - [x] More complete copy operation.
+
+## Thanks
+
+Thanks to [Awhisper](https://github.com/Awhisper) for your valuable comments during the development of `JSONPreview`.
 
 ## License
 
