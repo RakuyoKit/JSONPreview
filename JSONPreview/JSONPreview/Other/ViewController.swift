@@ -104,7 +104,10 @@ class ViewController: UIViewController {
             {
                 "some_key" : "A very very very very very very very very very very very very very very very long string"
             }
-        ]
+        ],
+        {
+            {123456}
+        }
         """
         
         previewView.preview(json, style: .default)
