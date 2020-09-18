@@ -68,7 +68,7 @@ class ViewController: UIViewController {
             -50,
             true,
             false,
-            null
+            null,
             {},
             {
                 "some_key" : "some_value"
