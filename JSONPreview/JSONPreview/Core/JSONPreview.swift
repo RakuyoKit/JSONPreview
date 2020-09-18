@@ -411,7 +411,7 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
             lines.forEach { (line) in
                 
-                let index = tmpDataSource.firstIndex { $0 > line } ?? (tmpDataSource.count - 1)
+                let index = tmpDataSource.firstIndex { $0 > line } ?? (tmpDataSource.count)
                 tmpDataSource.insert(line, at: index)
             }
             
