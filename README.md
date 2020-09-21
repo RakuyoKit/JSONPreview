@@ -60,9 +60,9 @@ view.addSubview(previewView)
 2. Call the `preview(_:style:)` method to preview the data in the default style:
 
 ```swift
-let json = ...
-    
-preview(json)
+let json = "{\"key\":\"value\"}"
+
+previewView.preview(json)
 ```
 
 3. If you want to customize the highlight style, you can set it through the `HighlightStyle` and `HighlightColor` types:
@@ -101,7 +101,7 @@ previewView.preview(json, style: style)
 
 `JSONPreview` only provides limited format checking functions, including:
 
-> The "previous node" mentioned below does not include ` `, `\t` and `\n`
+> The "previous node" mentioned below does not include `space`, `\t` and `\n`.
 
 - The JSON to be previewed must start with `{` or `[`.
 - The previous node of `:` must be `String`.
@@ -114,6 +114,8 @@ previewView.preview(json, style: style)
 - The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
 - Spell check for `null`, `true` and `false`.
 
+Other syntax errors (such as missing `,` at the end of a line) will not trigger rendering errors.
+
 ## Data Flow Diagram
 
 ![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
@@ -125,10 +127,10 @@ previewView.preview(json, style: style)
 
 ## TODO
 
-- [x] Fix known issues.
-- [x] Add new integration methods, such as `Carthage` and `Swift Package Manager`.
-- [x] Support MacOS.
-- [x] More complete copy operation.
+- [ ] Fix known issues.
+- [ ] Add new integration methods, such as `Carthage` and `Swift Package Manager`.
+- [ ] Support MacOS.
+- [ ] More complete copy operation.
 
 ## Thanks
 

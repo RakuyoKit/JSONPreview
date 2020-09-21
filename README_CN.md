@@ -58,9 +58,9 @@ view.addSubview(previewView)
 2. 调用 `preview(_:style:)` 方法，以默认样式预览数据：
 
 ```swift
-let json = ...
-    
-preview(json)
+let json = "{\"key\":\"value\"}"
+
+previewView.preview(json)
 ```
 
 3. 如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 类型进行设置：
@@ -99,7 +99,7 @@ previewView.preview(json, style: style)
 
 `JSONPreview` 只提供有限的格式检查功能，包括：
 
-> 以下所提到的 “上一个节点” 均不包括 ` `、`\t` 以及 `\n`
+> 以下所提到的 “上一个节点” 均不包括 `空格`、`\t` 以及 `\n`。
 
 - 所要预览的JSON必须以 `{` 或 `[` 开头。
 - `:` 的上一个节点必须是 `String`。
@@ -112,6 +112,8 @@ previewView.preview(json, style: style)
 - `"` 的上一个节点只能是 `{`、`[`、`,` 以及 `:`  中的一个。
 - 针对 `null`、`true` 以及 `false` 的拼写检查。
 
+除此之外的语法错误（例如常见的行尾缺少 `,`）均不会触发渲染错误。
+
 ## DFD
 
 ![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
@@ -123,10 +125,10 @@ previewView.preview(json, style: style)
 
 ## TODO
 
-- [x] 修复已知问题。
-- [x] 增加新的集成方式，例如 `Carthage` 与 `Swift Package Manager`。
-- [x] 支持 MacOS。
-- [x] 更完善的复制操作。
+- [ ] 修复已知问题。
+- [ ] 增加新的集成方式，例如 `Carthage` 与 `Swift Package Manager`。
+- [ ] 支持 MacOS。
+- [ ] 更完善的复制操作。
 
 ## 致谢
 
