@@ -31,8 +31,20 @@ public struct HighlightStyle {
         lineHeight: CGFloat = 24
     ) {
         
-        self.expandIcon = expandIcon ?? UIImage(name: "expand")!
-        self.foldIcon = foldIcon ?? UIImage(name: "fold")!
+        let getImage: (String) -> UIImage? = {
+            
+            if let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
+                let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle") {
+                
+                return UIImage(named: $0, in: bundle, compatibleWith: nil)
+                
+            } else {
+                return UIImage(named: $0)
+            }
+        }
+        
+        self.expandIcon = expandIcon ?? getImage("expand")!
+        self.foldIcon = foldIcon ?? getImage("fold")!
         self.color = color
         self.lineFont = lineFont ?? UIFont(name:"Helvetica Neue", size: 16)!
         self.jsonFont = jsonFont ?? UIFont(name:"Helvetica Neue", size: 16)!
