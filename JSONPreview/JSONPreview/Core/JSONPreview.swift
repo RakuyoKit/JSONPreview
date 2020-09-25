@@ -119,10 +119,17 @@ public extension JSONPreview {
     ///   - style: Highlight style. See `HighlightStyle` for details.
     func preview(_ json: String, style: HighlightStyle = .default) {
         
+        guard !json.isEmpty else { return }
+        
         highlightStyle = style
         
         DispatchQueue.global().async { [weak self] in
-            self?.decorator = JSONDecorator.highlight(json, style: style)
+            
+            let decorator = JSONDecorator.highlight(json, style: style)
+            
+            guard !decorator.slices.isEmpty else { return }
+            
+            self?.decorator = decorator
         }
     }
 }
