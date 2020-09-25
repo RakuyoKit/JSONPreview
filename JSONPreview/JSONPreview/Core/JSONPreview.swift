@@ -117,19 +117,16 @@ public extension JSONPreview {
     /// - Parameters:
     ///   - json: The json to be previewed
     ///   - style: Highlight style. See `HighlightStyle` for details.
-    func preview(_ json: String, style: HighlightStyle = .default) {
-        
-        guard !json.isEmpty else { return }
+    ///   - completion: Callback after data processing is completed.
+    func preview(_ json: String, style: HighlightStyle = .default, completion: (() -> Void)? = nil) {
         
         highlightStyle = style
         
         DispatchQueue.global().async { [weak self] in
             
-            let decorator = JSONDecorator.highlight(json, style: style)
+            self?.decorator = JSONDecorator.highlight(json, style: style)
             
-            guard !decorator.slices.isEmpty else { return }
-            
-            self?.decorator = decorator
+            DispatchQueue.main.async { completion?() }
         }
     }
 }
