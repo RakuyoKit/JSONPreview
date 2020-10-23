@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class ViewController: UIViewController {
     
@@ -15,9 +16,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        previewView.jsonTextView.delegate = self
+        previewView.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(previewView)
         view.translatesAutoresizingMaskIntoConstraints = false
-        previewView.translatesAutoresizingMaskIntoConstraints = false
         
         var constraints = [
             previewView.heightAnchor.constraint(equalToConstant: 300),
@@ -85,5 +88,33 @@ class ViewController: UIViewController {
         """
         
         previewView.preview(json, style: .default)
+    }
+}
+
+// MARK: - UITextViewDelegate
+
+extension ViewController: UITextViewDelegate {
+    
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        
+        var _url = URL
+        
+        if let scheme = URL.scheme {
+            guard scheme == "http" || scheme == "https" else { return true }
+            
+        } else {
+            
+            guard let newURL = Foundation.URL(string: "http://" + _url.absoluteString) else {
+                return true
+            }
+            
+            _url = newURL
+        }
+        
+        let safari = SFSafariViewController(url: _url)
+        safari.modalPresentationStyle = .overFullScreen
+        present(safari, animated: true, completion: nil)
+        
+        return false
     }
 }
