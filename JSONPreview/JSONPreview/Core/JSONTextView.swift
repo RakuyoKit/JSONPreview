@@ -58,6 +58,8 @@ private extension JSONTextView {
         
         textContainer.lineFragmentPadding = 0
         layoutManager.allowsNonContiguousLayout = false
+        
+        linkTextAttributes = [:]
     }
 }
 

@@ -39,6 +39,7 @@ public class JSONDecorator {
     private lazy var startStyle   = createStyle(foregroundColor: style.color.keyWord)
     private lazy var keyWordStyle = createStyle(foregroundColor: style.color.keyWord)
     private lazy var keyStyle     = createStyle(foregroundColor: style.color.key)
+    private lazy var linkStyle    = createStyle(foregroundColor: style.color.link)
     private lazy var stringStyle  = createStyle(foregroundColor: style.color.string)
     private lazy var numberStyle  = createStyle(foregroundColor: style.color.number)
     private lazy var boolStyle    = createStyle(foregroundColor: style.color.boolean)
@@ -311,6 +312,45 @@ private extension JSONDecorator {
                     _slices[i].folded = lastFolded
                     
                     break
+                }
+                
+            // MARK: - Link
+            case .link(let value):
+                
+                let addExtraLinkStyle: (NSMutableAttributedString, Int) -> Void = {
+                    
+                    let range = NSRange(location: $1, length: value.count)
+                    
+                    $0.addAttribute(.link, value: value, range: range)
+                    $0.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
+                }
+                
+                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
+                    
+                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    
+                    let attString = NSMutableAttributedString(string: "\"\(value)\"", attributes: linkStyle)
+                    
+                    addExtraLinkStyle(attString, 1)
+                    
+                    lastExpand.append(attString)
+                    
+                    _slices[_slices.count - 1] = JSONSlice(
+                        level: lastSlices.level,
+                        lineNumber: lastSlices.lineNumber,
+                        expand: lastExpand,
+                        folded: nil
+                    )
+                    
+                } else {
+                    
+                    let indentation = createIndentedString(level: level)
+                    
+                    let attString = NSMutableAttributedString(string: indentation + "\"\(value)\"", attributes: linkStyle)
+                    
+                    addExtraLinkStyle(attString, indentation.count + 1)
+                    
+                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: attString))
                 }
                 
             // MARK: string

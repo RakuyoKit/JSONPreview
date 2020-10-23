@@ -39,6 +39,8 @@ extension JSONLexer {
         
         case comma // ,
         
+        case link(String)
+        
         case string(String)
         
         case number(String)
@@ -140,7 +142,7 @@ private extension JSONLexer {
                 
                 switch last {
                 
-                case .null, .string, .number, .boolean, .objectEnd, .arrayEnd:
+                case .null, .link, .string, .number, .boolean, .objectEnd, .arrayEnd:
                     tokens.append(.comma)
                     
                 default:
@@ -210,12 +212,17 @@ private extension JSONLexer {
                     tokens.append(.objectKey(string))
                     
                 case .arrayBegin, .colon:
-                    tokens.append(.string(string))
+                    tokens.append(string.isValidURL ? .link(string) : .string(string))
                     
                 case .comma:
                     
                     // Need to determine whether it is currently in the object or in the array.
-                    tokens.append(beginNodes.last == .object ? .objectKey(string) : .string(string))
+                    if beginNodes.last == .object {
+                        tokens.append(.objectKey(string))
+                        
+                    } else {
+                        tokens.append(string.isValidURL ? .link(string) : .string(string))
+                    }
                     
                 default:
                     tokens.append(.unknown("\"" + tmpJSON))
@@ -300,5 +307,20 @@ private extension JSONLexer {
                 tokens.append(.number(number))
             }
         }
+    }
+}
+
+// MARK: - Tools
+
+fileprivate extension String {
+    
+    /// Check if the string is a valid URL
+    var isValidURL: Bool {
+        
+        guard count > 1 else { return false }
+        
+        let regex = "((https|http|ftp|rtsp|igmp|file|rtspt|rtspu)://)?((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+"
+        
+        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: self)
     }
 }
