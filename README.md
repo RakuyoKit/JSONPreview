@@ -99,13 +99,15 @@ previewView.preview(json, style: style)
 
 ## Format Check
 
-`JSONPreview` only provides limited format checking functions, including:
+### Rendering
+
+For rendering, `JSONPreview` only performs limited format checks, including:
 
 > The "previous node" mentioned below does not include `space`, `\t` and `\n`.
 
 - The JSON to be previewed must start with `{` or `[`.
-- The previous node of `:` must be `String`.
-- The previous node of `,` can only be one of `null`, `String`, `Number`, `Boolean`, `}` and `]`.
+- The previous node of `:` must be `.string`.
+- The previous node of `,` can only be one of `.null`, `.link`, `.string`, `.number`, `.boolean`, `}` and `]`.
 - `{` must have the previous node, and the previous node cannot be `{`.
 - `}` must be paired with `{`.
 - `[` The previous node must exist, and the previous node cannot be `]`.
@@ -115,6 +117,16 @@ previewView.preview(json, style: style)
 - Spell check for `null`, `true` and `false`.
 
 Other syntax errors (such as missing `,` at the end of a line) will not trigger rendering errors.
+
+### Link
+
+*1.2.0* version adds the rendering function for links (`.link`). While rendering, `JSONPreview` will perform a limited **de-escaping** operation.
+
+The de-escaping operations supported by different versions are as follows:
+
+> Unless otherwise specified, the following functions are cumulative.
+
+- 1.2.0: Support replacing `"\\/"` with `"/"`.
 
 ## Data Flow Diagram
 
