@@ -45,7 +45,7 @@ open class JSONPreview: UIView {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
         return tableView
     }()
@@ -458,13 +458,11 @@ extension JSONPreview: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let row = lineDataSource[indexPath.row]
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
         cell.backgroundColor = .clear
         
-        cell.textLabel?.text = "\(row)"
+        cell.textLabel?.text = "\(lineDataSource[indexPath.row])"
         cell.textLabel?.textAlignment = .right
         cell.textLabel?.font = highlightStyle.lineFont
         cell.textLabel?.textColor = highlightStyle.color.lineText
