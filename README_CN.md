@@ -134,6 +134,7 @@ previewView.preview(json, style: style)
 
 1. 首次显示后，滑动到非结尾位置，旋转屏幕，子视图将出现错位问题。产生滑动后恢复正常。禁止屏幕转转时该问题不会发生。
 2. 折叠/展开节点时，有概率发生 JSON 闪烁的问题。
+3. 在某些系统上（暂未进行更全面的测试），当 JSON 非常复杂时，会出现闪烁问题，此时控制台将输出 `CoreAnimation: failed to allocate xxx bytes`。（该问题可能是 iOS 系统问题） 
 
 ## TODO
 

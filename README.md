@@ -136,6 +136,7 @@ The de-escaping operations supported by different versions are as follows:
 
 1. After the first display, slide to a non-end position, rotate the screen, and the sub-view will be misaligned. Return to normal after sliding. This problem does not occur when screen rotation is prohibited.
 2. When collapsing/expanding nodes, there is a possibility of JSON flickering.
+3. On some systems (a more comprehensive test has not been performed yet), when the JSON is very complex, there will be flickering problems, and the console will output `CoreAnimation: failed to allocate xxx bytes`. (The problem may be an iOS system problem)
 
 ## TODO
 
