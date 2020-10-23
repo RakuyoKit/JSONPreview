@@ -70,7 +70,8 @@ class ViewController: UIViewController {
                         "bool_1" : true,
                         "bool_2" : false,
                         "empty_string" : "",
-                        "url" : "172.168.0.1"
+                        "url" : "172.168.0.1",
+                        "test_url_escaping" : "https:\\/\\/www.youtube.com"
                     }
                 }
             },

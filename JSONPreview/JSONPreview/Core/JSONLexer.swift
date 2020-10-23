@@ -212,7 +212,13 @@ private extension JSONLexer {
                     tokens.append(.objectKey(string))
                     
                 case .arrayBegin, .colon:
-                    tokens.append(string.isValidURL ? .link(string) : .string(string))
+                    
+                    if let url = string.isValidURL {
+                        tokens.append(.link(url))
+                        
+                    } else {
+                        tokens.append(.string(string))
+                    }
                     
                 case .comma:
                     
@@ -220,8 +226,11 @@ private extension JSONLexer {
                     if beginNodes.last == .object {
                         tokens.append(.objectKey(string))
                         
+                    } else if let url = string.isValidURL {
+                        tokens.append(.link(url))
+                        
                     } else {
-                        tokens.append(string.isValidURL ? .link(string) : .string(string))
+                        tokens.append(.string(string))
                     }
                     
                 default:
@@ -314,13 +323,35 @@ private extension JSONLexer {
 
 fileprivate extension String {
     
-    /// Check if the string is a valid URL
-    var isValidURL: Bool {
+    /// Check if the string is a valid URL.
+    ///
+    /// - Return: If it is a valid URL, return the unescaped string. Otherwise return nil.
+    var isValidURL: String? {
         
-        guard count > 1 else { return false }
+        guard count > 1 else { return nil }
         
         let regex = "((https|http|ftp|rtsp|igmp|file|rtspt|rtspu)://)?((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+"
         
-        return NSPredicate(format: "SELF MATCHES %@", regex).evaluate(with: self)
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        
+        let string = removeEscaping()
+        
+        guard predicate.evaluate(with: string) else { return nil }
+        
+        return string
+    }
+    
+    /// Remove escape characters in the string.
+    ///
+    /// Currently only supports replacement of "\\/".
+    func removeEscaping() -> String {
+        
+        var string = self
+        
+        if string.contains("\\/") {
+            string = string.replacingOccurrences(of: "\\/", with: "/")
+        }
+        
+        return string
     }
 }
