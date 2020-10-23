@@ -330,15 +330,15 @@ fileprivate extension String {
         
         guard count > 1 else { return nil }
         
-        let regex = "((https|http|ftp|rtsp|igmp|file|rtspt|rtspu)://)?((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+"
-        
-        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
+        guard let detector = try? NSDataDetector(
+            types: NSTextCheckingResult.CheckingType.link.rawValue
+        ) else { return nil }
         
         let string = removeEscaping()
         
-        guard predicate.evaluate(with: string) else { return nil }
+        let matches = detector.matches(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
         
-        return string
+        return matches.isEmpty ? nil : string
     }
     
     /// Remove escape characters in the string.
