@@ -53,8 +53,8 @@ class ViewController: UIViewController {
                 "key_6" : {
                     "key_6_1" : null,
                     "key_6_2" : [
-                        "www.facebook.com",
-                        "http://www.google.com",
+                        "stackoverflow.com",
+                        "http://www.apple.com",
                         "array_1",
                         3.1415926,
                         -50,
@@ -71,7 +71,7 @@ class ViewController: UIViewController {
                         "bool_2" : false,
                         "empty_string" : "",
                         "url" : "172.168.0.1",
-                        "test_url_escaping" : "https:\\/\\/www.youtube.com"
+                        "test_url_escaping" : "https:\\/\\/www.github.com"
                     }
                 }
             },
