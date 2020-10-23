@@ -45,7 +45,7 @@ open class JSONPreview: UIView {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(LineNumberCell.self, forCellReuseIdentifier: "cell")
         
         return tableView
     }()
