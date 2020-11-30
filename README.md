@@ -18,6 +18,8 @@ All functions of `JSONPreview` are written using **native methods**, which means
 
 ## Screenshot
 
+Below is a gif of about 30 seconds (**about 3M**) that shows the effect of previewing JSON using this library.
+
 ![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
 
 ## Prerequisites

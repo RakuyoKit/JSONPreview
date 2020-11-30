@@ -16,6 +16,8 @@
 
 ## 预览
 
+下面是一个大约30秒的gif（**大约3M**），它展示了使用本库预览 JSON 时的效果。
+
 ![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
 
 ## 基本要求
