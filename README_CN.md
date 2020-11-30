@@ -1,5 +1,3 @@
-# JSONPreview
-
 <p align="center">
 <img src="https://raw.githubusercontent.com/rakuyoMo/JSONPreview/master/Images/logo.png" alt="JSONPreview" title="JSONPreview" width="1000"/>
 </p>
