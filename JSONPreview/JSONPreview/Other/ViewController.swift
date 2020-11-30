@@ -48,41 +48,54 @@ class ViewController: UIViewController {
         let json = """
         [
             {
-                "string": "This is a string that has some \\"quotes\\" inside it!"
+                "string" : "string",
+                "float" : 3.1415926,
+                "negative_numbers" : -50,
+                "bool_true" : true,
+                "bool_false" : false,
+                "null" : null,
+                "url" : "http://www.apple.com",
+                "url_with_escape" : "https:\\/\\/www.github.com",
+                "url_without_protocol" : "stackoverflow.com",
+                "unsupported_url" : "172.168.0.1",
+                "empty_string" : "",
+                "empty_array" : [],
+                "empty_object" : {},
             },
             {
-                "key_1" : "string",
-                "key_2" : 3.1415926,
-                "key_3" : -50,
-                "key_4" : [],
-                "key_5" : {},
-                "key_6" : {
-                    "key_6_1" : null,
-                    "key_6_2" : [
-                        "stackoverflow.com",
-                        "http://www.apple.com",
-                        "array_1",
-                        3.1415926,
-                        -50,
-                        true,
-                        false,
-                        null,
-                        {},
-                        {
-                            "some_key" : "some_value"
-                        }
-                    ],
-                    "key_6_3" : {
-                        "bool_1" : true,
-                        "bool_2" : false,
-                        "empty_string" : "",
-                        "url" : "172.168.0.1",
-                        "test_url_escaping" : "https:\\/\\/www.github.com"
+                "effects_in_array" : [
+                    "string",
+                    3.1415926,
+                    -50,
+                    true,
+                    false,
+                    null,
+                    "http://www.apple.com",
+                    "https:\\/\\/www.github.com",
+                    "stackoverflow.com",
+                    "172.168.0.1",
+                    "",
+                    [],
+                    {},
+                ]
+            },
+            {
+                "quotes_string": "This is a string that has some \\"quotes\\" inside it!",
+                "very_long_value" : "A very very very very very very very very very very very very long string."
+            },
+            {
+                "nested" : {
+                    "object" : {
+                        "array" : [
+                            "string",
+                            [
+                                {
+                                    "key" : "value"
+                                }
+                            ]
+                        ]
                     }
                 }
-            },
-            {
-                "some_key" : "A very very very very very very very very very very long string."
             },
             {
                 {123456}
