@@ -12,7 +12,7 @@
 
 `JSONPreview` inherits from `UIView`. You can use it to **format** your JSON data and **highlight** it.
 
-Also, `JSONPreview` provides **collapse and expand** features that allow you to collapse nodes that you are not interested in at the moment and re-display them at any moment.
+Also, `JSONPreview` provides **fold and expand** features that allow you to collapse nodes that you are not interested in at the moment and re-display them at any moment.
 
 All of the features in `JSONPreview` are written using **native methods**, which means you get a great experience on Apple platforms.
 
@@ -103,7 +103,7 @@ previewView.preview(json, style: style)
 
 For rendering, `JSONPreview` performs only **limited** format checks, including:
 
-> The following references to "previous node" do not include `space`, ``t`, or ``n`.
+> The following references to "previous node" do not include `space`, `t`, or `n`.
 
 - The JSON to be previewed must begin with `{` or `[`.
 - The last node of `:` must be `.string`.
@@ -112,7 +112,7 @@ For rendering, `JSONPreview` performs only **limited** format checks, including:
 - `}` must exist in pairs with `{`.
 - `[ ` must exist on the previous node, while the previous node cannot be `]`.
 - `]` must exist in pairs with `[`.
-- The ``` must appear in pairs.
+- The `"` must appear in pairs.
 - The previous node of `"` can only be one of `{`, `[`, `,`, and `:`.
 - Spell-checking for `null`, `true`, and `false`.
 
@@ -126,7 +126,7 @@ The following de-escaping operations are supported in different versions.
 
 > Unless otherwise specified, the following functions are cumulative.
 
-- 1.2.0: Supports replacing `"\\/"` with `"/"`.
+- 1.2.0: Supports replacing `"\\/"` with `"/"`.
 
 ## Data Flow Diagram
 
