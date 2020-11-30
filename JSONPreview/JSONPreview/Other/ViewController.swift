@@ -48,6 +48,9 @@ class ViewController: UIViewController {
         let json = """
         [
             {
+                "string": "This is a string that has some \"quotes\" inside it!"
+            },
+            {
                 "key_1" : "string",
                 "key_2" : 3.1415926,
                 "key_3" : -50,
