@@ -12,9 +12,9 @@
 
 `JSONPreview` inherits from `UIView`. You can use it to **format** your JSON data and **highlight** it.
 
-At the same time, `JSONPreview` also provides **folding and unfolding** functions. You can fold the nodes that you don't care about temporarily, and redisplay them at any time.
+Also, `JSONPreview` provides **collapse and expand** features that allow you to collapse nodes that you are not interested in at the moment and re-display them at any moment.
 
-All functions of `JSONPreview` are written using **native methods**, which means you can get a better experience on the Apple platform.
+All of the features in `JSONPreview` are written using **native methods**, which means you get a great experience on Apple platforms.
 
 ## Screenshot
 
@@ -38,18 +38,18 @@ pod 'JSONPreview'
 
 ## Features
 
-- [x] Support formatting and displaying JSON data.
-- [x] Support highlighting JSON data, and provide a variety of color and font configuration options.
-- [x] Provide **fold** and **expand** functions for `Array` and `Object`.
-- [x] Based on `UITextView`, you can copy any content in `JSONPreview`.
+- [x] Supports **formatting** to display JSON data.
+- [x] Supports **highlighting** JSON data, with multiple color and font configuration options.
+- [x] Provides **fold** and **expand** features for `Array` and `Object`.
+- [x] Based on `UITextView`, which means you can copy any content from `JSONPreview`.
 
-- `JSONPreview` provides a limited and incomplete format check function, so this function is not provided as a main function. For details, please refer to: [Format check](#format-check)
+- `JSONPreview` provides limited, incomplete format checking functionality, so it is not provided as a primary feature. For details, see: [Format check](#format-check)
 
 ## Usage
 
 > After downloading the project, [`ViewController.swift`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Other/ViewController.swift) file contains part of the test code, just run the project Check the corresponding effect.
 
-1. Create a `JSONPreview` object and add it to the interface:
+1. Create the `JSONPreview` object and add it to the interface.
 
 ```swift
 let previewView = JSONPreview()
@@ -101,32 +101,32 @@ previewView.preview(json, style: style)
 
 ### Rendering
 
-For rendering, `JSONPreview` only performs limited format checks, including:
+For rendering, `JSONPreview` performs only **limited** format checks, including:
 
-> The "previous node" mentioned below does not include `space`, `\t` and `\n`.
+> The following references to "previous node" do not include `space`, ``t`, or ``n`.
 
-- The JSON to be previewed must start with `{` or `[`.
-- The previous node of `:` must be `.string`.
-- The previous node of `,` can only be one of `.null`, `.link`, `.string`, `.number`, `.boolean`, `}` and `]`.
-- `{` must have the previous node, and the previous node cannot be `{`.
-- `}` must be paired with `{`.
-- `[` The previous node must exist, and the previous node cannot be `]`.
-- `]` must be paired with `[`.
-- `"` must appear in pairs.
-- The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
-- Spell check for `null`, `true` and `false`.
+- The JSON to be previewed must begin with `{` or `[`.
+- The last node of `:` must be `.string`.
+- The previous node of `,` can only be one of `.null`, `.link`, `.string`, `.number`, `.boolean`, `}`, and `]`.
+- `{` must exist in the previous node, and the previous node cannot be `{`.
+- `}` must exist in pairs with `{`.
+- `[ ` must exist on the previous node, while the previous node cannot be `]`.
+- `]` must exist in pairs with `[`.
+- The ``` must appear in pairs.
+- The previous node of `"` can only be one of `{`, `[`, `,`, and `:`.
+- Spell-checking for `null`, `true`, and `false`.
 
-Other syntax errors (such as missing `,` at the end of a line) will not trigger rendering errors.
+Syntax errors other than these do not trigger rendering errors.
 
 ### Link
 
-*1.2.0* version adds the rendering function for links (`.link`). While rendering, `JSONPreview` will perform a limited **de-escaping** operation.
+In *1.2.0*, `.link` rendering has been added. While rendering, `JSONPreview` performs limited **de-escaping** operations.
 
-The de-escaping operations supported by different versions are as follows:
+The following de-escaping operations are supported in different versions.
 
 > Unless otherwise specified, the following functions are cumulative.
 
-- 1.2.0: Support replacing `"\\/"` with `"/"`.
+- 1.2.0: Supports replacing `"\\/"` with `"/"`.
 
 ## Data Flow Diagram
 
@@ -134,7 +134,7 @@ The de-escaping operations supported by different versions are as follows:
 
 ## Known issues
 
-1. After the first display, slide to a non-end position, rotate the screen, and the sub-view will be misaligned. Return to normal after sliding. This problem does not occur when screen rotation is prohibited.
+1. After the first display, slide to a non-terminal position, rotate the screen, and the subviews will be misaligned. The subview will be misaligned. This problem does not occur when screen rotation is disabled.
 2. When collapsing/expanding nodes, there is a possibility of JSON flickering.
 3. On some systems (a more comprehensive test has not been performed yet), when the JSON is very complex, there will be flickering problems, and the console will output `CoreAnimation: failed to allocate xxx bytes`. (The problem may be an iOS system problem)
 
@@ -142,13 +142,13 @@ The de-escaping operations supported by different versions are as follows:
 
 - [ ] Fix known issues.
 - [ ] Add new integration methods, such as `Carthage` and `Swift Package Manager`.
-- [ ] Support MacOS.
-- [ ] More complete copy operation.
+- [ ] Support for macOS.
+- [ ] Better copy operation.
 
 ## Thanks
 
-Thanks to [Awhisper](https://github.com/Awhisper) for your valuable comments during the development of `JSONPreview`.
+Thanks to [Awhisper](https://github.com/Awhisper) for his valuable input during the development of `JSONPreview`.
 
 ## License
 
-`JSONPreview` is available under the **MIT** license. See the [LICENSE](https://github.com/rakuyoMo/JSONPreview/blob/master/LICENSE) file for more info.
+`JSONPreview` is available under the **MIT** license. For more information, see [LICENSE](https://github.com/rakuyoMo/JSONPreview/blob/master/LICENSE).

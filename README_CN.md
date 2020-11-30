@@ -39,7 +39,7 @@ pod 'JSONPreview'
 - [x] 支持**格式化**显示 JSON 数据。
 - [x] 支持**高亮** JSON 数据，提供多种颜色与字体配置选项。
 - [x] 针对 `Array` 与 `Object` 提供**折叠**与**展开**功能。
-- [x] 基于 `UITextView`，您可以复制 `JSONPreview` 中的任意内容。
+- [x] 基于 `UITextView`，意味着您可以复制 `JSONPreview` 中的任意内容。
 
 - `JSONPreview` 提供有限的，不完整的格式检查功能，故该功能不作为主要功能提供。详情可以参考：[格式检查](#格式检查)
 
@@ -99,7 +99,7 @@ previewView.preview(json, style: style)
 
 ### 渲染
 
-对于渲染，`JSONPreview` 只进行有限的格式检查，包括：
+对于渲染，`JSONPreview` 只进行**有限**的格式检查，包括：
 
 > 以下所提到的 “上一个节点” 均不包括 `空格`、`\t` 以及 `\n`。
 
@@ -114,7 +114,7 @@ previewView.preview(json, style: style)
 - `"` 的上一个节点只能是 `{`、`[`、`,` 以及 `:`  中的一个。
 - 针对 `null`、`true` 以及 `false` 的拼写检查。
 
-除此之外的语法错误（例如常见的行尾缺少 `,`）均不会触发渲染错误。
+除此之外的语法错误均不会触发渲染错误。
 
 ### 链接
 
@@ -140,7 +140,7 @@ previewView.preview(json, style: style)
 
 - [ ] 修复已知问题。
 - [ ] 增加新的集成方式，例如 `Carthage` 与 `Swift Package Manager`。
-- [ ] 支持 MacOS。
+- [ ] 支持 macOS。
 - [ ] 更完善的复制操作。
 
 ## 致谢
