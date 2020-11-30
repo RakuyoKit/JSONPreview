@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         
         var constraints = [
-            previewView.heightAnchor.constraint(equalToConstant: 300),
+            previewView.heightAnchor.constraint(equalToConstant: 500),
             previewView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ]
         
