@@ -197,7 +197,7 @@ private extension JSONLexer {
             case "\"":
                 
                 // Determine whether the string is a complete string node.
-                guard let index = tmpJSON.firstIndex(of: "\"") else {
+                guard let index = tmpJSON.firstEndOfString() else {
                     tokens.append(.unknown(tmpJSON))
                     return
                 }
@@ -353,5 +353,35 @@ fileprivate extension String {
         }
         
         return string
+    }
+
+    /// Search for the first index of the specified character, starting from the specified start index
+    ///
+    /// - parameter element: The element to search for
+    /// - parameter start: The start index to start seaching
+    /// - returns: The first index of the element after the start index, or `nil` when not found
+    func firstIndex(of element: Character, startingAt start: String.Index) -> String.Index? {
+        guard self.count > 0 && start < self.endIndex else { return nil }
+
+        let newString = self[start...]
+        return newString.firstIndex(of: element)
+    }
+
+    /// Search for the fist 'end of string' element
+    /// (in case a `"` is preceded by `\` it will be ignored)
+    func firstEndOfString() -> String.Index? {
+        guard var index = self.firstIndex(of: "\"") else { return nil }
+
+        // If this isn't the first character of the string, check if it is proceeded
+        // by a `\`. If so, search again, starting with the next index
+        while index > self.startIndex && self[self.index(before: index)] == "\\" {
+            if let next = self.firstIndex(of: "\"", startingAt: self.index(after: index)) {
+                index = next
+            } else {
+                return nil
+            }
+        }
+
+        return index
     }
 }
