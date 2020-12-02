@@ -103,7 +103,7 @@ previewView.preview(json, style: style)
 
 For rendering, `JSONPreview` performs only **limited** format checks, including:
 
-> The following references to "previous node" do not include `space`, `t`, or `n`.
+> The following references to "previous node" do not include `space`, `\t`, or `\n`.
 
 - The JSON to be previewed must begin with `{` or `[`.
 - The last node of `:` must be `.string`.
