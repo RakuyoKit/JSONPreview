@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol JSONTextViewClickDelegate: class {
+public protocol JSONTextViewClickDelegate: AnyObject {
     
     /// Execute when zoom is triggered.
     ///

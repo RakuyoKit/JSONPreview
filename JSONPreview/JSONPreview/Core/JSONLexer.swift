@@ -368,7 +368,7 @@ fileprivate extension String {
         ///   - element: The element to search for.
         ///   - start: The start index to start seaching.
         /// - Returns: The first index of the element after the start index, or `nil` when not found.
-        func firstIndex(
+        func _firstIndex(
             of element: Character,
             startingAt start: String.Index
         ) -> String.Index? {
@@ -381,7 +381,7 @@ fileprivate extension String {
         // by a `\`. If so, search again, starting with the next index.
         while _index > startIndex && self[index(before: _index)] == "\\" {
             
-            if let next = firstIndex(of: "\"", startingAt: index(after: _index)) {
+            if let next = _firstIndex(of: "\"", startingAt: index(after: _index)) {
                 _index = next
             } else {
                 return nil
