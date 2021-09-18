@@ -21,8 +21,6 @@ open class LineNumberTableView: UITableView {
 }
 
 private extension LineNumberTableView {
-    
-    /// 配置
     func config() {
         delaysContentTouches = false
         canCancelContentTouches = true
