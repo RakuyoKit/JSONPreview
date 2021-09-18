@@ -394,10 +394,25 @@ extension JSONPreview: UIScrollViewDelegate {
         
         switch scrollView.specialTag {
         case .lineView:
-            jsonTextView.setContentOffset(contentOffset, animated: false)
+            jsonTextView.contentOffset = contentOffset
             
         case .jsonView:
-            lineNumberTableView.setContentOffset(contentOffset, animated: false)
+            let y = contentOffset.y
+            
+            // Ignore the spring effect on the top half of the `jsonTextView`
+            if y <= 0 {
+                lineNumberTableView.contentOffset.y = 0
+                return
+            }
+            
+            // Ignore the spring effect on the bottom half of the `jsonTextView`
+            let diff = scrollView.contentSize.height - scrollView.frame.height
+            if y >= diff {
+                lineNumberTableView.contentOffset.y = diff
+                return
+            }
+            
+            lineNumberTableView.contentOffset = contentOffset
             
         default:
             break
