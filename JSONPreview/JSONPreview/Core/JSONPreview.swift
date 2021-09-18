@@ -213,8 +213,11 @@ extension JSONPreview: JSONTextViewClickDelegate {
         let slices = decorator.slices
         
         // 1. Get the number of rows
-        let row = Int(floor(pointY / /*lineHeight*/1))
+        guard let indexPath = lineNumberTableView.indexPathForRow(at: CGPoint(x: 5, y: pointY)) else {
+            return
+        }
         
+        let row = indexPath.row
         guard row < lineDataSource.count else { return }
         
         let tmpLineNumber = lineDataSource[row]
