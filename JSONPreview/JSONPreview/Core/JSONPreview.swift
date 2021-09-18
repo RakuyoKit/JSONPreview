@@ -184,12 +184,14 @@ private extension JSONPreview {
     }
     
     func getLineHeight(at index: Int) -> CGFloat {
-        if let height = lineHeights[index] {
+        let line = lineDataSource[index]
+        
+        if let height = lineHeights[line] {
             return height
         }
         
-        let height = calculateLineHeight(at: index, width: jsonTextView.frame.width)
-        lineHeights[index] = height
+        let height = calculateLineHeight(at: line - 1, width: jsonTextView.frame.width)
+        lineHeights[line] = height
         
         return height
     }
