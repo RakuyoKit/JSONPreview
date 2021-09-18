@@ -33,13 +33,13 @@ open class JSONPreview: UIView {
         return textView
     }()
     
-    /// Line number view, height of each row.
-    private lazy var lineHeight: CGFloat = 0
-    
     /// Data source for line number view
     private var lineDataSource: [Int] = [] {
         didSet { lineNumberTableView.reloadData() }
     }
+    
+    /// Line number view, height of each row.
+    private lazy var lineHeights: [Int: CGFloat] = [:]
     
     /// Highlight style
     private var highlightStyle: HighlightStyle = .default {
@@ -56,9 +56,6 @@ open class JSONPreview: UIView {
     /// JSON Decoder
     private var decorator: JSONDecorator! {
         didSet {
-            // Calculate the line height of the line number display area
-            calculateLineHeight()
-            
             // Combine the slice result into a string
             let tmp = NSMutableAttributedString(string: "")
             
@@ -167,8 +164,8 @@ private extension JSONPreview {
     }
     
     /// Calculate the line height of the line number display area
-    func calculateLineHeight() {
-        let attString = decorator.slices[0].expand
+    func calculateLineHeight(at index: Int, width: CGFloat) -> CGFloat {
+        let attString = decorator.slices[index].expand
         
         var tmpAtt: [NSAttributedString.Key : Any] = [:]
         
@@ -177,13 +174,24 @@ private extension JSONPreview {
         }
         
         let rect = (attString.string as NSString).boundingRect(
-            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
+            with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin, .usesFontLeading],
             attributes: tmpAtt,
             context: nil
         )
         
-        lineHeight = rect.height
+        return rect.height
+    }
+    
+    func getLineHeight(at index: Int) -> CGFloat {
+        if let height = lineHeights[index] {
+            return height
+        }
+        
+        let height = calculateLineHeight(at: index, width: jsonTextView.frame.width)
+        lineHeights[index] = height
+        
+        return height
     }
 }
 
@@ -205,7 +213,7 @@ extension JSONPreview: JSONTextViewClickDelegate {
         let slices = decorator.slices
         
         // 1. Get the number of rows
-        let row = Int(floor(pointY / lineHeight))
+        let row = Int(floor(pointY / /*lineHeight*/1))
         
         guard row < lineDataSource.count else { return }
         
@@ -322,7 +330,6 @@ extension JSONPreview: JSONTextViewClickDelegate {
                     replaceString.append(decorator.wrapString)
                     
                 case .folded:
-                    
                     if let _folded = _slices.folded {
                         replaceString.append(_folded)
                         replaceString.append(decorator.wrapString)
@@ -361,7 +368,7 @@ extension JSONPreview: JSONTextViewClickDelegate {
 
 extension JSONPreview: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return lineHeight
+        return getLineHeight(at: indexPath.row)
     }
 }
 
