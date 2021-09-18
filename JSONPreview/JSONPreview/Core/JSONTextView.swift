@@ -9,7 +9,6 @@
 import UIKit
 
 public protocol JSONTextViewClickDelegate: AnyObject {
-    
     /// Execute when zoom is triggered.
     ///
     /// - Parameters:
@@ -19,42 +18,30 @@ public protocol JSONTextViewClickDelegate: AnyObject {
 }
 
 open class JSONTextView: UITextView {
+    /// Used for callback click
+    open weak var clickDelegate: JSONTextViewClickDelegate? = nil
     
     public override init(frame: CGRect, textContainer: NSTextContainer? = nil) {
         super.init(frame: frame, textContainer: textContainer)
-        
         config()
     }
     
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
-        
         config()
     }
-    
-    /// Used for callback click
-    open weak var clickDelegate: JSONTextViewClickDelegate? = nil
 }
 
 private extension JSONTextView {
-    
     func config() {
-        
         delaysContentTouches = false
         canCancelContentTouches = true
         translatesAutoresizingMaskIntoConstraints = false
         
-        backgroundColor = .clear
-        
         textAlignment = .left
         isEditable = false
         
-        showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
-        
-        scrollsToTop = false
-        isScrollEnabled = false
-        bounces = false
         
         textContainer.lineFragmentPadding = 0
         layoutManager.allowsNonContiguousLayout = false
@@ -64,12 +51,8 @@ private extension JSONTextView {
 }
 
 extension JSONTextView {
-    
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        defer {
-            super.touchesBegan(touches, with: event)
-        }
+        defer { super.touchesBegan(touches, with: event) }
         
         // Get the letter of the character at the current touch position
         guard let touch = touches.randomElement() else { return }
@@ -100,7 +83,6 @@ extension JSONTextView {
         
         // Blur the scope of the click.
         for i in -1 ... 2 {
-            
             let offset = characterIndex + i
             
             guard offset >= 0 && offset < text.count else { break }
@@ -115,7 +97,6 @@ extension JSONTextView {
     }
     
     open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        
         switch action {
         case #selector(cut(_:)): return false
         case #selector(paste(_:)): return false

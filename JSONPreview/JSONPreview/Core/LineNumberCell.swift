@@ -9,7 +9,6 @@
 import UIKit
 
 open class LineNumberCell: UITableViewCell {
-    
     open override func layoutSubviews() {
         super.layoutSubviews()
         
