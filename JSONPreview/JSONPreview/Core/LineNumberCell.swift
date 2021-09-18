@@ -17,5 +17,10 @@ open class LineNumberCell: UITableViewCell {
         
         // Modify the width, actually in order to modify the right spacing.
         textLabel?.frame.size.width = contentView.frame.size.width - 15
+        
+        // Make label ceiling display
+        if let height = textLabel?.sizeThatFits(contentView.frame.size).height {
+            textLabel?.frame.size.height = height
+        }
     }
 }
