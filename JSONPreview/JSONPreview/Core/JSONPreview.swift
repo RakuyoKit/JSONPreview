@@ -126,27 +126,16 @@ private extension JSONPreview {
 
 private extension JSONPreview {
     func config() {
-        addSubviews()
-        addInitialLayout()
-    }
-    
-    func addSubviews() {
         addSubview(lineNumberTableView)
         addSubview(jsonTextView)
-    }
-    
-    func addInitialLayout() {
+        
         // lineNumberTableView
         addLineNumberTableViewLayout()
         
         // jsonTextView
         addJSONTextViewLayout()
     }
-}
-
-// MARK: - UI
-
-private extension JSONPreview {
+    
     func addLineNumberTableViewLayout() {
         var constraints = [
             lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith),
