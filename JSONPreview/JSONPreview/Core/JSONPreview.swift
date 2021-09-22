@@ -8,6 +8,17 @@
 
 import UIKit
 
+public protocol JSONPreviewDelegate: NSObjectProtocol {
+    /// Callback executed when clicking on the URL on the view.
+    ///
+    /// - Parameters:
+    ///   - view: The view itself for previewing the json.
+    ///   - url: The URL address that the user clicked on.
+    ///   - textView: The `UITextView` to which the URL belongs.
+    /// - Returen: `true` if interaction with the URL should be allowed; `false` if interaction should not be allowed.
+    func jsonPreview(view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool
+}
+
 open class JSONPreview: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -18,6 +29,9 @@ open class JSONPreview: UIView {
         super.init(coder: coder)
         config()
     }
+    
+    /// delegate for `JSONPreview`.
+    public weak var delegate: JSONPreviewDelegate? = nil
     
     /// TableView responsible for displaying row numbers
     open lazy var lineNumberTableView: LineNumberTableView = {
@@ -262,7 +276,14 @@ extension JSONPreview: UIScrollViewDelegate {
 
 // MARK: - UITextViewDelegate
 
-extension JSONPreview: UITextViewDelegate {}
+extension JSONPreview: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        guard let _delegate = delegate,
+              let openingURL = url.absoluteString.validURL?.openingURL else { return true }
+        
+        return _delegate.jsonPreview(view: self, didClickURL: openingURL, on: textView)
+    }
+}
 
 // MARK: - JSONTextViewDelegate
 
