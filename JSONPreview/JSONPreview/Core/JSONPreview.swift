@@ -197,6 +197,73 @@ private extension JSONPreview {
     }
 }
 
+// MARK: - UITableViewDelegate
+
+extension JSONPreview: UITableViewDelegate {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return getLineHeight(at: indexPath.row)
+    }
+}
+
+// MARK: - UITableViewDataSource
+
+extension JSONPreview: UITableViewDataSource {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return lineDataSource.count
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        
+        cell.backgroundColor = .clear
+        
+        cell.textLabel?.text = "\(lineDataSource[indexPath.row])"
+        cell.textLabel?.textAlignment = .right
+        cell.textLabel?.font = highlightStyle.lineFont
+        cell.textLabel?.textColor = highlightStyle.color.lineText
+        
+        return cell
+    }
+}
+
+// MARK: - UIScrollViewDelegate
+
+extension JSONPreview: UIScrollViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset
+        
+        switch scrollView.specialTag {
+        case .lineView:
+            jsonTextView.contentOffset = contentOffset
+            
+        case .jsonView:
+            let y = contentOffset.y
+            
+            // Ignore the spring effect on the top half of the `jsonTextView`
+            if y <= 0 {
+                lineNumberTableView.contentOffset.y = 0
+                return
+            }
+            
+            // Ignore the spring effect on the bottom half of the `jsonTextView`
+            let diff = scrollView.contentSize.height - scrollView.frame.height
+            if y >= diff {
+                lineNumberTableView.contentOffset.y = diff
+                return
+            }
+            
+            lineNumberTableView.contentOffset = contentOffset
+            
+        default:
+            break
+        }
+    }
+}
+
+// MARK: - UITextViewDelegate
+
+extension JSONPreview: UITextViewDelegate {}
+
 // MARK: - JSONTextViewDelegate
 
 extension JSONPreview: JSONTextViewDelegate {
@@ -368,73 +435,6 @@ extension JSONPreview: JSONTextViewDelegate {
         }
     }
 }
-
-// MARK: - UITableViewDelegate
-
-extension JSONPreview: UITableViewDelegate {
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return getLineHeight(at: indexPath.row)
-    }
-}
-
-// MARK: - UITableViewDataSource
-
-extension JSONPreview: UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return lineDataSource.count
-    }
-    
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        cell.backgroundColor = .clear
-        
-        cell.textLabel?.text = "\(lineDataSource[indexPath.row])"
-        cell.textLabel?.textAlignment = .right
-        cell.textLabel?.font = highlightStyle.lineFont
-        cell.textLabel?.textColor = highlightStyle.color.lineText
-        
-        return cell
-    }
-}
-
-// MARK: - UIScrollViewDelegate
-
-extension JSONPreview: UIScrollViewDelegate {
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset
-        
-        switch scrollView.specialTag {
-        case .lineView:
-            jsonTextView.contentOffset = contentOffset
-            
-        case .jsonView:
-            let y = contentOffset.y
-            
-            // Ignore the spring effect on the top half of the `jsonTextView`
-            if y <= 0 {
-                lineNumberTableView.contentOffset.y = 0
-                return
-            }
-            
-            // Ignore the spring effect on the bottom half of the `jsonTextView`
-            let diff = scrollView.contentSize.height - scrollView.frame.height
-            if y >= diff {
-                lineNumberTableView.contentOffset.y = diff
-                return
-            }
-            
-            lineNumberTableView.contentOffset = contentOffset
-            
-        default:
-            break
-        }
-    }
-}
-
-// MARK: - UITextViewDelegate
-
-extension JSONPreview: UITextViewDelegate { }
 
 // MARK: - Tools
 
