@@ -34,20 +34,18 @@ open class JSONTextView: UITextView {
 
 private extension JSONTextView {
     func config() {
-        delaysContentTouches = false
-        canCancelContentTouches = true
         translatesAutoresizingMaskIntoConstraints = false
         
-        textAlignment = .left
-        isEditable = false
-        
         bounces = false
+        delaysContentTouches = false
+        canCancelContentTouches = true
         showsHorizontalScrollIndicator = false
         
+        isEditable = false
+        textAlignment = .left
+        linkTextAttributes = [:]
         textContainer.lineFragmentPadding = 0
         layoutManager.allowsNonContiguousLayout = false
-        
-        linkTextAttributes = [:]
     }
 }
 

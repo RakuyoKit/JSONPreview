@@ -22,24 +22,23 @@ open class LineNumberTableView: UITableView {
 
 private extension LineNumberTableView {
     func config() {
-        delaysContentTouches = false
-        canCancelContentTouches = true
         translatesAutoresizingMaskIntoConstraints = false
         
-        estimatedRowHeight = 0
-        estimatedSectionFooterHeight = 0
-        estimatedSectionHeaderHeight = 0
+        bounces = false
+        scrollsToTop = false
+        delaysContentTouches = false
+        canCancelContentTouches = true
+        showsVerticalScrollIndicator = false
+        showsHorizontalScrollIndicator = false
         
         if #available(iOS 11, *) {
             contentInsetAdjustmentBehavior = .never
         }
         
         separatorStyle = .none
-        
         allowsMultipleSelection = true
-        showsVerticalScrollIndicator = false
-        showsHorizontalScrollIndicator = false
-        scrollsToTop = false
-        bounces = false
+        estimatedRowHeight = 0
+        estimatedSectionFooterHeight = 0
+        estimatedSectionHeaderHeight = 0
     }
 }
