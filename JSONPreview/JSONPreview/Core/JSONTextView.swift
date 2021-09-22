@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol JSONTextViewDelegate: AnyObject {
+public protocol JSONTextViewDelegate: NSObjectProtocol {
     /// Execute when zoom is triggered.
     ///
     /// - Parameters:
