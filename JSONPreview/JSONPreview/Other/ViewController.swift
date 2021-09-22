@@ -74,6 +74,7 @@ class ViewController: UIViewController {
                     "https:\\/\\/www.github.com",
                     "stackoverflow.com",
                     "172.168.0.1",
+                    "aaa.com.bd",
                     "",
                     [],
                     {},
