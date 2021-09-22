@@ -296,9 +296,7 @@ private extension JSONDecorator {
                 
             // MARK: - Link
             case .link(let value):
-                
                 let addExtraLinkStyle: (NSMutableAttributedString, Int) -> Void = {
-                    
                     let range = NSRange(location: $1, length: value.count)
                     
                     $0.addAttribute(.link, value: value, range: range)
