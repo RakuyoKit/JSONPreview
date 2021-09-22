@@ -197,9 +197,9 @@ private extension JSONPreview {
     }
 }
 
-// MARK: - JSONTextViewClickDelegate
+// MARK: - JSONTextViewDelegate
 
-extension JSONPreview: JSONTextViewClickDelegate {
+extension JSONPreview: JSONTextViewDelegate {
     public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat) {
         defer {
             // Need to delay a small number of seconds,

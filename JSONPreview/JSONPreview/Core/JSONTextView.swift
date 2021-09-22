@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol JSONTextViewClickDelegate: AnyObject {
+public protocol JSONTextViewDelegate: AnyObject {
     /// Execute when zoom is triggered.
     ///
     /// - Parameters:
@@ -29,7 +29,7 @@ open class JSONTextView: UITextView {
     }
     
     /// Used for callback click
-    open weak var clickDelegate: JSONTextViewClickDelegate? = nil
+    open weak var clickDelegate: JSONTextViewDelegate? = nil
 }
 
 private extension JSONTextView {
