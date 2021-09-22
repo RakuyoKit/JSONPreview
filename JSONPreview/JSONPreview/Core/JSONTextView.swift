@@ -41,6 +41,7 @@ private extension JSONTextView {
         textAlignment = .left
         isEditable = false
         
+        bounces = false
         showsHorizontalScrollIndicator = false
         
         textContainer.lineFragmentPadding = 0
