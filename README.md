@@ -38,6 +38,8 @@ pod 'JSONPreview'
 
 ## Features
 
+> In version `1.3.0`, we removed the diagonal swipe feature. Now if a JSON row is not displayed open, it will be displayed folded instead of going beyond the screen. If you wish to use this feature, please use version [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3)
+
 - [x] Supports **formatting** to display JSON data.
 - [x] Supports **highlighting** JSON data, with multiple color and font configuration options.
 - [x] Provides **fold** and **expand** features for `Array` and `Object`.
@@ -71,27 +73,27 @@ previewView.preview(json)
 
 ```swift
 let highlightColor = HighlightColor(
-    keyWord: <#T##ConvertibleToColor#>,
-    key: <#T##ConvertibleToColor#>,
-    link: <#T##ConvertibleToColor#>,
-    string: <#T##ConvertibleToColor#>,
-    number: <#T##ConvertibleToColor#>,
-    boolean: <#T##ConvertibleToColor#>,
-    null: <#T##ConvertibleToColor#>,
-    unknownText: <#T##ConvertibleToColor#>,
-    unknownBackground: <#T##ConvertibleToColor#>,
-    jsonBackground: <#T##ConvertibleToColor#>,
-    lineBackground: <#T##ConvertibleToColor#>,
-    lineText: <#T##ConvertibleToColor#>
+    keyWord: ConvertibleToColor,
+    key: ConvertibleToColor,
+    link: ConvertibleToColor,
+    string: ConvertibleToColor,
+    number: ConvertibleToColor,
+    boolean: ConvertibleToColor,
+    null: ConvertibleToColor,
+    unknownText: ConvertibleToColor,
+    unknownBackground: ConvertibleToColor,
+    jsonBackground: ConvertibleToColor,
+    lineBackground: ConvertibleToColor,
+    lineText: ConvertibleToColor
 )
 
 let style = HighlightStyle(
-    expandIcon: <#T##UIImage?#>,
-    foldIcon: <#T##UIImage?#>,
+    expandIcon: UIImage?,
+    foldIcon: UIImage?,
     color: highlightColor,
-    lineFont: <#T##UIFont?#>,
-    jsonFont: <#T##UIFont?#>,
-    lineHeight: <#T##CGFloat#>
+    lineFont: UIFont?,
+    jsonFont: UIFont?,
+    lineHeight: CGFloat
 )
 
 previewView.preview(json, style: style)
@@ -132,18 +134,10 @@ The following de-escaping operations are supported in different versions.
 
 ![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
 
-## Known issues
-
-1. After the first display, slide to a non-terminal position, rotate the screen, and the subviews will be misaligned. The subview will be misaligned. This problem does not occur when screen rotation is disabled.
-2. When collapsing/expanding nodes, there is a possibility of JSON flickering.
-3. On some systems (a more comprehensive test has not been performed yet), when the JSON is very complex, there will be flickering problems, and the console will output `CoreAnimation: failed to allocate xxx bytes`. (The problem may be an iOS system problem)
-
 ## TODO
 
-- [ ] Fix known issues.
 - [ ] Add new integration methods, such as `Carthage` and `Swift Package Manager`.
 - [ ] Support for macOS.
-- [ ] Better copy operation.
 
 ## Thanks
 

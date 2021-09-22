@@ -36,6 +36,8 @@ pod 'JSONPreview'
 
 ## 功能
 
+> 在 `1.3.0` 版本中，我们删除了斜向滑动的功能。现在如果JSON一行展示不开，那么它将折行展示，而不是超出屏幕。如果您希望使用该功能，请使用 [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3) 版本
+
 - [x] 支持**格式化**显示 JSON 数据。
 - [x] 支持**高亮** JSON 数据，提供多种颜色与字体配置选项。
 - [x] 针对 `Array` 与 `Object` 提供**折叠**与**展开**功能。
@@ -69,27 +71,27 @@ previewView.preview(json)
 
 ```swift
 let highlightColor = HighlightColor(
-    keyWord: <#T##ConvertibleToColor#>,
-    key: <#T##ConvertibleToColor#>,
-    link: <#T##ConvertibleToColor#>,
-    string: <#T##ConvertibleToColor#>,
-    number: <#T##ConvertibleToColor#>,
-    boolean: <#T##ConvertibleToColor#>,
-    null: <#T##ConvertibleToColor#>,
-    unknownText: <#T##ConvertibleToColor#>,
-    unknownBackground: <#T##ConvertibleToColor#>,
-    jsonBackground: <#T##ConvertibleToColor#>,
-    lineBackground: <#T##ConvertibleToColor#>,
-    lineText: <#T##ConvertibleToColor#>
+    keyWord: ConvertibleToColor,
+    key: ConvertibleToColor,
+    link: ConvertibleToColor,
+    string: ConvertibleToColor,
+    number: ConvertibleToColor,
+    boolean: ConvertibleToColor,
+    null: ConvertibleToColor,
+    unknownText: ConvertibleToColor,
+    unknownBackground: ConvertibleToColor,
+    jsonBackground: ConvertibleToColor,
+    lineBackground: ConvertibleToColor,
+    lineText: ConvertibleToColor
 )
 
 let style = HighlightStyle(
-    expandIcon: <#T##UIImage?#>,
-    foldIcon: <#T##UIImage?#>,
+    expandIcon: UIImage?,
+    foldIcon: UIImage?,
     color: highlightColor,
-    lineFont: <#T##UIFont?#>,
-    jsonFont: <#T##UIFont?#>,
-    lineHeight: <#T##CGFloat#>
+    lineFont: UIFont?,
+    jsonFont: UIFont?,
+    lineHeight: CGFloat
 )
 
 previewView.preview(json, style: style)
@@ -130,18 +132,11 @@ previewView.preview(json, style: style)
 
 ![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
 
-## 已知问题
-
-1. 首次显示后，滑动到非结尾位置，旋转屏幕，子视图将出现错位问题。产生滑动后恢复正常。禁止屏幕转转时该问题不会发生。
-2. 折叠/展开节点时，有概率发生 JSON 闪烁的问题。
-3. 在某些系统上（暂未进行更全面的测试），当 JSON 非常复杂时，会出现闪烁问题，此时控制台将输出 `CoreAnimation: failed to allocate xxx bytes`。（该问题可能是 iOS 系统问题） 
 
 ## TODO
 
-- [ ] 修复已知问题。
 - [ ] 增加新的集成方式，例如 `Carthage` 与 `Swift Package Manager`。
 - [ ] 支持 macOS。
-- [ ] 更完善的复制操作。
 
 ## 致谢
 
