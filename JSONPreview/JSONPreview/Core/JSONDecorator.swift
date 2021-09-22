@@ -36,14 +36,14 @@ public class JSONDecorator {
     /// Can be used to splice slices into a complete string.
     private(set) lazy var wrapString = NSAttributedString(string: "\n", attributes: createStyle(foregroundColor: nil))
     
-    private lazy var startStyle   = createStyle(foregroundColor: style.color.keyWord)
+    private lazy var startStyle = createStyle(foregroundColor: style.color.keyWord)
     private lazy var keyWordStyle = createStyle(foregroundColor: style.color.keyWord)
-    private lazy var keyStyle     = createStyle(foregroundColor: style.color.key)
-    private lazy var linkStyle    = createStyle(foregroundColor: style.color.link)
-    private lazy var stringStyle  = createStyle(foregroundColor: style.color.string)
-    private lazy var numberStyle  = createStyle(foregroundColor: style.color.number)
-    private lazy var boolStyle    = createStyle(foregroundColor: style.color.boolean)
-    private lazy var nullStyle    = createStyle(foregroundColor: style.color.null)
+    private lazy var keyStyle = createStyle(foregroundColor: style.color.key)
+    private lazy var linkStyle = createStyle(foregroundColor: style.color.link)
+    private lazy var stringStyle = createStyle(foregroundColor: style.color.string)
+    private lazy var numberStyle = createStyle(foregroundColor: style.color.number)
+    private lazy var boolStyle = createStyle(foregroundColor: style.color.boolean)
+    private lazy var nullStyle = createStyle(foregroundColor: style.color.null)
     
     private lazy var placeholderStyle = createStyle(
         foregroundColor: style.color.lineText,
