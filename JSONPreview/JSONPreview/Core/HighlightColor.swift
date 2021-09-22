@@ -10,7 +10,6 @@ import UIKit
 
 /// Color configuration for highlight
 public struct HighlightColor {
-    
     public init(
         keyWord: ConvertibleToColor,
         key: ConvertibleToColor,
@@ -79,7 +78,6 @@ public struct HighlightColor {
 // MARK: - Built-in color style
 
 public extension HighlightColor {
-    
     /// Default color configuration.
     static let `default` = HighlightColor(
         keyWord: UIColor.black,
@@ -117,24 +115,20 @@ public extension HighlightColor {
 
 /// Used to convert some types to UIColor types
 public protocol ConvertibleToColor {
-    
     /// The converted color will be read through this attribute
     var color: UIColor { get }
 }
 
 extension UIColor: ConvertibleToColor {
-    
     public var color: UIColor { self }
 }
 
 /// Like `0x88B0BF`
 extension Int: ConvertibleToColor {
-    
     public var color: UIColor {
-        
-        let red   = CGFloat((self & 0xFF0000) >> 16) / 255.0
+        let red = CGFloat((self & 0xFF0000) >> 16) / 255.0
         let green = CGFloat((self & 0xFF00) >> 8) / 255.0
-        let blue  = CGFloat(self & 0xFF) / 255.0
+        let blue = CGFloat(self & 0xFF) / 255.0
         
         return UIColor(red: red, green: green, blue: blue, alpha: 1)
     }
@@ -142,11 +136,8 @@ extension Int: ConvertibleToColor {
 
 /// Like `#FF7F20`
 extension String: ConvertibleToColor {
-    
     public var color: UIColor {
-        
         let hex: Int = {
-            
             var sum = 0
             
             uppercased().utf8.forEach {
@@ -157,18 +148,10 @@ extension String: ConvertibleToColor {
             return sum
         }()
         
-        let red   = CGFloat((hex & 0xFF0000) >> 16) / 255.0
+        let red = CGFloat((hex & 0xFF0000) >> 16) / 255.0
         let green = CGFloat((hex & 0xFF00) >> 8) / 255.0
-        let blue  = CGFloat(hex & 0xFF) / 255.0
+        let blue = CGFloat(hex & 0xFF) / 255.0
         
         return UIColor(red: red, green: green, blue: blue, alpha: 1)
-    }
-}
-
-/// Like `[0.72, 0.18, 0.13]`. Will not check for out-of-bounds behavior.
-extension Array: ConvertibleToColor where Element == CGFloat {
-    
-    public var color: UIColor {
-        return UIColor(red: self[0], green: self[1], blue: self[2], alpha: 1)
     }
 }

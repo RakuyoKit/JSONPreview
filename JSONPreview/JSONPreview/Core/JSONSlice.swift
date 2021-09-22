@@ -10,7 +10,6 @@ import Foundation
 
 /// Used to represent a certain part of JSON
 public struct JSONSlice {
-    
     /// The current display state of the slice
     public enum State {
         case expand, folded
@@ -29,7 +28,6 @@ public struct JSONSlice {
         expand: NSAttributedString,
         folded: NSAttributedString? = nil
     ) {
-        
         self.level = level
         self.lineNumber = lineNumber
         self.expand = expand
@@ -49,7 +47,6 @@ public struct JSONSlice {
         expand: (String, [NSAttributedString.Key : Any]),
         folded: (String, [NSAttributedString.Key : Any])? = nil
     ) {
-        
         self.level = level
         self.lineNumber = lineNumber
         
@@ -85,10 +82,8 @@ public struct JSONSlice {
 }
 
 public extension JSONSlice {
-    
     /// According to different status, return the content that should be displayed currently.
     var showContent: NSAttributedString? {
-        
         switch state {
         case .expand: return expand
         case .folded: return folded
