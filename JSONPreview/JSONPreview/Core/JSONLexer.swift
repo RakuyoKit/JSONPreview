@@ -200,20 +200,19 @@ private extension JSONLexer {
                     tokens.append(.objectKey(string))
                     
                 case .arrayBegin, .colon:
-                    if let url = string.isValidURL {
-                        tokens.append(.link(url))
+                    if let url = string.validURL {
+                        tokens.append(.link(url.urlString))
                     } else {
                         tokens.append(.string(string))
                     }
                     
                 case .comma:
-                    
                     // Need to determine whether it is currently in the object or in the array.
                     if beginNodes.last == .object {
                         tokens.append(.objectKey(string))
                         
-                    } else if let url = string.isValidURL {
-                        tokens.append(.link(url))
+                    } else if let url = string.validURL {
+                        tokens.append(.link(url.urlString))
                         
                     } else {
                         tokens.append(.string(string))
@@ -301,40 +300,8 @@ private extension JSONLexer {
 
 // MARK: - Tools
 
+
 fileprivate extension String {
-    /// Check if the string is a valid URL.
-    ///
-    /// - Return: If it is a valid URL, return the unescaped string. Otherwise return nil.
-    var isValidURL: String? {
-        guard count > 1 else { return nil }
-        
-        guard let detector = try? NSDataDetector(
-            types: NSTextCheckingResult.CheckingType.link.rawValue
-        ) else { return nil }
-        
-        let string = removeEscaping()
-        let matches = detector.matches(
-            in: string,
-            options: [],
-            range: NSRange(location: 0, length: string.utf16.count)
-        )
-        
-        return matches.isEmpty ? nil : string
-    }
-    
-    /// Remove escape characters in the string.
-    ///
-    /// Currently only supports replacement of "\\/".
-    func removeEscaping() -> String {
-        var string = self
-        
-        if string.contains("\\/") {
-            string = string.replacingOccurrences(of: "\\/", with: "/")
-        }
-        
-        return string
-    }
-    
     /// Search for the fist 'end of string' element.
     /// (in case a `"` is preceded by `\` it will be ignored)
     func firstEndOfString() -> String.Index? {
