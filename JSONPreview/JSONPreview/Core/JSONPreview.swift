@@ -30,6 +30,14 @@ open class JSONPreview: UIView {
         config()
     }
     
+    deinit {
+        if !isOriginalGeneratingDeviceOrientationNotifications {
+            UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        }
+        
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+    
     /// delegate for `JSONPreview`.
     public weak var delegate: JSONPreviewDelegate? = nil
     
@@ -57,13 +65,27 @@ open class JSONPreview: UIView {
         return textView
     }()
     
+    private enum Orientation: CaseIterable {
+        case unknow
+        case portrait
+        case landscape
+    }
+    
+    /// Record the direction of the last equipment.
+    private lazy var lastOrientation: Orientation = .unknow
+    
+    // Record previous property values
+    private lazy var isOriginalGeneratingDeviceOrientationNotifications = UIDevice.current.isGeneratingDeviceOrientationNotifications
+    
+    private typealias LineHeightStorage = [Int: CGFloat]
+    
+    /// Line number view, height of each row.
+    private lazy var lineHeights: [Orientation: LineHeightStorage] = Orientation.allCases.reduce(into: [:], { $0[$1] = [:] })
+    
     /// Data source for line number view
     private var lineDataSource: [Int] = [] {
         didSet { lineNumberTableView.reloadData() }
     }
-    
-    /// Line number view, height of each row.
-    private lazy var lineHeights: [Int: CGFloat] = [:]
     
     /// Highlight style
     private var highlightStyle: HighlightStyle = .default {
@@ -145,6 +167,9 @@ private extension JSONPreview {
         
         // jsonTextView
         addJSONTextViewLayout()
+        
+        // Listening to device rotation in preparation for recalculating cell height
+        listeningDeviceRotation()
     }
     
     func addLineNumberTableViewLayout() {
@@ -197,15 +222,41 @@ private extension JSONPreview {
         return rect.height
     }
     
+    func listeningDeviceRotation() {
+        if !isOriginalGeneratingDeviceOrientationNotifications {
+            UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDeviceOrientationChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+}
+
+private extension JSONPreview {
+    @objc
+    func handleDeviceOrientationChange(_ notification: NSNotification) {
+        switch UIDevice.current.orientation {
+        case .portrait:
+            lastOrientation = .portrait
+            lineNumberTableView.reloadData()
+            
+        case .landscapeLeft, .landscapeRight:
+            lastOrientation = .landscape
+            lineNumberTableView.reloadData()
+            
+        default:
+            break
+        }
+    }
+    
     func getLineHeight(at index: Int) -> CGFloat {
         let line = lineDataSource[index]
         
-        if let height = lineHeights[line] {
+        if let height = lineHeights[lastOrientation]![line] {
             return height
         }
         
         let height = calculateLineHeight(at: line - 1, width: jsonTextView.frame.width)
-        lineHeights[line] = height
+        lineHeights[lastOrientation]![line] = height
         
         return height
     }
