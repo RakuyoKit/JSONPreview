@@ -10,7 +10,6 @@ import Foundation
 
 /// JSON lexical analyzer
 public class JSONLexer {
-    
     private init() {
         // Do not want the caller to directly initialize the object
     }
@@ -22,22 +21,26 @@ public class JSONLexer {
 }
 
 extension JSONLexer {
-    
     public enum Token: Equatable {
+        /// {
+        case objectBegin
         
-        case objectBegin // {
-        
-        case objectEnd // }
+        /// }
+        case objectEnd
         
         case objectKey(String)
         
-        case arrayBegin // [
+        /// [
+        case arrayBegin
         
-        case arrayEnd // ]
+        /// ]
+        case arrayEnd
         
-        case colon // :
+        /// :
+        case colon
         
-        case comma // ,
+        /// ,
+        case comma
         
         case link(String)
         
@@ -45,7 +48,8 @@ extension JSONLexer {
         
         case number(String)
         
-        case boolean(Bool) // true or false
+        /// true or false
+        case boolean(Bool)
         
         case null
         
@@ -53,15 +57,15 @@ extension JSONLexer {
     }
 
     fileprivate enum BeginNode: Equatable {
+        /// {
+        case object
         
-        case object // {
-        
-        case array // [
+        /// [
+        case array
     }
 }
 
 public extension JSONLexer {
-    
     /// Parse JSON string into `JSONLexer.Token` array.
     ///
     /// When `json` meets the following conditions, an empty array will be returned:
@@ -71,7 +75,6 @@ public extension JSONLexer {
     /// - Parameter json: JSON to be processed.
     /// - Returns: Parsed Token array. See `JSONLexer.Token` for details.
     static func getTokens(of json: String) -> [Token] {
-        
         guard !json.isEmpty else { return [] }
         
         let lexer = JSONLexer()
@@ -80,7 +83,6 @@ public extension JSONLexer {
         
         // Processing initial data
         switch _json.removeFirst() {
-            
         case "{":
             lexer.beginNodes.append(.object)
             lexer.tokens.append(.objectBegin)
@@ -102,12 +104,10 @@ public extension JSONLexer {
 }
 
 private extension JSONLexer {
-    
     /// Get the remaining token.
     ///
     /// - Parameter json: Target json.
     func getremainingTokens(in json: String) {
-        
         guard !json.isEmpty else { return }
         
         var tmpJSON = json
@@ -115,21 +115,17 @@ private extension JSONLexer {
         // Due to some restrictions, it cannot be implemented with recursion,
         // so it can only use the loop algorithm
         for _ in  0 ..< json.count {
-            
             guard !tmpJSON.isEmpty else { break }
             
             let last = tokens.last
             
             switch tmpJSON.removeFirst() {
-                
                 // Filter spaces and newlines.
                 // This type of character will not cause format errors.
             case " ", "\t", "\n": break
                 
             case ":":
-                
                 switch last {
-                
                 case .objectKey:
                     tokens.append(.colon)
                     
@@ -139,9 +135,7 @@ private extension JSONLexer {
                 }
                 
             case ",":
-                
                 switch last {
-                
                 case .null, .link, .string, .number, .boolean, .objectEnd, .arrayEnd:
                     tokens.append(.comma)
                     
@@ -151,7 +145,6 @@ private extension JSONLexer {
                 }
                 
             case "{":
-                
                 if last == nil || last! != .objectBegin {
                     beginNodes.append(.object)
                     tokens.append(.objectBegin)
@@ -173,7 +166,6 @@ private extension JSONLexer {
                 }
                 
             case "[":
-                
                 if last == nil || last! != .arrayBegin {
                     beginNodes.append(.array)
                     tokens.append(.arrayBegin)
@@ -184,7 +176,6 @@ private extension JSONLexer {
                 }
                 
             case "]":
-                
                 if beginNodes.last == .array {
                     beginNodes.removeLast()
                     tokens.append(.arrayEnd)
@@ -195,7 +186,6 @@ private extension JSONLexer {
                 }
                 
             case "\"":
-                
                 // Determine whether the string is a complete string node.
                 guard let index = tmpJSON.firstEndOfString() else {
                     tokens.append(.unknown(tmpJSON))
@@ -203,31 +193,26 @@ private extension JSONLexer {
                 }
                 
                 let startIndex = tmpJSON.startIndex
-                
                 let string = String(tmpJSON[startIndex ..< index])
                 
                 switch last {
-                    
                 case .objectBegin:
                     tokens.append(.objectKey(string))
                     
                 case .arrayBegin, .colon:
-                    
-                    if let url = string.isValidURL {
-                        tokens.append(.link(url))
-                        
+                    if let url = string.validURL {
+                        tokens.append(.link(url.urlString))
                     } else {
                         tokens.append(.string(string))
                     }
                     
                 case .comma:
-                    
                     // Need to determine whether it is currently in the object or in the array.
                     if beginNodes.last == .object {
                         tokens.append(.objectKey(string))
                         
-                    } else if let url = string.isValidURL {
-                        tokens.append(.link(url))
+                    } else if let url = string.validURL {
+                        tokens.append(.link(url.urlString))
                         
                     } else {
                         tokens.append(.string(string))
@@ -241,7 +226,6 @@ private extension JSONLexer {
                 tmpJSON.removeSubrange(startIndex ... index)
                 
             case "n":
-                
                 let startIndex = tmpJSON.startIndex
                 let bounds = startIndex ..< tmpJSON.index(startIndex, offsetBy: 3)
                 
@@ -256,7 +240,6 @@ private extension JSONLexer {
                 tmpJSON.removeSubrange(bounds)
                 
             case "t":
-                
                 let startIndex = tmpJSON.startIndex
                 let bounds = startIndex ..< tmpJSON.index(startIndex, offsetBy: 3)
                 
@@ -271,7 +254,6 @@ private extension JSONLexer {
                 tmpJSON.removeSubrange(bounds)
                 
             case "f":
-                
                 let startIndex = tmpJSON.startIndex
                 let bounds = startIndex ..< tmpJSON.index(startIndex, offsetBy: 4)
                 
@@ -286,7 +268,6 @@ private extension JSONLexer {
                 tmpJSON.removeSubrange(bounds)
                 
             case let value:
-                
                 guard !tmpJSON.isEmpty && (value == "-" || value.isNumber) else {
                     tokens.append(.unknown(String(value) + tmpJSON))
                     return
@@ -296,13 +277,11 @@ private extension JSONLexer {
                 var _first: Character? = tmpJSON.removeFirst()
                 
                 while let first = _first {
-                    
                     if first.isNumber || first == "." {
                         number += String(first)
                         _first = tmpJSON.removeFirst()
                         
                     } else {
-                        
                         tmpJSON = String(first) + tmpJSON
                         _first = nil
                     }
@@ -321,44 +300,11 @@ private extension JSONLexer {
 
 // MARK: - Tools
 
+
 fileprivate extension String {
-    
-    /// Check if the string is a valid URL.
-    ///
-    /// - Return: If it is a valid URL, return the unescaped string. Otherwise return nil.
-    var isValidURL: String? {
-        
-        guard count > 1 else { return nil }
-        
-        guard let detector = try? NSDataDetector(
-            types: NSTextCheckingResult.CheckingType.link.rawValue
-        ) else { return nil }
-        
-        let string = removeEscaping()
-        
-        let matches = detector.matches(in: string, options: [], range: NSRange(location: 0, length: string.utf16.count))
-        
-        return matches.isEmpty ? nil : string
-    }
-    
-    /// Remove escape characters in the string.
-    ///
-    /// Currently only supports replacement of "\\/".
-    func removeEscaping() -> String {
-        
-        var string = self
-        
-        if string.contains("\\/") {
-            string = string.replacingOccurrences(of: "\\/", with: "/")
-        }
-        
-        return string
-    }
-    
     /// Search for the fist 'end of string' element.
     /// (in case a `"` is preceded by `\` it will be ignored)
     func firstEndOfString() -> String.Index? {
-        
         guard var _index = firstIndex(of: "\"") else { return nil }
         
         /// Search for the first index of the specified character,
@@ -368,11 +314,10 @@ fileprivate extension String {
         ///   - element: The element to search for.
         ///   - start: The start index to start seaching.
         /// - Returns: The first index of the element after the start index, or `nil` when not found.
-        func firstIndex(
+        func _firstIndex(
             of element: Character,
             startingAt start: String.Index
         ) -> String.Index? {
-            
             guard count > 0 && start < endIndex else { return nil }
             return self[start...].firstIndex(of: element)
         }
@@ -380,8 +325,7 @@ fileprivate extension String {
         // If this isn't the first character of the string, check if it is proceeded
         // by a `\`. If so, search again, starting with the next index.
         while _index > startIndex && self[index(before: _index)] == "\\" {
-            
-            if let next = firstIndex(of: "\"", startingAt: index(after: _index)) {
+            if let next = _firstIndex(of: "\"", startingAt: index(after: _index)) {
                 _index = next
             } else {
                 return nil

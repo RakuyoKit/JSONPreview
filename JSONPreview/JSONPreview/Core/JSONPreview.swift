@@ -8,40 +8,44 @@
 
 import UIKit
 
+public protocol JSONPreviewDelegate: NSObjectProtocol {
+    /// Callback executed when clicking on the URL on the view.
+    ///
+    /// - Parameters:
+    ///   - view: The view itself for previewing the json.
+    ///   - url: The URL address that the user clicked on.
+    ///   - textView: The `UITextView` to which the URL belongs.
+    /// - Returen: `true` if interaction with the URL should be allowed; `false` if interaction should not be allowed.
+    func jsonPreview(view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool
+}
+
 open class JSONPreview: UIView {
-    
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        
         config()
     }
     
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
-        
         config()
     }
     
-    /// ScrollView responsible for scrolling in JSON area
-    private lazy var jsonScrollView: UIScrollView = {
+    deinit {
+        if !isOriginalGeneratingDeviceOrientationNotifications {
+            UIDevice.current.endGeneratingDeviceOrientationNotifications()
+        }
         
-        let scrollView = UIScrollView()
-        
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.tag = Constant.scrollViewTag
-        scrollView.backgroundColor = .clear
-        scrollView.bounces = false
-        
-        scrollView.delegate = self
-        
-        return scrollView
-    }()
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+    
+    /// delegate for `JSONPreview`.
+    public weak var delegate: JSONPreviewDelegate? = nil
     
     /// TableView responsible for displaying row numbers
     open lazy var lineNumberTableView: LineNumberTableView = {
-        
         let tableView = LineNumberTableView(frame: .zero, style: .plain)
         
+        tableView.specialTag = .lineView
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -52,16 +56,31 @@ open class JSONPreview: UIView {
     
     /// TextView responsible for displaying JSON
     open lazy var jsonTextView: JSONTextView = {
-        
         let textView = JSONTextView()
         
+        textView.specialTag = .jsonView
         textView.clickDelegate = self
+        textView.delegate = self
         
         return textView
     }()
     
+    private enum Orientation: CaseIterable {
+        case unknow
+        case portrait
+        case landscape
+    }
+    
+    /// Record the direction of the last equipment.
+    private lazy var lastOrientation: Orientation = .unknow
+    
+    // Record previous property values
+    private lazy var isOriginalGeneratingDeviceOrientationNotifications = UIDevice.current.isGeneratingDeviceOrientationNotifications
+    
+    private typealias LineHeightStorage = [Int: CGFloat]
+    
     /// Line number view, height of each row.
-    private lazy var lineHeight: CGFloat = 0
+    private lazy var lineHeights: [Orientation: LineHeightStorage] = Orientation.allCases.reduce(into: [:], { $0[$1] = [:] })
     
     /// Data source for line number view
     private var lineDataSource: [Int] = [] {
@@ -72,7 +91,7 @@ open class JSONPreview: UIView {
     private var highlightStyle: HighlightStyle = .default {
         didSet {
             lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
-            jsonScrollView.backgroundColor = highlightStyle.color.jsonBackground
+            jsonTextView.backgroundColor = highlightStyle.color.jsonBackground
             
             jsonTextView.textContainerInset = UIEdgeInsets(
                 top: 0, left: 10, bottom: 0, right: 10
@@ -83,10 +102,6 @@ open class JSONPreview: UIView {
     /// JSON Decoder
     private var decorator: JSONDecorator! {
         didSet {
-            
-            // Calculate the line height of the line number display area
-            calculateLineHeight()
-            
             // Combine the slice result into a string
             let tmp = NSMutableAttributedString(string: "")
             
@@ -97,7 +112,6 @@ open class JSONPreview: UIView {
             
             // Switch to the main thread to update the UI
             DispatchQueue.main.async { [weak self] in
-                
                 guard let this = self else { return }
                 
                 this.jsonTextView.attributedText = tmp
@@ -105,13 +119,9 @@ open class JSONPreview: UIView {
             }
         }
     }
-    
-    /// Constraint settings at the top of `jsonTextView`
-    private lazy var jsonTextViewTopConstraint: NSLayoutConstraint? = nil
 }
 
 public extension JSONPreview {
-    
     /// Preview json.
     ///
     /// - Parameters:
@@ -119,13 +129,10 @@ public extension JSONPreview {
     ///   - style: Highlight style. See `HighlightStyle` for details.
     ///   - completion: Callback after data processing is completed.
     func preview(_ json: String, style: HighlightStyle = .default, completion: (() -> Void)? = nil) {
-        
         highlightStyle = style
         
         DispatchQueue.global().async { [weak self] in
-            
             self?.decorator = JSONDecorator.highlight(json, style: style)
-            
             DispatchQueue.main.async { completion?() }
         }
     }
@@ -134,12 +141,15 @@ public extension JSONPreview {
 // MARK: - Constant
 
 private extension JSONPreview {
+    enum Tag: Int {
+        /// Tag of `lineNumberTableView`
+        case lineView = 222
+        
+        /// Tag of `jsonTextView`
+        case jsonView = 111
+    }
     
     enum Constant {
-        
-        /// Tag of `jsonScrollView`
-        static let scrollViewTag: Int = 0
-        
         /// Fixed width of `lineNumberTableView`
         static let lineWith: CGFloat = 55
     }
@@ -148,40 +158,21 @@ private extension JSONPreview {
 // MARK: - Config
 
 private extension JSONPreview {
-    
     func config() {
-        
-        addSubviews()
-        addInitialLayout()
-    }
-    
-    func addSubviews() {
-        
         addSubview(lineNumberTableView)
-        addSubview(jsonScrollView)
-        
-        jsonScrollView.addSubview(jsonTextView)
-    }
-    
-    func addInitialLayout() {
+        addSubview(jsonTextView)
         
         // lineNumberTableView
         addLineNumberTableViewLayout()
         
-        // jsonScrollView
-        addJSONScrollViewLayout()
-        
         // jsonTextView
         addJSONTextViewLayout()
+        
+        // Listening to device rotation in preparation for recalculating cell height
+        listeningDeviceRotation()
     }
-}
-
-// MARK: - UI
-
-private extension JSONPreview {
     
     func addLineNumberTableViewLayout() {
-        
         var constraints = [
             lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith),
             lineNumberTableView.topAnchor.constraint(equalTo: topAnchor),
@@ -189,57 +180,31 @@ private extension JSONPreview {
         ]
         
         constraints.append(lineNumberTableView.leftAnchor.constraint(equalTo: {
-            if #available(iOS 11.0, *) {
-                return safeAreaLayoutGuide.leftAnchor
-            } else {
-                return leftAnchor
-            }
-        }()))
-        
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    func addJSONScrollViewLayout() {
-        
-        var constraints = [
-            jsonScrollView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor, constant: -1),
-            jsonScrollView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
-            jsonScrollView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
-        ]
-        
-        constraints.append(jsonScrollView.rightAnchor.constraint(equalTo: {
-            if #available(iOS 11.0, *) {
-                return safeAreaLayoutGuide.rightAnchor
-            } else {
-                return rightAnchor
-            }
+            guard #available(iOS 11.0, *) else { return leftAnchor }
+            return safeAreaLayoutGuide.leftAnchor
         }()))
         
         NSLayoutConstraint.activate(constraints)
     }
     
     func addJSONTextViewLayout() {
-        
         var constraints = [
-            jsonTextView.leftAnchor.constraint(equalTo: jsonScrollView.leftAnchor),
-            jsonTextView.rightAnchor.constraint(equalTo: jsonScrollView.rightAnchor),
-            jsonTextView.bottomAnchor.constraint(equalTo: jsonScrollView.bottomAnchor),
+            jsonTextView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor/*, constant: -1*/),
+            jsonTextView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
+            jsonTextView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
         ]
         
-        jsonTextViewTopConstraint = jsonTextView.topAnchor.constraint(equalTo: jsonScrollView.topAnchor)
-        
-        constraints.append(jsonTextViewTopConstraint!)
+        constraints.append(jsonTextView.rightAnchor.constraint(equalTo: {
+            guard #available(iOS 11.0, *) else { return rightAnchor }
+            return safeAreaLayoutGuide.rightAnchor
+        }()))
         
         NSLayoutConstraint.activate(constraints)
-        
-        jsonTextView.setContentHuggingPriority(.required, for: .vertical)
-        jsonTextView.setContentHuggingPriority(.required, for: .horizontal)
     }
     
     /// Calculate the line height of the line number display area
-    func calculateLineHeight() {
-        
-        let attString = decorator.slices[0].expand
+    func calculateLineHeight(at index: Int, width: CGFloat) -> CGFloat {
+        let attString = decorator.slices[index].expand
         
         var tmpAtt: [NSAttributedString.Key : Any] = [:]
         
@@ -248,43 +213,152 @@ private extension JSONPreview {
         }
         
         let rect = (attString.string as NSString).boundingRect(
-            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
+            with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin, .usesFontLeading],
             attributes: tmpAtt,
             context: nil
         )
         
-        lineHeight = rect.height
+        return rect.height
+    }
+    
+    func listeningDeviceRotation() {
+        if !isOriginalGeneratingDeviceOrientationNotifications {
+            UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDeviceOrientationChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
 }
 
-// MARK: - JSONTextViewClickDelegate
-
-extension JSONPreview: JSONTextViewClickDelegate {
-    
-    public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat) {
-        
-        defer {
+private extension JSONPreview {
+    @objc
+    func handleDeviceOrientationChange(_ notification: NSNotification) {
+        switch UIDevice.current.orientation {
+        case .portrait:
+            lastOrientation = .portrait
+            lineNumberTableView.reloadData()
             
+        case .landscapeLeft, .landscapeRight:
+            lastOrientation = .landscape
+            lineNumberTableView.reloadData()
+            
+        default:
+            break
+        }
+    }
+    
+    func getLineHeight(at index: Int) -> CGFloat {
+        let line = lineDataSource[index]
+        
+        if let height = lineHeights[lastOrientation]![line] {
+            return height
+        }
+        
+        let height = calculateLineHeight(at: line - 1, width: jsonTextView.frame.width)
+        lineHeights[lastOrientation]![line] = height
+        
+        return height
+    }
+}
+
+// MARK: - UITableViewDelegate
+
+extension JSONPreview: UITableViewDelegate {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return getLineHeight(at: indexPath.row)
+    }
+}
+
+// MARK: - UITableViewDataSource
+
+extension JSONPreview: UITableViewDataSource {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return lineDataSource.count
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        
+        cell.backgroundColor = .clear
+        
+        cell.textLabel?.text = "\(lineDataSource[indexPath.row])"
+        cell.textLabel?.textAlignment = .right
+        cell.textLabel?.font = highlightStyle.lineFont
+        cell.textLabel?.textColor = highlightStyle.color.lineText
+        
+        return cell
+    }
+}
+
+// MARK: - UIScrollViewDelegate
+
+extension JSONPreview: UIScrollViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset
+        
+        switch scrollView.specialTag {
+        case .lineView:
+            jsonTextView.contentOffset = contentOffset
+            
+        case .jsonView:
+            let y = contentOffset.y
+            
+            // Ignore the spring effect on the top half of the `jsonTextView`
+            if y <= 0 {
+                lineNumberTableView.contentOffset.y = 0
+                return
+            }
+            
+            // Ignore the spring effect on the bottom half of the `jsonTextView`
+            let diff = scrollView.contentSize.height - scrollView.frame.height
+            if y >= diff {
+                lineNumberTableView.contentOffset.y = diff
+                return
+            }
+            
+            lineNumberTableView.contentOffset = contentOffset
+            
+        default:
+            break
+        }
+    }
+}
+
+// MARK: - UITextViewDelegate
+
+extension JSONPreview: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        guard let _delegate = delegate,
+              let openingURL = url.absoluteString.validURL?.openingURL else { return true }
+        
+        return _delegate.jsonPreview(view: self, didClickURL: openingURL, on: textView)
+    }
+}
+
+// MARK: - JSONTextViewDelegate
+
+extension JSONPreview: JSONTextViewDelegate {
+    public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat) {
+        defer {
             // Need to delay a small number of seconds,
             // otherwise the modification will not take effect
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) { [weak self] in
-                
                 guard let this = self else { return }
                 
                 // Synchronous Offset
                 textView.contentOffset = this.lineNumberTableView.contentOffset
-                
-                // Align contentSize. Need to be set after the offset is restored
-                this.jsonScrollView.contentSize = textView.contentSize
             }
         }
         
         let slices = decorator.slices
         
         // 1. Get the number of rows
-        let row = Int(floor(pointY / lineHeight))
+        guard let indexPath = lineNumberTableView.indexPathForRow(at: CGPoint(x: 5, y: pointY)) else {
+            return
+        }
         
+        let row = indexPath.row
         guard row < lineDataSource.count else { return }
         
         let tmpLineNumber = lineDataSource[row]
@@ -297,7 +371,6 @@ extension JSONPreview: JSONTextViewClickDelegate {
         
         // 2. Calculate the starting point of the replacement range
         let location = slices[0 ..< realRow].reduce(0) {
-            
             guard $1.foldedTimes == 0 else { return $0 }
             
             return $0 + 1 /* Wrap */ + {
@@ -316,7 +389,6 @@ extension JSONPreview: JSONTextViewClickDelegate {
         
         // 4.1. Expanded state: perform folded operation
         case .expand:
-            
             guard let folded = clickSlice.folded else { return }
             
             decorator.slices[realRow].state = .folded
@@ -326,7 +398,6 @@ extension JSONPreview: JSONTextViewClickDelegate {
             var length = clickSlice.expand.length
             
             for i in realRow + 1 ..< slices.count {
-                
                 guard isExecution else { break }
                 
                 let _slices = slices[i]
@@ -370,7 +441,6 @@ extension JSONPreview: JSONTextViewClickDelegate {
             
         // 4.2. Folded state: perform expand operation
         case .folded:
-            
             guard let folded = clickSlice.folded else { return }
             
             decorator.slices[realRow].state = .expand
@@ -404,7 +474,6 @@ extension JSONPreview: JSONTextViewClickDelegate {
                     replaceString.append(decorator.wrapString)
                     
                 case .folded:
-                    
                     if let _folded = _slices.folded {
                         replaceString.append(_folded)
                         replaceString.append(decorator.wrapString)
@@ -439,58 +508,14 @@ extension JSONPreview: JSONTextViewClickDelegate {
     }
 }
 
-// MARK: - UITableViewDelegate
+// MARK: - Tools
 
-extension JSONPreview: UITableViewDelegate {
-    
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return lineHeight
-    }
-}
-
-// MARK: - UITableViewDataSource
-
-extension JSONPreview: UITableViewDataSource {
-    
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return lineDataSource.count
-    }
-    
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        cell.backgroundColor = .clear
-        
-        cell.textLabel?.text = "\(lineDataSource[indexPath.row])"
-        cell.textLabel?.textAlignment = .right
-        cell.textLabel?.font = highlightStyle.lineFont
-        cell.textLabel?.textColor = highlightStyle.color.lineText
-        
-        return cell
-    }
-}
-
-// MARK: - UIScrollViewDelegate
-
-extension JSONPreview: UIScrollViewDelegate {
-    
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-
-        guard scrollView.tag == Constant.scrollViewTag else { return }
-        
-        let offsetY = scrollView.contentOffset.y
-        let offset = CGPoint(x: 0, y: offsetY)
-        
-        // Slide the JSON ScrollView to scroll the row number and TableView up and down
-        lineNumberTableView.contentOffset = offset
-        jsonTextView.contentOffset = offset
-        
-        // Update constraints
-        jsonTextViewTopConstraint?.constant = offsetY
-        layoutIfNeeded()
-        
-        // Restore the ContentSize
-        jsonScrollView.contentSize = jsonTextView.contentSize
+fileprivate extension UIView {
+    var specialTag: JSONPreview.Tag? {
+        set {
+            guard let _tag = newValue else { return }
+            tag = _tag.rawValue
+        }
+        get { JSONPreview.Tag(rawValue: tag) }
     }
 }

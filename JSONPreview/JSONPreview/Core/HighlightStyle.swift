@@ -10,7 +10,6 @@ import UIKit
 
 /// Highlight style configuration
 public struct HighlightStyle {
-    
     /// Initialization method
     ///
     /// For all the following parameters, the default configuration will be used when it is `nil`
@@ -30,17 +29,13 @@ public struct HighlightStyle {
         jsonFont: UIFont? = nil,
         lineHeight: CGFloat = 24
     ) {
-        
         let getImage: (String) -> UIImage? = {
-            
-            if let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
-                let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle") {
-                
-                return UIImage(named: $0, in: bundle, compatibleWith: nil)
-                
-            } else {
+            guard let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
+                let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle") else {
                 return UIImage(named: $0)
             }
+            
+            return UIImage(named: $0, in: bundle, compatibleWith: nil)
         }
         
         self.expandIcon = expandIcon ?? getImage("expand")!
@@ -71,7 +66,6 @@ public struct HighlightStyle {
 }
 
 public extension HighlightStyle {
-    
     /// Default style configuration.
     static let `default` = HighlightStyle()
     
@@ -80,7 +74,6 @@ public extension HighlightStyle {
 }
 
 fileprivate extension UIImage {
-    
     convenience init?(name: String) {
         
         if let resourcePath = Bundle(for: JSONPreview.self).resourcePath,

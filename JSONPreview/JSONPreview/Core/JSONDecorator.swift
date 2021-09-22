@@ -10,7 +10,6 @@ import UIKit
 
 /// Responsible for beautifying JSON
 public class JSONDecorator {
-    
     // Do not want the caller to directly initialize the object
     private init(json: String, style: HighlightStyle) {
         self.json = json
@@ -36,14 +35,14 @@ public class JSONDecorator {
     /// Can be used to splice slices into a complete string.
     private(set) lazy var wrapString = NSAttributedString(string: "\n", attributes: createStyle(foregroundColor: nil))
     
-    private lazy var startStyle   = createStyle(foregroundColor: style.color.keyWord)
+    private lazy var startStyle = createStyle(foregroundColor: style.color.keyWord)
     private lazy var keyWordStyle = createStyle(foregroundColor: style.color.keyWord)
-    private lazy var keyStyle     = createStyle(foregroundColor: style.color.key)
-    private lazy var linkStyle    = createStyle(foregroundColor: style.color.link)
-    private lazy var stringStyle  = createStyle(foregroundColor: style.color.string)
-    private lazy var numberStyle  = createStyle(foregroundColor: style.color.number)
-    private lazy var boolStyle    = createStyle(foregroundColor: style.color.boolean)
-    private lazy var nullStyle    = createStyle(foregroundColor: style.color.null)
+    private lazy var keyStyle = createStyle(foregroundColor: style.color.key)
+    private lazy var linkStyle = createStyle(foregroundColor: style.color.link)
+    private lazy var stringStyle = createStyle(foregroundColor: style.color.string)
+    private lazy var numberStyle = createStyle(foregroundColor: style.color.number)
+    private lazy var boolStyle = createStyle(foregroundColor: style.color.boolean)
+    private lazy var nullStyle = createStyle(foregroundColor: style.color.null)
     
     private lazy var placeholderStyle = createStyle(
         foregroundColor: style.color.lineText,
@@ -57,7 +56,6 @@ public class JSONDecorator {
 }
 
 public extension JSONDecorator {
-    
     /// Highlight the incoming JSON string.
     ///
     /// Serve for `JSONPreview`. Will split JSON into arrays that meet the requirements of `JSONPreview` display.
@@ -68,9 +66,7 @@ public extension JSONDecorator {
     ///   - style: style of highlight. See `HighlightStyle` for details.
     /// - Returns: Return `nil` when JSON is invalid. See `JSONDecorator` for details.
     static func highlight(_ json: String, judgmentValid: Bool, style: HighlightStyle = .default) -> JSONDecorator? {
-        
         if judgmentValid {
-            
             guard let data = json.data(using: .utf8),
                 let _ = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) else {
                 return nil
@@ -89,19 +85,14 @@ public extension JSONDecorator {
     ///   - style: style of highlight. See `HighlightStyle` for details.
     /// - Returns: See `JSONDecorator` for details.
     static func highlight(_ json: String, style: HighlightStyle = .default) -> JSONDecorator {
-        
         let decorator = JSONDecorator(json: json, style: style)
-        
         decorator.slices = decorator._slices
-        
         return decorator
     }
 }
 
 private extension JSONDecorator {
-    
     var _slices: [JSONSlice] {
-        
         var _slices: [JSONSlice] = []
         
         // Record indentation level
@@ -110,7 +101,6 @@ private extension JSONDecorator {
         var lastToken: JSONLexer.Token? = nil
         
         JSONLexer.getTokens(of: json).forEach { (token) in
-            
             defer { lastToken = token }
             
             let lineNumber = _slices.count + 1
@@ -119,7 +109,6 @@ private extension JSONDecorator {
             
             // MARK: objectBegin
             case .objectBegin:
-                
                 // There is a previous slice, and the previous slice is a colon.
                 // Need to splice the current slice to the previous slice.
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
@@ -151,7 +140,6 @@ private extension JSONDecorator {
                 
                 // When the conditions are not met, create a new slice
                 else {
-                    
                     let indentation = createIndentedString(level: level)
                     
                     let expandString = NSMutableAttributedString(
@@ -177,7 +165,6 @@ private extension JSONDecorator {
                 
             // MARK: objectEnd
             case .objectEnd:
-                
                 level -= 1
                 
                 let indentation = createIndentedString(level: level)
@@ -191,7 +178,6 @@ private extension JSONDecorator {
                 
             // MARK: objectKey
             case .objectKey(let key):
-                
                 let indentation = createIndentedString(level: level)
                 
                 let expandString = NSAttributedString(
@@ -203,7 +189,6 @@ private extension JSONDecorator {
                 
             // MARK: arrayBegin
             case .arrayBegin:
-                
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
                     
                     let expandString = NSMutableAttributedString(
@@ -231,7 +216,6 @@ private extension JSONDecorator {
                     _slices[_slices.count - 1].folded = lastFolded
                     
                 } else {
-                    
                     let indentation = createIndentedString(level: level)
                     
                     let expandString = NSMutableAttributedString(
@@ -257,7 +241,6 @@ private extension JSONDecorator {
                 
             // MARK: arrayEnd
             case .arrayEnd:
-                
                 level -= 1
                 
                 let indentation = createIndentedString(level: level)
@@ -271,7 +254,6 @@ private extension JSONDecorator {
                 
             // MARK: colon
             case .colon:
-                
                 guard let lastSlices = _slices.last else { break }
                 
                 let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
@@ -286,7 +268,6 @@ private extension JSONDecorator {
                 
             // MARK: comma
             case .comma:
-                
                 guard let lastSlices = _slices.last else { break }
                 
                 let commaString = NSAttributedString(string: ",", attributes: keyWordStyle)
@@ -300,7 +281,6 @@ private extension JSONDecorator {
                 guard lastToken == .objectEnd || lastToken == .arrayEnd else { break }
                 
                 for i in (0 ..< _slices.count).reversed() {
-                    
                     let _slice = _slices[i]
                     
                     guard let _folded = _slice.folded, _slice.level == lastSlices.level else {
@@ -316,9 +296,7 @@ private extension JSONDecorator {
                 
             // MARK: - Link
             case .link(let value):
-                
                 let addExtraLinkStyle: (NSMutableAttributedString, Int) -> Void = {
-                    
                     let range = NSRange(location: $1, length: value.count)
                     
                     $0.addAttribute(.link, value: value, range: range)
@@ -326,11 +304,9 @@ private extension JSONDecorator {
                 }
                 
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    
                     let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
                     
                     let attString = NSMutableAttributedString(string: "\"\(value)\"", attributes: linkStyle)
-                    
                     addExtraLinkStyle(attString, 1)
                     
                     lastExpand.append(attString)
@@ -343,11 +319,9 @@ private extension JSONDecorator {
                     )
                     
                 } else {
-                    
                     let indentation = createIndentedString(level: level)
                     
                     let attString = NSMutableAttributedString(string: indentation + "\"\(value)\"", attributes: linkStyle)
-                    
                     addExtraLinkStyle(attString, indentation.count + 1)
                     
                     _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: attString))
@@ -355,10 +329,9 @@ private extension JSONDecorator {
                 
             // MARK: string
             case .string(let value):
-                
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    
                     let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    
                     lastExpand.append(NSAttributedString(string: "\"\(value)\"", attributes: stringStyle))
                     
                     _slices[_slices.count - 1] = JSONSlice(
@@ -369,7 +342,6 @@ private extension JSONDecorator {
                     )
                     
                 } else {
-                    
                     let indentation = createIndentedString(level: level)
                     let string = NSAttributedString(string: indentation + "\"\(value)\"", attributes: stringStyle)
                     
@@ -378,16 +350,14 @@ private extension JSONDecorator {
                 
             // MARK: number
             case .number(let number):
-                
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    
                     let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    
                     lastExpand.append(NSAttributedString(string: "\(number)", attributes: numberStyle))
                     
                     _slices[_slices.count - 1].expand = lastExpand
                     
                 } else {
-                    
                     let indentation = createIndentedString(level: level)
                     let numberString = NSAttributedString(string: indentation + "\(number)", attributes: numberStyle)
                     
@@ -396,18 +366,16 @@ private extension JSONDecorator {
                 
             // MARK: boolean
             case .boolean(let bool):
-                
                 let value = bool ? "true" : "false"
                 
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    
                     let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    
                     lastExpand.append(NSAttributedString(string: value, attributes: boolStyle))
                     
                     _slices[_slices.count - 1].expand = lastExpand
                     
                 } else {
-                    
                     let indentation = createIndentedString(level: level)
                     let boolString = NSAttributedString(string: indentation + value, attributes: boolStyle)
                     
@@ -416,16 +384,14 @@ private extension JSONDecorator {
                 
             // MARK: null
             case .null:
-                
                 if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    
                     let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
+                    
                     lastExpand.append(NSAttributedString(string: "null", attributes: nullStyle))
                     
                     _slices[_slices.count - 1].expand = lastExpand
                     
                 } else {
-                    
                     let indentation = createIndentedString(level: level)
                     let nullString = NSAttributedString(string: indentation + "null", attributes: nullStyle)
                     
@@ -434,13 +400,10 @@ private extension JSONDecorator {
                 
             // MARK: unknown
             case .unknown(let string):
-                
                 let newString = string.replacingOccurrences(of: "\n", with: "")
-                
                 let indentation = createIndentedString(level: level)
                 
                 let attributedString = NSMutableAttributedString(string: indentation)
-                
                 attributedString.append(NSAttributedString(string: newString, attributes: unknownStyle))
                 
                 _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: attributedString))
@@ -468,7 +431,6 @@ private extension JSONDecorator {
     /// - Parameter image: The image to be displayed.
     /// - Returns: `NSAttributedString` object.
     func createIconAttributedString(with image: UIImage) -> NSAttributedString {
-        
         let expandAttach = NSTextAttachment()
         
         expandAttach.image = image
@@ -486,7 +448,6 @@ private extension JSONDecorator {
         foregroundColor: UIColor?,
         other: [NSAttributedString.Key : Any]? = nil
     ) -> [NSAttributedString.Key : Any] {
-        
         var newStyle: [NSAttributedString.Key : Any] = [.font : style.jsonFont]
         
         if let color = foregroundColor {
@@ -494,7 +455,6 @@ private extension JSONDecorator {
         }
         
         let lineHeightMultiple: CGFloat = 1
-        
         let paragraphStyle = NSMutableParagraphStyle()
         
         paragraphStyle.lineHeightMultiple = lineHeightMultiple
@@ -503,7 +463,6 @@ private extension JSONDecorator {
         paragraphStyle.lineSpacing = 0
         
         newStyle[.paragraphStyle] = paragraphStyle
-        
         newStyle[.baselineOffset] = (style.lineHeight - style.jsonFont.lineHeight) + 1
         
         if let other = other {
