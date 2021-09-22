@@ -10,13 +10,12 @@ import UIKit
 import SafariServices
 
 class ViewController: UIViewController {
-    
     lazy var previewView = JSONPreview()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        previewView.jsonTextView.delegate = self
+        previewView.delegate = self
         previewView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(previewView)
@@ -110,25 +109,11 @@ class ViewController: UIViewController {
 
 // MARK: - UITextViewDelegate
 
-extension ViewController: UITextViewDelegate {
-    
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+extension ViewController: JSONPreviewDelegate {
+    func jsonPreview(view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
+        print(url)
         
-        var _url = URL
-        
-        if let scheme = URL.scheme {
-            guard scheme == "http" || scheme == "https" else { return true }
-            
-        } else {
-            
-            guard let newURL = Foundation.URL(string: "http://" + _url.absoluteString) else {
-                return true
-            }
-            
-            _url = newURL
-        }
-        
-        let safari = SFSafariViewController(url: _url)
+        let safari = SFSafariViewController(url: url)
         safari.modalPresentationStyle = .overFullScreen
         present(safari, animated: true, completion: nil)
         
