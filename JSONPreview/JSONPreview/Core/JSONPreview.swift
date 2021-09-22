@@ -9,6 +9,16 @@
 import UIKit
 
 open class JSONPreview: UIView {
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
+        config()
+    }
+    
+    public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        config()
+    }
+    
     /// TableView responsible for displaying row numbers
     open lazy var lineNumberTableView: LineNumberTableView = {
         let tableView = LineNumberTableView(frame: .zero, style: .plain)
@@ -72,16 +82,6 @@ open class JSONPreview: UIView {
                 this.lineDataSource = (1 ... this.decorator.slices.count).map { $0 }
             }
         }
-    }
-    
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        config()
-    }
-    
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        config()
     }
 }
 

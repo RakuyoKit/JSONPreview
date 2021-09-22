@@ -18,9 +18,6 @@ public protocol JSONTextViewClickDelegate: AnyObject {
 }
 
 open class JSONTextView: UITextView {
-    /// Used for callback click
-    open weak var clickDelegate: JSONTextViewClickDelegate? = nil
-    
     public override init(frame: CGRect, textContainer: NSTextContainer? = nil) {
         super.init(frame: frame, textContainer: textContainer)
         config()
@@ -30,6 +27,9 @@ open class JSONTextView: UITextView {
         super.init(coder: coder)
         config()
     }
+    
+    /// Used for callback click
+    open weak var clickDelegate: JSONTextViewClickDelegate? = nil
 }
 
 private extension JSONTextView {
