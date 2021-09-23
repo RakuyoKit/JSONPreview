@@ -509,7 +509,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 202109221340;
+				CURRENT_PROJECT_VERSION = 202109231031;
 				DEVELOPMENT_TEAM = 5C9JW4S9DE;
 				INFOPLIST_FILE = "$(SRCROOT)/JSONPreview/Other/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -517,7 +517,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -530,7 +530,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 202109221340;
+				CURRENT_PROJECT_VERSION = 202109231031;
 				DEVELOPMENT_TEAM = 5C9JW4S9DE;
 				INFOPLIST_FILE = "$(SRCROOT)/JSONPreview/Other/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -538,7 +538,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

@@ -255,7 +255,9 @@ private extension JSONPreview {
             return height
         }
         
-        let height = calculateLineHeight(at: line - 1, width: jsonTextView.frame.width)
+        let width = jsonTextView.frame.width - { $0.left + $0.right }(jsonTextView.textContainerInset)
+        let height = calculateLineHeight(at: line - 1, width: width)
+        
         lineHeights[lastOrientation]![line] = height
         
         return height
