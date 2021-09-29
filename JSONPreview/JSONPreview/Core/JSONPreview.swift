@@ -453,7 +453,6 @@ extension JSONPreview: JSONTextViewDelegate {
             let replaceString = NSMutableAttributedString(string: "")
             
             for i in realRow + 1 ..< slices.count {
-                
                 guard isExecution else { break }
                 
                 let _slices = slices[i]
@@ -487,7 +486,6 @@ extension JSONPreview: JSONTextViewDelegate {
             var tmpDataSource = lineDataSource
             
             lines.forEach { (line) in
-                
                 let index = tmpDataSource.firstIndex { $0 > line } ?? (tmpDataSource.count)
                 tmpDataSource.insert(line, at: index)
             }
