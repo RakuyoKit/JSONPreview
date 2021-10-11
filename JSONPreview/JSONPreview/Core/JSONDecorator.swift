@@ -457,6 +457,10 @@ private extension JSONDecorator {
         let lineHeightMultiple: CGFloat = 1
         let paragraphStyle = NSMutableParagraphStyle()
         
+        if #available(iOS 15.0, *) {
+            paragraphStyle.usesDefaultHyphenation = false
+        }
+        
         paragraphStyle.lineHeightMultiple = lineHeightMultiple
         paragraphStyle.maximumLineHeight = style.lineHeight
         paragraphStyle.minimumLineHeight = style.lineHeight
