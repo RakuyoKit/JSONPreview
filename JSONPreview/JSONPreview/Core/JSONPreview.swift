@@ -204,22 +204,21 @@ private extension JSONPreview {
     
     /// Calculate the line height of the line number display area
     func calculateLineHeight(at index: Int, width: CGFloat) -> CGFloat {
+        let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+        
+        let textContainer = NSTextContainer(size: size)
+        textContainer.lineFragmentPadding = 0
+        
+        let layoutManager = NSLayoutManager()
+        layoutManager.addTextContainer(textContainer)
+        layoutManager.glyphRange(forBoundingRect: CGRect(origin: .zero, size: size), in: textContainer)
+        
         let attString = decorator.slices[index].expand
+        let textStorage = NSTextStorage(attributedString: attString)
+        textStorage.addLayoutManager(layoutManager)
         
-        var tmpAtt: [NSAttributedString.Key : Any] = [:]
-        
-        attString.enumerateAttributes(in: NSRange(location: 0, length: attString.length)) { (values, _, _) in
-            values.forEach { tmpAtt[$0] = $1 }
-        }
-        
-        let rect = (attString.string as NSString).boundingRect(
-            with: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude),
-            options: [.usesLineFragmentOrigin, .usesFontLeading],
-            attributes: tmpAtt,
-            context: nil
-        )
-        
-        return rect.height
+        let rect = layoutManager.usedRect(for: textContainer)
+        return rect.size.height
     }
     
     func listeningDeviceRotation() {
