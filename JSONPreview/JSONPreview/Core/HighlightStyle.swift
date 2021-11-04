@@ -30,10 +30,14 @@ public struct HighlightStyle {
         lineHeight: CGFloat = 24
     ) {
         let getImage: (String) -> UIImage? = {
+            #if SWIFT_PACKAGE
+            let bundle = Bundle.module
+            #else
             guard let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
                 let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle") else {
                 return UIImage(named: $0)
             }
+            #endif
             
             return UIImage(named: $0, in: bundle, compatibleWith: nil)
         }
