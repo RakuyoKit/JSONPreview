@@ -34,6 +34,20 @@
 pod 'JSONPreview'
 ```
 
+### Swift Package Manager
+
+- 依次选择 File > Swift Packages > Add Package Dependency
+- 输入 https://github.com/rakuyoMo/JSONPreview.git
+- 选择 "Up to Next Major" 并填入 "1.3.2"
+
+或者将下面的内容添加到 `Package.swift` 文件中：
+
+```swift
+dependencies: [
+  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.2")
+]
+```
+
 ## 功能
 
 > 在 `1.3.0` 版本中，我们删除了斜向滑动的功能。现在如果JSON一行展示不开，那么它将折行展示，而不是超出屏幕。如果您希望使用该功能，请使用 [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3) 版本
@@ -135,8 +149,8 @@ previewView.preview(json, style: style)
 
 ## TODO
 
-- [ ] 增加新的集成方式，例如 `Carthage` 与 `Swift Package Manager`。
-- [ ] 支持 macOS。
+- [ ] 支持如 `Carthage`。
+- [ ] 支持 intel 版本的 macOS。
 
 ## 致谢
 

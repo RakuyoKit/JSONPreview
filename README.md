@@ -36,6 +36,20 @@ Below is a gif of about 25 seconds (**about 2.5M**) that shows the effect of pre
 pod 'JSONPreview'
 ```
 
+### Swift Package Manager
+
+- File > Swift Packages > Add Package Dependency
+- Add https://github.com/rakuyoMo/JSONPreview.git
+- Select "Up to Next Major" with "1.3.2"
+
+Or add the following to your `Package.swift` file:
+
+```swift
+dependencies: [
+  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.2")
+]
+```
+
 ## Features
 
 > In version `1.3.0`, we removed the diagonal swipe feature. Now if a JSON row is not displayed open, it will be displayed folded instead of going beyond the screen. If you wish to use this feature, please use version [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3)
@@ -136,8 +150,8 @@ The following de-escaping operations are supported in different versions.
 
 ## TODO
 
-- [ ] Add new integration methods, such as `Carthage` and `Swift Package Manager`.
-- [ ] Support for macOS.
+- [ ] Support `Carthage`.
+- [ ] Support for intel macOS.
 
 ## Thanks
 
