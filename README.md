@@ -10,15 +10,15 @@
 
 > [中文](https://github.com/rakuyoMo/JSONPreview/blob/master/README_CN.md)
 
-`JSONPreview` inherits from `UIView`. You can use it to **format** your JSON data and **highlight** it.
+`JSONPreview` inherits from `UIView` and implements functionality based on `UITextView`. You can use it to **format** your JSON data and **highlight** it for display.
 
-Also, `JSONPreview` provides **fold and expand** features that allow you to collapse nodes that you are not interested in at the moment and re-display them at any moment.
+Also `JSONPreview` provides **fold and expand** functionality, so you can collapse nodes that you are not interested in at the moment and re-display them at any time.
 
-All of the features in `JSONPreview` are written using **native methods**, which means you get a great experience on Apple platforms.
+All of `JSONPreview`'s features are written using **native methods**, which means you get a great experience on the Apple platform.
 
 ## Screenshot
 
-Below is a gif of about 25 seconds (**about 2.5M**) that shows the effect of previewing JSON using this library.
+Here is a gif of about 25 seconds (**about 2.5M**) that shows the effect when using this library to preview JSON.
 
 ![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
 
@@ -52,14 +52,15 @@ dependencies: [
 
 ## Features
 
-> In version `1.3.0`, we removed the diagonal swipe feature. Now if a JSON row is not displayed open, it will be displayed folded instead of going beyond the screen. If you wish to use this feature, please use version [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3)
+> In `1.3.0` version, we removed the ability to slide diagonally. 
+> Now if a JSON row is not displayed, it will be displayed folded instead of going beyond the screen. If you wish to use this feature, please use the [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3) version
 
-- [x] Supports **formatting** to display JSON data.
-- [x] Supports **highlighting** JSON data, with multiple color and font configuration options.
-- [x] Provides **fold** and **expand** features for `Array` and `Object`.
-- [x] Based on `UITextView`, which means you can copy any content from `JSONPreview`.
+- [x] Support for **formatted** display of JSON data.
+- [x] Support for **highlighting** JSON data, with various color and font configuration options.
+- [x] Provide **fold** and **expand** for `Array` and `Object`.
+- [x] Based on `UITextView`, meaning you can copy any content in `JSONPreview`.
 
-- `JSONPreview` provides limited, incomplete format checking functionality, so it is not provided as a primary feature. For details, see: [Format check](#format-check)
+- `JSONPreview` provides limited, incomplete format checking functionality, so this feature is not provided as a main feature. For more details, please refer to: [Format check](#format-check)
 
 ## Usage
 
@@ -117,32 +118,32 @@ previewView.preview(json, style: style)
 
 ### Rendering
 
-For rendering, `JSONPreview` performs only **limited** format checks, including:
+For rendering, `JSONPreview` performs only **limited** formatting checks, including.
 
-> The following references to "previous node" do not include `space`, `\t`, or `\n`.
+> None of the `previous nodes` mentioned below include `spaces`, `\t`, and `\n`.
 
-- The JSON to be previewed must begin with `{` or `[`.
-- The last node of `:` must be `.string`.
+- The JSON to be previewed must start with `{` or `[`.
+- The previous node of `:` must be `.string`.
 - The previous node of `,` can only be one of `.null`, `.link`, `.string`, `.number`, `.boolean`, `}`, and `]`.
-- `{` must exist in the previous node, and the previous node cannot be `{`.
-- `}` must exist in pairs with `{`.
-- `[ ` must exist on the previous node, while the previous node cannot be `]`.
-- `]` must exist in pairs with `[`.
-- The `"` must appear in pairs.
-- The previous node of `"` can only be one of `{`, `[`, `,`, and `:`.
-- Spell-checking for `null`, `true`, and `false`.
+- `{` must have a preceding node, and the preceding node must not be `{`.
+- `}` must appear in pairs with `{`.
+- `[` must exist for the previous node, and the previous node cannot be `]`.
+- `]` must occur in pairs with `[`.
+- `"` must occur in pairs.
+- The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
+- Spell checking for `null`, `true`, and `false`.
 
-Syntax errors other than these do not trigger rendering errors.
+Any other syntax errors will not trigger a rendering error.
 
 ### Link
 
-In *1.2.0*, `.link` rendering has been added. While rendering, `JSONPreview` performs limited **de-escaping** operations.
+The *1.2.0* version adds rendering of links (`.link`). While rendering, `JSONPreview` performs a limited **de-escaping** operation.
 
-The following de-escaping operations are supported in different versions.
+The de-escaping operations supported by different versions are as follows:
 
-> Unless otherwise specified, the following functions are cumulative.
+> If not otherwise specified, the following functions are cumulative.
 
-- 1.2.0: Supports replacing `"\\/"` with `"/"`.
+- 1.2.0: Support replacing `"\\/"` with `"/"`.
 
 ## Data Flow Diagram
 
