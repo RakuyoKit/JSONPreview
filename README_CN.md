@@ -8,7 +8,7 @@
 <a href="https://github.com/rakuyoMo/JSONPreview/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JSONPreview.svg?style=flat"></a>
 </p>
 
-`JSONPreview` 继承自 `UIView`。您可以通过它来**格式化**您的 JSON 数据，并**高亮**展示。
+`JSONPreview` 继承自 `UIView`，并基于 `UITextView` 实现功能。您可以通过它来**格式化**您的 JSON 数据，并**高亮**展示。
 
 同时 `JSONPreview` 还提供**折叠与展开**功能，您可以折叠那些您暂时不关注的节点，并在任意时刻重新展示它。
 
@@ -50,12 +50,13 @@ dependencies: [
 
 ## 功能
 
-> 在 `1.3.0` 版本中，我们删除了斜向滑动的功能。现在如果JSON一行展示不开，那么它将折行展示，而不是超出屏幕。如果您希望使用该功能，请使用 [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3) 版本
+> 在 `1.3.0` 版本中，我们删除了斜向滑动的功能。
+> 现在如果JSON一行展示不开，那么它将折行展示，而不是超出屏幕。如果您希望使用该功能，请使用 [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3) 版本
 
 - [x] 支持**格式化**显示 JSON 数据。
 - [x] 支持**高亮** JSON 数据，提供多种颜色与字体配置选项。
 - [x] 针对 `Array` 与 `Object` 提供**折叠**与**展开**功能。
-- [x] 基于 `UITextView`，意味着您可以复制 `JSONPreview` 中的任意内容。
+- [x] 基于 `UITextView` 实现功能。意味着您可以复制 `JSONPreview` 中的任意内容。
 
 - `JSONPreview` 提供有限的，不完整的格式检查功能，故该功能不作为主要功能提供。详情可以参考：[格式检查](#格式检查)
 
@@ -146,10 +147,9 @@ previewView.preview(json, style: style)
 
 ![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
 
-
 ## TODO
 
-- [ ] 支持如 `Carthage`。
+- [ ] 支持 `Carthage`。
 - [ ] 支持 intel 版本的 macOS。
 
 ## 致谢
