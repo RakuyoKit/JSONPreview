@@ -68,7 +68,8 @@ extension JSONTextView {
         let startIndex = text.startIndex
         
         // Prevent the click logic from triggering when the line break is clicked.
-        guard text[text.index(startIndex, offsetBy: characterIndex)] != "\n" else { return }
+        let index = text.index(startIndex, offsetBy: characterIndex)
+        guard index < text.endIndex, text[index] != "\n" else { return }
         
         let callbackBlock = {
             self.clickDelegate?.textView(self, didClickZoomAt: point.y)
