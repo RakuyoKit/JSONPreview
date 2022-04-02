@@ -1,82 +1,63 @@
 #!/bin/zsh
 # Authoer: Rakuyo
-# Update Date: 2020.04.07
+# Update Date: 2022.04.02
 
-# Starting time
-start=$(date +%s)
-startM=$(date +%M)
-
-# log color configuration
-Cyan='\033[0;36m'
-Default='\033[0;m'
-
-# Get path
-project_path=$(cd `dirname $0` ; pwd);
+project_path=$(cd `dirname $0` ; pwd)
 
 cd $project_path
 
-# Read podspec file
 while read line
 do
-
-    # Get name
     if [[ $line =~ "s.name" ]] ; then
         name=`echo $line | cut -d = -f 2 | cut -d \' -f 2`
     fi
 
-    # Get the version number
     if [[ $line =~ "s.version" ]] ; then
         version=`echo $line | cut -d = -f 2 | cut -d \' -f 2`
-        break # End loop
+        break
     fi
+done < $(find ./ -name '*.podspec')
 
-done  < $(find ./ -name '*.podspec')
+lintLib(){
+    pod lib lint $name.podspec --allow-warnings --skip-tests
+}
 
-# current time
-dateString=$(date "+%Y%m%d%H%M")
+release(){
+    release_branch=release/$version
+    
+    git checkout -b $release_branch develop
+    
+    agvtool new-marketing-version $version
+    
+    agvtool next-version -all
+    
+    build=$(agvtool what-version | tail -n2 | awk -F ' ' '{print $NF}')
+    
+    git_message="[Release] version: $version build: $build"
+    
+    git add . && git commit -m $git_message
+    
+    git checkout master
+    git merge --no-ff -m 'Merge branch '$release_branch'' $release_branch
+    git push origin master
+    git tag $version
+    git push origin $version
+    git checkout develop
+    git merge --no-ff -m 'Merge tag '$version' into develop' $version
+    git push origin develop
+    git branch -d $release_branch
+    
+    pod trunk push $name.podspec --allow-warnings --skip-tests
+}
 
-# info file path
-if [[ -f "Other/Info.plist" ]]; then
-    infoPlist=$project_path"/Other/Info.plist"
+echo "Whether to skip local verification? [Y/N]？"
+if read -t 5 is_skip_lint; then
+    case $is_skip_lint in
+    (N | n)
+        lintLib && release;;
+    (*)
+        release;;
+    esac
 else
-    infoPlist=$project_path"/"${project_path##*/}"/Other/Info.plist"
+    release
 fi
-
-# Update the info.plist file
-/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $version" $infoPlist
-/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $dateString" $infoPlist
-
-# add info.plist
-git add $infoPlist
-
-echo "${Default}========================================================"
-echo "  The info.plist file has been updated"
-echo "${Default}========================================================"
-
-# commit information
-message="[Release Script] Version updated to $version $dateString"
-
-# Commit git
-git add *.podspec && git commit -m $message && git push
-git tag $version && git push origin $version
-
-echo "${Default}========================================================"
-echo "  Git push complete"
-echo "${Default}========================================================"
-
-echo "${Default}========================================================"
-echo "  Start push ${Cyan}$name${Default} at $(date "+%F %r")"
-echo "${Default}========================================================"
-
-# Push
-pod trunk push $name.podspec --allow-warnings --skip-tests
-
-# Calculate the time difference
-time=$(( $(date +%s) - $start ))
-timeM=$(( $(date +%M) - $startM ))
-
-echo "${Default}========================================================"
-echo "  finish push ${Cyan}$name${Default}, time consuming $time second"
-echo "${Default}========================================================"
-
-say -v Mei-Jia "The push of $name is completed, it takes about $timeM minutes"
