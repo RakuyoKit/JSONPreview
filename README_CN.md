@@ -38,13 +38,13 @@ pod 'JSONPreview'
 
 - 依次选择 File > Swift Packages > Add Package Dependency
 - 输入 https://github.com/rakuyoMo/JSONPreview.git
-- 选择 "Up to Next Major" 并填入 "1.3.2"
+- 选择 "Up to Next Major" 并填入 "1.3.5"
 
 或者将下面的内容添加到 `Package.swift` 文件中：
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.2")
+  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.5")
 ]
 ```
 
