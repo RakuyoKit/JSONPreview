@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   
   s.name             = 'JSONPreview'
   
-  s.version          = '1.3.3'
+  s.version          = '1.3.4'
   
   s.summary          = '🎨 A view that can be highlighted after formatting JSON.'
   
@@ -29,10 +29,10 @@ Pod::Spec.new do |s|
   
   s.module_name      = 'JSONPreview'
   
-  s.source_files     = 'JSONPreview/JSONPreview/Core/*'
+  s.source_files     = 'JSONPreview/Core/*'
   
   s.resource_bundle = {
-      'JSONPreviewBundle' => [ 'JSONPreview/JSONPreview/Other/*.xcassets' ]
+      'JSONPreviewBundle' => [ 'JSONPreview/Other/*.xcassets' ]
   }
   
 end
