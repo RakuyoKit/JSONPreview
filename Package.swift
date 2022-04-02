@@ -10,7 +10,7 @@ let package = Package(
     targets: [
         .target(
             name: "JSONPreview",
-            path: "JSONPreview/JSONPreview",
+            path: "JSONPreview",
             exclude: [
                 "Other/AppDelegate.swift",
                 "Other/ViewController.swift",
