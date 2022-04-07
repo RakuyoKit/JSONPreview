@@ -132,6 +132,7 @@ For rendering, `JSONPreview` performs only **limited** formatting checks, includ
 - `"` must occur in pairs.
 - The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
 - Spell checking for `null`, `true`, and `false`.
+- For scientific notation, the next node of `{E/e}` must be `+`, `-` or a number.
 
 Any other syntax errors will not trigger a rendering error.
 

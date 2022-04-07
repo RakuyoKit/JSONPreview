@@ -280,6 +280,15 @@ private extension JSONLexer {
                     if first.isNumber || first == "." {
                         number += String(first)
                         _first = tmpJSON.removeFirst()
+                    }
+                    
+                    // Scientific counting support
+                    else if first.lowercased() == "e",
+                        let next = tmpJSON.first,
+                        (next == "+" || next == "-" || next.isNumber) {
+                        
+                        number += (String(first) + String(tmpJSON.removeFirst()))
+                        _first = tmpJSON.removeFirst()
                         
                     } else {
                         tmpJSON = String(first) + tmpJSON

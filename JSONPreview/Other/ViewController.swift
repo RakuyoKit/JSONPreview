@@ -48,6 +48,7 @@ class ViewController: UIViewController {
         [
             {
                 "string" : "string",
+                "int" : 1024,
                 "float" : 3.1415926,
                 "negative_numbers" : -50,
                 "bool_true" : true,
@@ -65,6 +66,7 @@ class ViewController: UIViewController {
                 "effects_in_array" : [
                     "string",
                     3.1415926,
+                    1024,
                     -50,
                     true,
                     false,
@@ -78,6 +80,16 @@ class ViewController: UIViewController {
                     "",
                     [],
                     {},
+                ]
+            },
+            {
+                "exponential_value": [
+                    1024e+23,
+                    -25e+23,
+                    -25e-23,
+                    2.54e23,
+                    3.1415926E+23,
+                    3.1415926E-23,
                 ]
             },
             {
@@ -104,7 +116,15 @@ class ViewController: UIViewController {
         ]
         """
         
-        previewView.preview(json, style: .default)
+        let start = Date().timeIntervalSince1970
+        print("will display json")
+        
+        previewView.preview(json, style: .default) {
+            let end = Date().timeIntervalSince1970
+            let timeConsuming = end - start
+            
+            print("did display json at: \(timeConsuming)")
+        }
     }
 }
 
