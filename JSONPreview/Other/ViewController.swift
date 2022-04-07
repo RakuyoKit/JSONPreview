@@ -86,8 +86,10 @@ class ViewController: UIViewController {
                 "exponential_value": [
                     1024e+23,
                     -25e+23,
-                    3.1415926e+23,
+                    -25e-23,
+                    2.54e23,
                     3.1415926E+23,
+                    3.1415926E-23,
                 ]
             },
             {
