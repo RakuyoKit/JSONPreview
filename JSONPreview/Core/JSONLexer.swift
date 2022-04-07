@@ -281,6 +281,20 @@ private extension JSONLexer {
                         number += String(first)
                         _first = tmpJSON.removeFirst()
                         
+                    } else if first == "e" {
+                        let startIndex = tmpJSON.startIndex
+                        let bounds = startIndex ..< tmpJSON.index(after: startIndex)
+                        
+                        if tmpJSON[bounds] == "+" {
+                            let second = tmpJSON.removeFirst()
+                            number += (String(first) + String(second))
+                            _first = tmpJSON.removeFirst()
+                            
+                        } else {
+                            tmpJSON = String(first) + tmpJSON
+                            _first = nil
+                        }
+                        
                     } else {
                         tmpJSON = String(first) + tmpJSON
                         _first = nil
