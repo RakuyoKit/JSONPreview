@@ -116,7 +116,15 @@ class ViewController: UIViewController {
         ]
         """
         
-        previewView.preview(json, style: .default)
+        let start = Date().timeIntervalSince1970
+        print("will display json")
+        
+        previewView.preview(json, style: .default) {
+            let end = Date().timeIntervalSince1970
+            let timeConsuming = end - start
+            
+            print("did display json at: \(timeConsuming)")
+        }
     }
 }
 
