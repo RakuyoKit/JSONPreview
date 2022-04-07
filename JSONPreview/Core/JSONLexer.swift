@@ -281,7 +281,7 @@ private extension JSONLexer {
                         number += String(first)
                         _first = tmpJSON.removeFirst()
                         
-                    } else if first == "e" {
+                    } else if first.lowercased() == "e" {
                         let startIndex = tmpJSON.startIndex
                         let bounds = startIndex ..< tmpJSON.index(after: startIndex)
                         

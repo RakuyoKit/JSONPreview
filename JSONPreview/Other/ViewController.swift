@@ -87,6 +87,7 @@ class ViewController: UIViewController {
                     1024e+23,
                     -25e+23,
                     3.1415926e+23,
+                    3.1415926E+23,
                 ]
             },
             {
