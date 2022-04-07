@@ -48,6 +48,7 @@ class ViewController: UIViewController {
         [
             {
                 "string" : "string",
+                "int" : 1024,
                 "float" : 3.1415926,
                 "negative_numbers" : -50,
                 "bool_true" : true,
@@ -65,6 +66,7 @@ class ViewController: UIViewController {
                 "effects_in_array" : [
                     "string",
                     3.1415926,
+                    1024,
                     -50,
                     true,
                     false,
@@ -78,6 +80,13 @@ class ViewController: UIViewController {
                     "",
                     [],
                     {},
+                ]
+            },
+            {
+                "exponential_value": [
+                    1024e+23,
+                    -25e+23,
+                    3.1415926e+23,
                 ]
             },
             {
