@@ -18,8 +18,13 @@ public class JSONDecorator {
     /// Style of highlight. See `HighlightStyle` for details.
     private let style: HighlightStyle
     
+    /// Current number of indent
+    private var indent = 0
+    
     /// JSON slice. See `JSONSlice` for details.
     public var slices: [JSONSlice] = []
+    
+    // MARK: - Style
     
     /// The string used to hold the icon of the expand button
     private lazy var expandIconString = createIconAttributedString(with: style.expandIcon)
@@ -51,6 +56,8 @@ public class JSONDecorator {
     )
 }
 
+// MARK: - Public
+
 public extension JSONDecorator {
     /// Highlight the incoming JSON string.
     ///
@@ -75,421 +82,340 @@ public extension JSONDecorator {
         }
         
         let decorator = JSONDecorator(style: style)
-        decorator.slices = decorator.createSlices(from: json)
+        decorator.slices = decorator.createSlices(from: data)
         return decorator
     }
 }
 
+// MARK: - Main Logic
+
 private extension JSONDecorator {
-    func createSlices(from json: String) -> [JSONSlice] {
-        var _slices: [JSONSlice] = []
+    func createSlices(from data: Data) -> [JSONSlice] {
+        guard let jsonValue = createJSONValue(from: data) else { return [] }
+        return createJSONSlices(from: jsonValue)
+    }
+    
+    func createJSONValue(from data: Data) -> JSONValue? {
+        return try? data.withUnsafeBytes {
+            // we got utf8... happy path
+            var parser = JSONParser(bytes: Array($0[0 ..< $0.count]))
+            return try parser.parse()
+        }
+    }
+    
+    func createJSONSlices(from jsonValue: JSONValue) -> [JSONSlice] {
+        return processJSONValueRecursively(jsonValue, isNeedIndent: false, isNeedComma: false)
+    }
+    
+    func processJSONValueRecursively(
+        _ jsonValue: JSONValue,
+        isNeedIndent: Bool,
+        isNeedComma: Bool
+    ) -> [JSONSlice] {
+        var result: [JSONSlice] = []
         
-        // Record indentation level
-        var level = 0
+        // 简化 JSONSlice 的初始化
+        func _append(expand: AttributedString, fold: AttributedString?) {
+            let slice = JSONSlice(level: indent, lineNumber: result.count + 1, expand: expand, folded: fold)
+            result.append(slice)
+        }
         
-        var lastToken: JSONLexer.Token? = nil
-        
-        JSONLexer.getTokens(of: json).forEach { (token) in
-            defer { lastToken = token }
+        // 处理每个 json 节点
+        switch jsonValue {
+        // MARK: array
+        case .array(let values):
+            // 处理开头节点
+            let (startExpand, startFold) = createArrayStartAttribute(
+                isNeedIndent: isNeedIndent,
+                isNeedComma: isNeedComma)
             
-            let lineNumber = _slices.count + 1
+            // 将开头节点添加到结果数组中
+            _append(expand: startExpand, fold: startFold)
             
-            switch token {
-            
-            // MARK: objectBegin
-            case .objectBegin:
-                // There is a previous slice, and the previous slice is a colon.
-                // Need to splice the current slice to the previous slice.
-                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
+            if !values.isEmpty {
+                // 增加缩进
+                incIndent()
+                
+                // 处理里面每一个 value
+                for (i, value) in values.enumerated() {
+                    let _isNeedComma = i != (values.count - 1)
                     
-                    let expandString = NSMutableAttributedString(
-                        string: " {",
-                        attributes: startStyle
-                    )
-                    
-                    let foldString = NSMutableAttributedString(
-                        string: "{Object...}",
-                        attributes: placeholderStyle
-                    )
-                    
-                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: 0)
-                    
-                    expandString.insert(foldIconString, at: 0)
-                    foldString.insert(expandIconString, at: 0)
-                    
-                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                    lastExpand.append(expandString)
-                    
-                    let lastFolded = NSMutableAttributedString(attributedString: lastSlices.folded!)
-                    lastFolded.append(foldString)
-                    
-                    _slices[_slices.count - 1].expand = lastExpand
-                    _slices[_slices.count - 1].folded = lastFolded
+                    let slices = processJSONValueRecursively(value, isNeedIndent: true, isNeedComma: _isNeedComma)
+                    result.append(contentsOf: slices)
                 }
                 
-                // When the conditions are not met, create a new slice
-                else {
-                    let indentation = createIndentedString(level: level)
+                // 减少缩进
+                decIndent()
+            }
+            
+            // 处理结束节点
+            let endExpand = createArrayEndAttribute(isNeedComma: isNeedComma)
+            
+            // 将结尾节点添加到结果数组中
+            _append(expand: endExpand, fold: nil)
+            
+        // MARK: object
+        case .object(let object):
+            // 处理开头节点
+            let (startExpand, startFold) = createObjectStartAttribute(
+                isNeedIndent: isNeedIndent,
+                isNeedComma: isNeedComma)
+            
+            // 将开头节点添加到结果数组中
+            _append(expand: startExpand, fold: startFold)
+            
+            if !object.isEmpty {
+                // 增加缩进
+                incIndent()
+                
+                // 处理里面每一个 value
+                for (i, (key, value)) in object.enumerated() {
+                    let _isNeedComma = i != (object.count - 1)
+                    let string = writeIndent() + "\"\(key)\""
                     
-                    let expandString = NSMutableAttributedString(
-                        string: indentation + " {",
-                        attributes: startStyle
-                    )
-                    
-                    let foldString = NSMutableAttributedString(
-                        string: "{Object...}",
-                        attributes: placeholderStyle
-                    )
-                    
-                    foldString.insert(NSAttributedString(string: indentation, attributes: keyWordStyle), at: 0)
-                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: indentation.count)
-                    
-                    foldString.insert(expandIconString, at: indentation.count)
-                    expandString.insert(foldIconString, at: indentation.count)
-                    
-                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString, folded: foldString))
-                }
-                
-                level += 1
-                
-            // MARK: objectEnd
-            case .objectEnd:
-                level -= 1
-                
-                let indentation = createIndentedString(level: level)
-                
-                let expandString = NSMutableAttributedString(
-                    string: indentation + "}",
-                    attributes: startStyle
-                )
-                
-                _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
-                
-            // MARK: objectKey
-            case .objectKey(let key):
-                let indentation = createIndentedString(level: level)
-                
-                let expandString = NSAttributedString(
-                    string: indentation + "\"\(key)\"",
-                    attributes: keyStyle
-                )
-                
-                _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
-                
-            // MARK: arrayBegin
-            case .arrayBegin:
-                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    
-                    let expandString = NSMutableAttributedString(
-                        string: " [",
-                        attributes: startStyle
-                    )
-                    
-                    let foldString = NSMutableAttributedString(
-                        string: "[Array...]",
-                        attributes: placeholderStyle
-                    )
-                    
-                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: 0)
-                    
-                    foldString.insert(expandIconString, at: 0)
-                    expandString.insert(foldIconString, at: 0)
-                    
-                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                    lastExpand.append(expandString)
-                    
-                    let lastFolded = NSMutableAttributedString(attributedString: lastSlices.folded!)
-                    lastFolded.append(foldString)
-                    
-                    _slices[_slices.count - 1].expand = lastExpand
-                    _slices[_slices.count - 1].folded = lastFolded
-                    
-                } else {
-                    let indentation = createIndentedString(level: level)
-                    
-                    let expandString = NSMutableAttributedString(
-                        string: indentation + " [",
-                        attributes: startStyle
-                    )
-                    
-                    let foldString = NSMutableAttributedString(
-                        string: "[Array...]",
-                        attributes: placeholderStyle
-                    )
-                    
-                    foldString.insert(NSAttributedString(string: indentation, attributes: keyWordStyle), at: 0)
-                    foldString.insert(NSAttributedString(string: " ", attributes: keyWordStyle), at: indentation.count)
-                    
-                    foldString.insert(expandIconString, at: indentation.count)
-                    expandString.insert(foldIconString, at: indentation.count)
-                    
-                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString, folded: foldString))
-                }
-                
-                level += 1
-                
-            // MARK: arrayEnd
-            case .arrayEnd:
-                level -= 1
-                
-                let indentation = createIndentedString(level: level)
-                
-                let expandString = NSMutableAttributedString(
-                    string: indentation + "]",
-                    attributes: startStyle
-                )
-                
-                _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: expandString))
-                
-            // MARK: colon
-            case .colon:
-                guard let lastSlices = _slices.last else { break }
-                
-                let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                
-                lastExpand.append(NSAttributedString(
-                    string: " : ",
-                    attributes: keyWordStyle
-                ))
-                
-                _slices[_slices.count - 1].expand = lastExpand
-                _slices[_slices.count - 1].folded = lastExpand
-                
-            // MARK: comma
-            case .comma:
-                guard let lastSlices = _slices.last else { break }
-                
-                let commaString = NSAttributedString(string: ",", attributes: keyWordStyle)
-                
-                let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                lastExpand.append(commaString)
-                
-                _slices[_slices.count - 1].expand = lastExpand
-                
-                // Add a comma to the beginning of the token
-                guard lastToken == .objectEnd || lastToken == .arrayEnd else { break }
-                
-                for i in (0 ..< _slices.count).reversed() {
-                    let _slice = _slices[i]
-                    
-                    guard let _folded = _slice.folded, _slice.level == lastSlices.level else {
-                        continue
+                    let createKeyAttribute: () -> AttributedString = { [weak self] in
+                        guard let this = self else { return .init(string: "") }
+                        
+                        let keyAttribute = AttributedString(string: string, attributes: this.keyStyle)
+                        keyAttribute.append(this.colonAttributeString)
+                        return keyAttribute
                     }
                     
-                    let lastFolded = NSMutableAttributedString(attributedString: _folded)
-                    lastFolded.append(commaString)
-                    _slices[i].folded = lastFolded
+                    let expand = createKeyAttribute()
                     
-                    break
+                    // 根据不同的情况进行不同的处理
+                    if value.isContainer {
+                        let fold = createKeyAttribute()
+                        
+                        // 获取子值的内容
+                        var slices = processJSONValueRecursively(value, isNeedIndent: false, isNeedComma: _isNeedComma)
+                        
+                        if !slices.isEmpty {
+                            let startSlice = slices.removeFirst()
+                            expand.append(startSlice.expand)
+                            
+                            if let valueFold = startSlice.folded {
+                                fold.append(valueFold)
+                            }
+                            
+                            _append(expand: expand, fold: fold)
+                        }
+                        
+                        result.append(contentsOf: slices)
+                        
+                    } else {
+                        var fold: AttributedString? = nil
+                        
+                        // 获取子值的内容
+                        let slices = processJSONValueRecursively(value, isNeedIndent: false, isNeedComma: _isNeedComma)
+                        
+                        // 一般这种时候`slices`只会有一个值，所以只取第一个值
+                        if let slice = slices.first {
+                            expand.append(slice.expand)
+                            
+                            if let valueFold = slice.folded {
+                                fold = createKeyAttribute()
+                                fold?.append(valueFold)
+                            }
+                            
+                            _append(expand: expand, fold: fold)
+                        }
+                    }
                 }
                 
-            // MARK: Link
-            case .link(let value):
-                let addExtraLinkStyle: (NSMutableAttributedString, Int) -> Void = {
-                    let range = NSRange(location: $1, length: value.count)
-                    
-                    $0.addAttribute(.link, value: value, range: range)
-                    $0.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
-                }
-                
-                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                    
-                    let attString = NSMutableAttributedString(string: "\"\(value)\"", attributes: linkStyle)
-                    addExtraLinkStyle(attString, 1)
-                    
-                    lastExpand.append(attString)
-                    
-                    _slices[_slices.count - 1] = JSONSlice(
-                        level: lastSlices.level,
-                        lineNumber: lastSlices.lineNumber,
-                        expand: lastExpand,
-                        folded: nil
-                    )
-                    
-                } else {
-                    let indentation = createIndentedString(level: level)
-                    
-                    let attString = NSMutableAttributedString(string: indentation + "\"\(value)\"", attributes: linkStyle)
-                    addExtraLinkStyle(attString, indentation.count + 1)
-                    
-                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: attString))
-                }
-                
-            // MARK: string
-            case .string(let value):
-                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                    
-                    lastExpand.append(NSAttributedString(string: "\"\(value)\"", attributes: stringStyle))
-                    
-                    _slices[_slices.count - 1] = JSONSlice(
-                        level: lastSlices.level,
-                        lineNumber: lastSlices.lineNumber,
-                        expand: lastExpand,
-                        folded: nil
-                    )
-                    
-                } else {
-                    let indentation = createIndentedString(level: level)
-                    let string = NSAttributedString(string: indentation + "\"\(value)\"", attributes: stringStyle)
-                    
-                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: string))
-                }
-                
-            // MARK: number
-            case .number(let number):
-                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                    
-                    lastExpand.append(NSAttributedString(string: "\(number)", attributes: numberStyle))
-                    
-                    _slices[_slices.count - 1].expand = lastExpand
-                    
-                } else {
-                    let indentation = createIndentedString(level: level)
-                    let numberString = NSAttributedString(string: indentation + "\(number)", attributes: numberStyle)
-                    
-                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: numberString))
-                }
-                
-            // MARK: boolean
-            case .boolean(let bool):
-                let value = bool ? "true" : "false"
-                
-                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                    
-                    lastExpand.append(NSAttributedString(string: value, attributes: boolStyle))
-                    
-                    _slices[_slices.count - 1].expand = lastExpand
-                    
-                } else {
-                    let indentation = createIndentedString(level: level)
-                    let boolString = NSAttributedString(string: indentation + value, attributes: boolStyle)
-                    
-                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: boolString))
-                }
-                
-            // MARK: null
-            case .null:
-                if let _lastToken = lastToken, case .colon = _lastToken, let lastSlices = _slices.last {
-                    let lastExpand = NSMutableAttributedString(attributedString: lastSlices.expand)
-                    
-                    lastExpand.append(NSAttributedString(string: "null", attributes: nullStyle))
-                    
-                    _slices[_slices.count - 1].expand = lastExpand
-                    
-                } else {
-                    let indentation = createIndentedString(level: level)
-                    let nullString = NSAttributedString(string: indentation + "null", attributes: nullStyle)
-                    
-                    _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: nullString))
-                }
-                
-            // MARK: unknown
-            case .unknown(let string):
-                let newString = string.replacingOccurrences(of: "\n", with: "")
-                let indentation = createIndentedString(level: level)
-                
-                let attributedString = NSMutableAttributedString(string: indentation)
-                attributedString.append(NSAttributedString(string: newString, attributes: unknownStyle))
-                
-                _slices.append(JSONSlice(level: level, lineNumber: lineNumber, expand: attributedString))
+                // 减少缩进
+                decIndent()
             }
+            
+            // 处理结束节点
+            let endExpand = createObjectEndAttribute(isNeedComma: isNeedComma)
+            
+            // 将结尾节点添加到结果数组中
+            _append(expand: endExpand, fold: nil)
+            
+        case .string(let value):
+            let indent = isNeedIndent ? writeIndent() : ""
+            let string = indent + "\"\(value)\""
+            
+            let expand: AttributedString
+            
+            if let url = value.validURL {
+                // MARK: link
+                expand = AttributedString(string: string, attributes: linkStyle)
+                
+                let urlString = url.urlString
+                let range = NSRange(location: indent.count + 1, length: urlString.count)
+                
+                expand.addAttribute(.link, value: urlString, range: range)
+                expand.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
+            } else {
+                
+                // MARK: string
+                expand = AttributedString(string: string, attributes: stringStyle)
+            }
+            
+            if isNeedComma {
+                expand.append(commaAttributeString)
+            }
+            
+            _append(expand: expand, fold: nil)
+            
+        // MARK: number
+        case .number(let value):
+            let indent = isNeedIndent ? writeIndent() : ""
+            let string = indent + "\(value)"
+            let expand = AttributedString(string: string, attributes: numberStyle)
+            
+            if isNeedComma {
+                expand.append(commaAttributeString)
+            }
+            
+            _append(expand: expand, fold: nil)
+            
+        // MARK: bool
+        case .bool(let value):
+            let indent = isNeedIndent ? writeIndent() : ""
+            let string = indent + (value ? "true" : "false")
+            let expand = AttributedString(string: string, attributes: boolStyle)
+            
+            if isNeedComma {
+                expand.append(commaAttributeString)
+            }
+            
+            _append(expand: expand, fold: nil)
+            
+        // MARK: null
+        case .null:
+            let indent = isNeedIndent ? writeIndent() : ""
+            let string = indent + "null"
+            let expand = AttributedString(string: string, attributes: nullStyle)
+            
+            if isNeedComma {
+                expand.append(commaAttributeString)
+            }
+            
+            _append(expand: expand, fold: nil)
         }
         
-        return _slices
+        return result
     }
 }
 
-// MARK: - Encoding Detection
+// MARK: - Indent
 
 private extension JSONDecorator {
+    /// Fixed value of the number of contractions per increase or decrease
+    static let indentAmount = 1
     
-    /// Detect the encoding format of the NSData contents
-    func detectEncoding(_ bytes: UnsafeRawBufferPointer) -> (String.Encoding, Int) {
-        // According to RFC8259, the text encoding in JSON must be UTF8 in nonclosed systems
-        // https://tools.ietf.org/html/rfc8259#section-8.1
-        // However, since Darwin Foundation supports utf16 and utf32, so should Swift Foundation.
-        
-        // First let's check if we can determine the encoding based on a leading Byte Ordering Mark
-        // (BOM).
-        if bytes.count >= 4 {
-            if bytes.starts(with: Self.utf8BOM) {
-                return (.utf8, 3)
-            }
-            if bytes.starts(with: Self.utf32BigEndianBOM) {
-                return (.utf32BigEndian, 4)
-            }
-            if bytes.starts(with: Self.utf32LittleEndianBOM) {
-                return (.utf32LittleEndian, 4)
-            }
-            if bytes.starts(with: [0xFF, 0xFE]) {
-                return (.utf16LittleEndian, 2)
-            }
-            if bytes.starts(with: [0xFE, 0xFF]) {
-                return (.utf16BigEndian, 2)
-            }
-        }
-        
-        // If there is no BOM present, we might be able to determine the encoding based on
-        // occurences of null bytes.
-        if bytes.count >= 4 {
-            switch (bytes[0], bytes[1], bytes[2], bytes[3]) {
-            case (0, 0, 0, _):
-                return (.utf32BigEndian, 0)
-            case (_, 0, 0, 0):
-                return (.utf32LittleEndian, 0)
-            case (0, _, 0, _):
-                return (.utf16BigEndian, 0)
-            case (_, 0, _, 0):
-                return (.utf16LittleEndian, 0)
-            default:
-                break
-            }
-        }
-        else if bytes.count >= 2 {
-            switch (bytes[0], bytes[1]) {
-            case (0, _):
-                return (.utf16BigEndian, 0)
-            case (_, 0):
-                return (.utf16LittleEndian, 0)
-            default:
-                break
-            }
-        }
-        return (.utf8, 0)
+    func incIndent() {
+        indent += Self.indentAmount
     }
     
-    // These static properties don't look very nice, but we need them to
-    // workaround: https://bugs.swift.org/browse/SR-14102
-    private static let utf8BOM: [UInt8] = [0xEF, 0xBB, 0xBF]
-    private static let utf32BigEndianBOM: [UInt8] = [0x00, 0x00, 0xFE, 0xFF]
-    private static let utf32LittleEndianBOM: [UInt8] = [0xFF, 0xFE, 0x00, 0x00]
-    private static let utf16BigEndianBOM: [UInt8] = [0xFF, 0xFE]
-    private static let utf16LittleEndianBOM: [UInt8] = [0xFE, 0xFF]
+    func decIndent() {
+        indent -= Self.indentAmount
+    }
+    
+    func writeIndent() -> String {
+        return (0 ..< indent).map { _ in "\t" }.joined()
+    }
 }
 
-// MARK: - Tools
+// MARK: - Attributed String
 
 private extension JSONDecorator {
     
-    /// Create a string to represent indentation.
+    typealias AttributedString = NSMutableAttributedString
+    
+    /// An attribute string of ":"
+    var colonAttributeString: AttributedString {
+        createKeywordAttribute(key: " : ")
+    }
+    
+    /// An attribute string of ","
+    var commaAttributeString: AttributedString {
+        createKeywordAttribute(key: ",")
+    }
+    
+    /// Create an attribute string of "array - start node"
+    func createArrayStartAttribute(isNeedIndent: Bool, isNeedComma: Bool) -> (AttributedString, AttributedString) {
+        return createStartAttribute(expand: "[", fold: "[Array...]", isNeedIndent: isNeedIndent, isNeedComma: isNeedComma)
+    }
+    
+    /// Create an attribute string of "Array - End Node"
+    func createArrayEndAttribute(isNeedComma: Bool) -> AttributedString {
+        return createEndAttribute(key: "]", isNeedComma: isNeedComma)
+    }
+    
+    /// Create an attribute string of "Object - Start Node"
+    func createObjectStartAttribute(isNeedIndent: Bool, isNeedComma: Bool) -> (AttributedString, AttributedString) {
+        return createStartAttribute(expand: "{", fold: "{Object...}", isNeedIndent: isNeedIndent, isNeedComma: isNeedComma)
+    }
+    
+    /// Create an attribute string of "object - end node"
+    func createObjectEndAttribute(isNeedComma: Bool) -> AttributedString {
+        return createEndAttribute(key: "}", isNeedComma: isNeedComma)
+    }
+    
+    /// Create an attribute string of "keyword".
     ///
-    /// - Parameter level: Current level.
-    /// - Returns: Use the indentation indicated by `"\t"`.
-    func createIndentedString(level: Int) -> String {
-        return (0 ..< level).map{ _ in "\t" }.joined()
+    /// - Parameter key: keyword
+    /// - Returns: `AttributedString` object.
+    func createKeywordAttribute(key: String) -> AttributedString {
+        return .init(string: key, attributes: keyWordStyle)
     }
     
-    /// Create an `NSAttributedString` object for displaying image.
+    /// Create an attribute string of "begin node".
+    ///
+    /// - Parameters:
+    ///   - expand: String when expand.
+    ///   - fold: String when folded.
+    ///   - isNeedIndent:
+    ///   - isNeedComma: Did need to append a comma at the end.
+    /// - Returns: `AttributedString` object.
+    func createStartAttribute(
+        expand: String,
+        fold: String,
+        isNeedIndent: Bool,
+        isNeedComma: Bool
+    ) -> (AttributedString, AttributedString) {
+        let indent = isNeedIndent ? writeIndent() : ""
+        
+        let expandString = AttributedString(
+            string: indent + " " + expand,
+            attributes: startStyle
+        )
+        
+        let foldString = AttributedString(
+            string: fold + (isNeedComma ? "," : ""),
+            attributes: placeholderStyle
+        )
+        
+        foldString.insert(createKeywordAttribute(key: indent + " "), at: 0)
+        
+        expandString.insert(foldIconString, at: indent.count)
+        foldString.insert(expandIconString, at: indent.count)
+        
+        return (expandString, foldString)
+    }
+    
+    /// Create an attribute string of "end node".
+    ///
+    /// - Parameters:
+    ///   - key: Node characters, such as `}` or `]`.
+    ///   - isNeedComma: Did need to append a comma at the end.
+    /// - Returns: `AttributedString` object.
+    func createEndAttribute(key: String, isNeedComma: Bool) -> AttributedString {
+        let indent = writeIndent()
+        let string = key + (isNeedComma ? "," : "")
+        return .init(string: indent + string, attributes: startStyle)
+    }
+    
+    /// Create an `AttributedString` object for displaying image.
     ///
     /// - Parameter image: The image to be displayed.
-    /// - Returns: `NSAttributedString` object.
-    func createIconAttributedString(with image: UIImage) -> NSAttributedString {
+    /// - Returns: `AttributedString` object.
+    func createIconAttributedString(with image: UIImage) -> AttributedString {
         let expandAttach = NSTextAttachment()
-        
         expandAttach.image = image
         
         let font = style.jsonFont
@@ -498,7 +424,7 @@ private extension JSONDecorator {
         
         expandAttach.bounds = CGRect(x: 0, y: y, width: font.ascender, height: font.ascender)
         
-        return NSAttributedString(attachment: expandAttach)
+        return .init(attachment: expandAttach)
     }
     
     func createStyle(foregroundColor: UIColor?, other: StyleInfos? = nil) -> StyleInfos {
