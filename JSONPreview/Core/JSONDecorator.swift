@@ -403,6 +403,74 @@ private extension JSONDecorator {
     }
 }
 
+// MARK: - Encoding Detection
+
+private extension JSONDecorator {
+    
+    /// Detect the encoding format of the NSData contents
+    func detectEncoding(_ bytes: UnsafeRawBufferPointer) -> (String.Encoding, Int) {
+        // According to RFC8259, the text encoding in JSON must be UTF8 in nonclosed systems
+        // https://tools.ietf.org/html/rfc8259#section-8.1
+        // However, since Darwin Foundation supports utf16 and utf32, so should Swift Foundation.
+        
+        // First let's check if we can determine the encoding based on a leading Byte Ordering Mark
+        // (BOM).
+        if bytes.count >= 4 {
+            if bytes.starts(with: Self.utf8BOM) {
+                return (.utf8, 3)
+            }
+            if bytes.starts(with: Self.utf32BigEndianBOM) {
+                return (.utf32BigEndian, 4)
+            }
+            if bytes.starts(with: Self.utf32LittleEndianBOM) {
+                return (.utf32LittleEndian, 4)
+            }
+            if bytes.starts(with: [0xFF, 0xFE]) {
+                return (.utf16LittleEndian, 2)
+            }
+            if bytes.starts(with: [0xFE, 0xFF]) {
+                return (.utf16BigEndian, 2)
+            }
+        }
+        
+        // If there is no BOM present, we might be able to determine the encoding based on
+        // occurences of null bytes.
+        if bytes.count >= 4 {
+            switch (bytes[0], bytes[1], bytes[2], bytes[3]) {
+            case (0, 0, 0, _):
+                return (.utf32BigEndian, 0)
+            case (_, 0, 0, 0):
+                return (.utf32LittleEndian, 0)
+            case (0, _, 0, _):
+                return (.utf16BigEndian, 0)
+            case (_, 0, _, 0):
+                return (.utf16LittleEndian, 0)
+            default:
+                break
+            }
+        }
+        else if bytes.count >= 2 {
+            switch (bytes[0], bytes[1]) {
+            case (0, _):
+                return (.utf16BigEndian, 0)
+            case (_, 0):
+                return (.utf16LittleEndian, 0)
+            default:
+                break
+            }
+        }
+        return (.utf8, 0)
+    }
+    
+    // These static properties don't look very nice, but we need them to
+    // workaround: https://bugs.swift.org/browse/SR-14102
+    private static let utf8BOM: [UInt8] = [0xEF, 0xBB, 0xBF]
+    private static let utf32BigEndianBOM: [UInt8] = [0x00, 0x00, 0xFE, 0xFF]
+    private static let utf32LittleEndianBOM: [UInt8] = [0xFF, 0xFE, 0x00, 0x00]
+    private static let utf16BigEndianBOM: [UInt8] = [0xFF, 0xFE]
+    private static let utf16LittleEndianBOM: [UInt8] = [0xFE, 0xFF]
+}
+
 // MARK: - Tools
 
 private extension JSONDecorator {
