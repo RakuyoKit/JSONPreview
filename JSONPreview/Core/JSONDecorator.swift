@@ -104,11 +104,16 @@ private extension JSONDecorator {
     }
     
     func createJSONSlices(from jsonValue: JSONValue) -> [JSONSlice] {
-        return processJSONValueRecursively(jsonValue, isNeedIndent: false, isNeedComma: false)
+        return processJSONValueRecursively(
+            jsonValue,
+            currentSlicesCount: 0,
+            isNeedIndent: false,
+            isNeedComma: false)
     }
     
     func processJSONValueRecursively(
         _ jsonValue: JSONValue,
+        currentSlicesCount: Int,
         isNeedIndent: Bool,
         isNeedComma: Bool
     ) -> [JSONSlice] {
@@ -116,7 +121,12 @@ private extension JSONDecorator {
         
         // 简化 JSONSlice 的初始化
         func _append(expand: AttributedString, fold: AttributedString?) {
-            let slice = JSONSlice(level: indent, lineNumber: result.count + 1, expand: expand, folded: fold)
+            let slice = JSONSlice(
+                level: indent,
+                lineNumber: currentSlicesCount + result.count + 1,
+                expand: expand,
+                folded: fold)
+            
             result.append(slice)
         }
         
@@ -140,7 +150,11 @@ private extension JSONDecorator {
                 for (i, value) in values.enumerated() {
                     let _isNeedComma = i != (values.count - 1)
                     
-                    let slices = processJSONValueRecursively(value, isNeedIndent: true, isNeedComma: _isNeedComma)
+                    let slices = processJSONValueRecursively(
+                        value,
+                        currentSlicesCount: currentSlicesCount + result.count,
+                        isNeedIndent: true,
+                        isNeedComma: _isNeedComma)
                     result.append(contentsOf: slices)
                 }
                 
@@ -188,7 +202,11 @@ private extension JSONDecorator {
                         let fold = createKeyAttribute()
                         
                         // 获取子值的内容
-                        var slices = processJSONValueRecursively(value, isNeedIndent: false, isNeedComma: _isNeedComma)
+                        var slices = processJSONValueRecursively(
+                            value,
+                            currentSlicesCount: currentSlicesCount + result.count,
+                            isNeedIndent: false,
+                            isNeedComma: _isNeedComma)
                         
                         if !slices.isEmpty {
                             let startSlice = slices.removeFirst()
@@ -207,7 +225,11 @@ private extension JSONDecorator {
                         var fold: AttributedString? = nil
                         
                         // 获取子值的内容
-                        let slices = processJSONValueRecursively(value, isNeedIndent: false, isNeedComma: _isNeedComma)
+                        let slices = processJSONValueRecursively(
+                            value,
+                            currentSlicesCount: 0,
+                            isNeedIndent: false,
+                            isNeedComma: _isNeedComma)
                         
                         // 一般这种时候`slices`只会有一个值，所以只取第一个值
                         if let slice = slices.first {
