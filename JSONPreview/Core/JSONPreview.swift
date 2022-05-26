@@ -403,25 +403,25 @@ extension JSONPreview: JSONTextViewDelegate {
             for i in realRow + 1 ..< slices.count {
                 guard isExecution else { break }
                 
-                let _slices = slices[i]
+                let _slice = slices[i]
                 
-                guard _slices.level >= clickSlice.level else { continue }
+                guard _slice.level >= clickSlice.level else { continue }
                 
-                if _slices.level == clickSlice.level { isExecution = false }
+                if _slice.level == clickSlice.level { isExecution = false }
                 
                 // Increase the number of times being folded
                 decorator.slices[i].foldedTimes += 1
                 
-                guard _slices.foldedTimes == 0 else { continue }
+                guard _slice.foldedTimes == 0 else { continue }
                 
                 // Record the line number to be hidden
-                lines.append(_slices.lineNumber)
+                lines.append(_slice.lineNumber)
                 
                 // Accumulate the length of the string to be hidden
                 length = length + 1 /* Wrap */ + {
-                    switch _slices.state {
-                    case .expand: return _slices.expand.length
-                    case .folded: return _slices.folded?.length ?? 0
+                    switch _slice.state {
+                    case .expand: return _slice.expand.length
+                    case .folded: return _slice.folded?.length ?? 0
                     }
                 }()
             }
