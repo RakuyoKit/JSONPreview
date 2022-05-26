@@ -11,13 +11,9 @@ import UIKit
 /// Responsible for beautifying JSON
 public class JSONDecorator {
     // Do not want the caller to directly initialize the object
-    private init(json: String, style: HighlightStyle) {
-        self.json = json
+    private init(style: HighlightStyle) {
         self.style = style
     }
-    
-    /// The JSON string to be highlighted.
-    private let json: String
     
     /// Style of highlight. See `HighlightStyle` for details.
     private let style: HighlightStyle
@@ -65,34 +61,27 @@ public extension JSONDecorator {
     ///   - judgmentValid: Whether to check the validity of JSON.
     ///   - style: style of highlight. See `HighlightStyle` for details.
     /// - Returns: Return `nil` when JSON is invalid. See `JSONDecorator` for details.
-    static func highlight(_ json: String, judgmentValid: Bool, style: HighlightStyle = .default) -> JSONDecorator? {
+    static func highlight(
+        _ json: String,
+        judgmentValid: Bool = false,
+        style: HighlightStyle = .default
+    ) -> JSONDecorator? {
+        guard let data = json.data(using: .utf8) else { return nil }
+        
         if judgmentValid {
-            guard let data = json.data(using: .utf8),
-                let _ = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) else {
+            guard let _ = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) else {
                 return nil
             }
         }
         
-        return highlight(json, style: style)
-    }
-    
-    /// Highlight the incoming JSON string.
-    ///
-    /// Serve for `JSONPreview`. Will split JSON into arrays that meet the requirements of `JSONPreview` display.
-    ///
-    /// - Parameters:
-    ///   - json: The JSON string to be highlighted.
-    ///   - style: style of highlight. See `HighlightStyle` for details.
-    /// - Returns: See `JSONDecorator` for details.
-    static func highlight(_ json: String, style: HighlightStyle = .default) -> JSONDecorator {
-        let decorator = JSONDecorator(json: json, style: style)
-        decorator.slices = decorator._slices
+        let decorator = JSONDecorator(style: style)
+        decorator.slices = decorator.createSlices(from: json)
         return decorator
     }
 }
 
 private extension JSONDecorator {
-    var _slices: [JSONSlice] {
+    func createSlices(from json: String) -> [JSONSlice] {
         var _slices: [JSONSlice] = []
         
         // Record indentation level
