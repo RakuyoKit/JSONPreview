@@ -46,6 +46,8 @@ class ViewController: UIViewController {
         
         let json = """
         [
+            [],
+            [],
             {
                 "string" : "string",
                 "int" : 1024,
