@@ -82,7 +82,6 @@ public extension HighlightStyle {
 
 fileprivate extension UIImage {
     convenience init?(name: String) {
-        
         if let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
             let bundle = Bundle(path: resourcePath + "JSONPreview.bundle") {
             
