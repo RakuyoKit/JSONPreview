@@ -8,6 +8,9 @@
 
 import UIKit
 
+public typealias AttributedKey = NSAttributedString.Key
+public typealias StyleInfos = [AttributedKey : Any]
+
 /// Highlight style configuration
 public struct HighlightStyle {
     /// Initialization method

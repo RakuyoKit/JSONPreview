@@ -444,11 +444,8 @@ private extension JSONDecorator {
         return NSAttributedString(attachment: expandAttach)
     }
     
-    func createStyle(
-        foregroundColor: UIColor?,
-        other: [NSAttributedString.Key : Any]? = nil
-    ) -> [NSAttributedString.Key : Any] {
-        var newStyle: [NSAttributedString.Key : Any] = [.font : style.jsonFont]
+    func createStyle(foregroundColor: UIColor?, other: StyleInfos? = nil) -> StyleInfos {
+        var newStyle: StyleInfos = [.font : style.jsonFont]
         
         if let color = foregroundColor {
             newStyle[.foregroundColor] = color

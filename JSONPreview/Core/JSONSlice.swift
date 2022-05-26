@@ -44,8 +44,8 @@ public struct JSONSlice {
     public init(
         level: Int,
         lineNumber: Int,
-        expand: (String, [NSAttributedString.Key : Any]),
-        folded: (String, [NSAttributedString.Key : Any])? = nil
+        expand: (String, StyleInfos),
+        folded: (String, StyleInfos)? = nil
     ) {
         self.level = level
         self.lineNumber = lineNumber
