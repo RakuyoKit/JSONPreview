@@ -103,7 +103,7 @@ open class JSONPreview: UIView {
     private var decorator: JSONDecorator! {
         didSet {
             // Combine the slice result into a string
-            let tmp = NSMutableAttributedString(string: "")
+            let tmp = AttributedString(string: "")
             
             decorator.slices.forEach {
                 tmp.append($0.expand)
@@ -400,7 +400,7 @@ extension JSONPreview: JSONTextViewDelegate {
             var lines: [Int] = []
             var length = clickSlice.expand.length
             
-            for i in realRow + 1 ..< slices.count {
+            for i in (realRow + 1) ..< slices.count {
                 guard isExecution else { break }
                 
                 let _slice = slices[i]
@@ -451,7 +451,7 @@ extension JSONPreview: JSONTextViewDelegate {
             var isExecution = true
             var lines: [Int] = []
             
-            let replaceString = NSMutableAttributedString(string: "")
+            let replaceString = AttributedString(string: "")
             
             for i in realRow + 1 ..< slices.count {
                 guard isExecution else { break }

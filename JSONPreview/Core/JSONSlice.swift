@@ -25,8 +25,8 @@ public struct JSONSlice {
     public init(
         level: Int,
         lineNumber: Int,
-        expand: NSAttributedString,
-        folded: NSAttributedString? = nil
+        expand: AttributedString,
+        folded: AttributedString? = nil
     ) {
         self.level = level
         self.lineNumber = lineNumber
@@ -50,10 +50,10 @@ public struct JSONSlice {
         self.level = level
         self.lineNumber = lineNumber
         
-        self.expand = NSAttributedString(string: expand.0, attributes: expand.1)
+        self.expand = AttributedString(string: expand.0, attributes: expand.1)
         
         if let folded = folded {
-            self.folded = NSAttributedString(string: folded.0, attributes: folded.1)
+            self.folded = AttributedString(string: folded.0, attributes: folded.1)
         } else {
             self.folded = nil
         }
@@ -75,15 +75,15 @@ public struct JSONSlice {
     public let level: Int
     
     /// The complete content of the JSON slice in the expanded state.
-    public var expand: NSAttributedString
+    public var expand: AttributedString
     
     /// The summary content of the JSON slice in the folded state.
-    public var folded: NSAttributedString?
+    public var folded: AttributedString?
 }
 
 public extension JSONSlice {
     /// According to different status, return the content that should be displayed currently.
-    var showContent: NSAttributedString? {
+    var showContent: AttributedString? {
         switch state {
         case .expand: return expand
         case .folded: return folded

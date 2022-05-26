@@ -8,7 +8,8 @@
 
 import UIKit
 
-public typealias AttributedKey = NSAttributedString.Key
+public typealias AttributedString = NSMutableAttributedString
+public typealias AttributedKey = AttributedString.Key
 public typealias StyleInfos = [AttributedKey : Any]
 
 /// Highlight style configuration

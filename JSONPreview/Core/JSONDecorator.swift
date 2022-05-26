@@ -34,7 +34,7 @@ public class JSONDecorator {
     
     /// A newline string with the same style as JSON.
     /// Can be used to splice slices into a complete string.
-    private(set) lazy var wrapString = NSAttributedString(string: "\n", attributes: createStyle(foregroundColor: nil))
+    private(set) lazy var wrapString = AttributedString(string: "\n", attributes: createStyle(foregroundColor: nil))
     
     private lazy var startStyle = createStyle(foregroundColor: style.color.keyWord)
     private lazy var keyWordStyle = createStyle(foregroundColor: style.color.keyWord)
@@ -323,8 +323,6 @@ private extension JSONDecorator {
 // MARK: - Attributed String
 
 private extension JSONDecorator {
-    
-    typealias AttributedString = NSMutableAttributedString
     
     /// An attribute string of ":"
     var colonAttributeString: AttributedString {
