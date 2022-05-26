@@ -115,6 +115,8 @@ open class JSONPreview: UIView {
                 guard let this = self else { return }
                 
                 this.jsonTextView.attributedText = tmp
+                
+                guard !this.decorator.slices.isEmpty else { return }
                 this.lineDataSource = (1 ... this.decorator.slices.count).map { $0 }
             }
         }
