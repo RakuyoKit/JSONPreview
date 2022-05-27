@@ -148,7 +148,7 @@ The de-escaping operations supported by different versions are as follows:
 
 ## Data Flow Diagram
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
+![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.jpg)
 
 ## TODO
 

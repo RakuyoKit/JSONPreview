@@ -146,7 +146,7 @@ previewView.preview(json, style: style)
 
 ## DFD
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
+![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.jpg)
 
 ## TODO
 
