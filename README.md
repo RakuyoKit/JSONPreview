@@ -20,7 +20,7 @@ All of `JSONPreview`'s features are written using **native methods**, which mean
 
 Here is a gif of about 25 seconds (**about 2.5M**) that shows the effect when using this library to preview JSON.
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
+![screenshot](Images/screenshot.gif)
 
 ## Prerequisites
 
@@ -40,13 +40,13 @@ pod 'JSONPreview'
 
 - File > Swift Packages > Add Package Dependency
 - Add https://github.com/rakuyoMo/JSONPreview.git
-- Select "Up to Next Major" with "1.3.5"
+- Select "Up to Next Major" with "1.3.6"
 
 Or add the following to your `Package.swift` file:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.5")
+  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.6")
 ]
 ```
 
@@ -64,7 +64,7 @@ dependencies: [
 
 ## Usage
 
-> After downloading the project, [`ViewController.swift`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Other/ViewController.swift) file contains part of the test code, just run the project Check the corresponding effect.
+> After downloading the project, [`ViewController.swift`](JSONPreview/Other/ViewController.swift) file contains part of the test code, just run the project Check the corresponding effect.
 
 1. Create the `JSONPreview` object and add it to the interface.
 
@@ -84,7 +84,7 @@ previewView.preview(json)
 
 3. If you want to customize the highlight style, you can set it through the `HighlightStyle` and `HighlightColor` types:
 
-> Among them, [`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/Entity/HighlightColor.swift#L119) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
+> Among them, [`ConvertibleToColor`](JSONPreview/Core/Entity/HighlightColor.swift#L119) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
 
 ```swift
 let highlightColor = HighlightColor(
@@ -148,7 +148,7 @@ The de-escaping operations supported by different versions are as follows:
 
 ## Data Flow Diagram
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.jpg)
+![DFD](Images/DFD.jpg)
 
 ## TODO
 
@@ -161,4 +161,4 @@ Thanks to [Awhisper](https://github.com/Awhisper) for his valuable input during 
 
 ## License
 
-`JSONPreview` is available under the **MIT** license. For more information, see [LICENSE](https://github.com/rakuyoMo/JSONPreview/blob/master/LICENSE).
+`JSONPreview` is available under the **MIT** license. For more information, see [LICENSE](LICENSE).

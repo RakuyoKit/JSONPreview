@@ -18,7 +18,7 @@
 
 下面是一个大约25秒的gif（**大约2.5M**），它展示了使用本库预览 JSON 时的效果。
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
+![screenshot](Images/screenshot.gif)
 
 ## 基本要求
 
@@ -38,13 +38,13 @@ pod 'JSONPreview'
 
 - 依次选择 File > Swift Packages > Add Package Dependency
 - 输入 https://github.com/rakuyoMo/JSONPreview.git
-- 选择 "Up to Next Major" 并填入 "1.3.5"
+- 选择 "Up to Next Major" 并填入 "1.3.6"
 
 或者将下面的内容添加到 `Package.swift` 文件中：
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.5")
+  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.6")
 ]
 ```
 
@@ -62,7 +62,7 @@ dependencies: [
 
 ## 使用
 
-> 下载项目后，[`ViewController.swift`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Other/ViewController.swift) 文件中包含部分测试代码，运行项目即可查看对应的效果。
+> 下载项目后，[`ViewController.swift`](JSONPreview/Other/ViewController.swift) 文件中包含部分测试代码，运行项目即可查看对应的效果。
 
 1. 首先创建 `JSONPreview` 对象，并添加到界面上：
 
@@ -82,7 +82,7 @@ previewView.preview(json)
 
 3. 如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 类型进行设置：
 
-> 其中，[`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/Entity/HighlightColor.swift#L119) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
+> 其中，[`ConvertibleToColor`](JSONPreview/Core/Entity/HighlightColor.swift#L119) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
 
 ```swift
 let highlightColor = HighlightColor(
@@ -146,7 +146,7 @@ previewView.preview(json, style: style)
 
 ## DFD
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.jpg)
+![DFD](Images/DFD.jpg)
 
 ## TODO
 
@@ -159,4 +159,4 @@ previewView.preview(json, style: style)
 
 ## License
 
-`License` 在 **MIT** 许可下可用。 有关更多信息，请参见 [LICENSE](https://github.com/rakuyoMo/License/blob/master/LICENSE) 文件。
+`License` 在 **MIT** 许可下可用。 有关更多信息，请参见 [LICENSE](LICENSE) 文件。
