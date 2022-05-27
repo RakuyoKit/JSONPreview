@@ -317,6 +317,16 @@ private extension JSONDecorator {
             }
             
             _append(expand: expand, fold: nil)
+            
+        // MARK: unknown
+        case .unknown(let string):
+            let indent = isNeedIndent ? writeIndent() : ""
+            let newString = string.replacingOccurrences(of: "\n", with: "")
+            
+            let expand = AttributedString(string: indent)
+            expand.append(AttributedString(string: newString, attributes: unknownStyle))
+            
+            _append(expand: expand, fold: nil)
         }
         
         return result

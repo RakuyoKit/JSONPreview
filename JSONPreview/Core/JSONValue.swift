@@ -20,6 +20,8 @@ public enum JSONValue: Equatable {
 
     case array([JSONValue])
     case object([String: JSONValue])
+    
+    case unknown(String)
 }
 
 extension JSONValue {
@@ -27,7 +29,7 @@ extension JSONValue {
         switch self {
         case .array, .object:
             return false
-        case .null, .number, .string, .bool:
+        case .null, .number, .string, .bool, .unknown:
             return true
         }
     }
@@ -36,7 +38,7 @@ extension JSONValue {
         switch self {
         case .array, .object:
             return true
-        case .null, .number, .string, .bool:
+        case .null, .number, .string, .bool, .unknown:
             return false
         }
     }
@@ -57,6 +59,8 @@ extension JSONValue {
             return "a dictionary"
         case .null:
             return "null"
+        case .unknown:
+            return "unknown json value"
         }
     }
 }
