@@ -119,7 +119,7 @@ private extension JSONDecorator {
     ) -> [JSONSlice] {
         var result: [JSONSlice] = []
         
-        // 简化 JSONSlice 的初始化
+        /// Simplify the initialization of `JSONSlice`
         func _append(expand: AttributedString, fold: AttributedString?) {
             let slice = JSONSlice(
                 level: indent,
@@ -130,23 +130,20 @@ private extension JSONDecorator {
             result.append(slice)
         }
         
-        // 处理每个 json 节点
+        // Process each json value
         switch jsonValue {
         // MARK: array
         case .array(let values):
-            // 处理开头节点
             let (startExpand, startFold) = createArrayStartAttribute(
                 isNeedIndent: isNeedIndent,
                 isNeedComma: isNeedComma)
             
-            // 将开头节点添加到结果数组中
             _append(expand: startExpand, fold: startFold)
             
             if !values.isEmpty {
-                // 增加缩进
                 incIndent()
                 
-                // 处理里面每一个 value
+                // Process each value
                 for (i, value) in values.enumerated() {
                     let _isNeedComma = i != (values.count - 1)
                     
@@ -158,31 +155,24 @@ private extension JSONDecorator {
                     result.append(contentsOf: slices)
                 }
                 
-                // 减少缩进
                 decIndent()
             }
             
-            // 处理结束节点
             let endExpand = createArrayEndAttribute(isNeedComma: isNeedComma)
-            
-            // 将结尾节点添加到结果数组中
             _append(expand: endExpand, fold: nil)
             
         // MARK: object
         case .object(let object):
-            // 处理开头节点
             let (startExpand, startFold) = createObjectStartAttribute(
                 isNeedIndent: isNeedIndent,
                 isNeedComma: isNeedComma)
             
-            // 将开头节点添加到结果数组中
             _append(expand: startExpand, fold: startFold)
             
             if !object.isEmpty {
-                // 增加缩进
                 incIndent()
                 
-                // 处理里面每一个 value
+                // Process each value
                 for (i, (key, value)) in object.enumerated() {
                     let _isNeedComma = i != (object.count - 1)
                     let string = writeIndent() + "\"\(key)\""
@@ -197,11 +187,11 @@ private extension JSONDecorator {
                     
                     let expand = createKeyAttribute()
                     
-                    // 根据不同的情况进行不同的处理
+                    // Different treatment according to different situations
                     if value.isContainer {
                         let fold = createKeyAttribute()
                         
-                        // 获取子值的内容
+                        // Get the content of the subvalue
                         var slices = processJSONValueRecursively(
                             value,
                             currentSlicesCount: currentSlicesCount + result.count,
@@ -224,14 +214,15 @@ private extension JSONDecorator {
                     } else {
                         var fold: AttributedString? = nil
                         
-                        // 获取子值的内容
+                        // Get the content of the subvalue
                         let slices = processJSONValueRecursively(
                             value,
                             currentSlicesCount: 0,
                             isNeedIndent: false,
                             isNeedComma: _isNeedComma)
                         
-                        // 一般这种时候`slices`只会有一个值，所以只取第一个值
+                        // Usually there is only one value for `slices` in this case,
+                        // so only the first value is taken
                         if let slice = slices.first {
                             expand.append(slice.expand)
                             
@@ -245,14 +236,10 @@ private extension JSONDecorator {
                     }
                 }
                 
-                // 减少缩进
                 decIndent()
             }
             
-            // 处理结束节点
             let endExpand = createObjectEndAttribute(isNeedComma: isNeedComma)
-            
-            // 将结尾节点添加到结果数组中
             _append(expand: endExpand, fold: nil)
             
         case .string(let value):
@@ -399,8 +386,8 @@ private extension JSONDecorator {
     /// - Parameters:
     ///   - expand: String when expand.
     ///   - fold: String when folded.
-    ///   - isNeedIndent:
-    ///   - isNeedComma: Did need to append a comma at the end.
+    ///   - isNeedIndent: Indentation required.
+    ///   - isNeedComma: Comma required.
     /// - Returns: `AttributedString` object.
     func createStartAttribute(
         expand: String,
@@ -432,7 +419,7 @@ private extension JSONDecorator {
     ///
     /// - Parameters:
     ///   - key: Node characters, such as `}` or `]`.
-    ///   - isNeedComma: Did need to append a comma at the end.
+    ///   - isNeedComma: Comma required.
     /// - Returns: `AttributedString` object.
     func createEndAttribute(key: String, isNeedComma: Bool) -> AttributedString {
         let indent = writeIndent()
