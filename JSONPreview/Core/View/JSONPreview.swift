@@ -181,9 +181,9 @@ private extension JSONPreview {
             lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
         
-        constraints.append(lineNumberTableView.leftAnchor.constraint(equalTo: {
-            guard #available(iOS 11.0, *) else { return leftAnchor }
-            return safeAreaLayoutGuide.leftAnchor
+        constraints.append(lineNumberTableView.leadingAnchor.constraint(equalTo: {
+            guard #available(iOS 11.0, *) else { return leadingAnchor }
+            return safeAreaLayoutGuide.leadingAnchor
         }()))
         
         NSLayoutConstraint.activate(constraints)
@@ -191,14 +191,14 @@ private extension JSONPreview {
     
     func addJSONTextViewLayout() {
         var constraints = [
-            jsonTextView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor/*, constant: -1*/),
+            jsonTextView.leadingAnchor.constraint(equalTo: lineNumberTableView.trailingAnchor/*, constant: -1*/),
             jsonTextView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
             jsonTextView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
         ]
         
-        constraints.append(jsonTextView.rightAnchor.constraint(equalTo: {
-            guard #available(iOS 11.0, *) else { return rightAnchor }
-            return safeAreaLayoutGuide.rightAnchor
+        constraints.append(jsonTextView.trailingAnchor.constraint(equalTo: {
+            guard #available(iOS 11.0, *) else { return trailingAnchor }
+            return safeAreaLayoutGuide.trailingAnchor
         }()))
         
         NSLayoutConstraint.activate(constraints)
