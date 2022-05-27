@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   
   s.module_name      = 'JSONPreview'
   
-  s.source_files     = 'JSONPreview/Core/*'
+  s.source_files     = 'JSONPreview/Core/*/*'
   
   s.resource_bundle = {
       'JSONPreviewBundle' => [ 'JSONPreview/Other/*.xcassets' ]

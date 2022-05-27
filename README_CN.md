@@ -82,7 +82,7 @@ previewView.preview(json)
 
 3. 如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 类型进行设置：
 
-> 其中，[`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/HighlightColor.swift#L119) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
+> 其中，[`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/Entity/HighlightColor.swift#L119) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
 
 ```swift
 let highlightColor = HighlightColor(
