@@ -84,7 +84,7 @@ previewView.preview(json)
 
 3. If you want to customize the highlight style, you can set it through the `HighlightStyle` and `HighlightColor` types:
 
-> Among them, [`ConvertibleToColor`](JSONPreview/Core/Entity/HighlightColor.swift#L119) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
+> Among them, [`ConvertibleToColor`](JSONPreview/Core/Entity/HighlightColor.swift#L117) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
 
 ```swift
 let highlightColor = HighlightColor(
