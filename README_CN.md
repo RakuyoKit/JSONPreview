@@ -62,7 +62,7 @@ dependencies: [
 
 ## 使用
 
-> 下载项目后，[`ViewController.swift`](JSONPreview/Other/ViewController.swift) 文件中包含部分测试代码，运行项目即可查看对应的效果。
+> 下载项目后，[`ViewController.swift`](JSONPreview/Other/ViewController.swift#L47) 文件中包含部分测试代码，运行项目即可查看对应的效果。
 
 1. 首先创建 `JSONPreview` 对象，并添加到界面上：
 

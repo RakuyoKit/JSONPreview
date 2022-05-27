@@ -64,7 +64,7 @@ dependencies: [
 
 ## Usage
 
-> After downloading the project, [`ViewController.swift`](JSONPreview/Other/ViewController.swift) file contains part of the test code, just run the project Check the corresponding effect.
+> After downloading the project, [`ViewController.swift`](JSONPreview/Other/ViewController.swift#L47) file contains part of the test code, just run the project Check the corresponding effect.
 
 1. Create the `JSONPreview` object and add it to the interface.
 
