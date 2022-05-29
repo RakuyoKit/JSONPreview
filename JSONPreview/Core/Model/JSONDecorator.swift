@@ -169,11 +169,16 @@ private extension JSONDecorator {
             
             _append(expand: startExpand, fold: startFold)
             
-            if !object.isEmpty {
+            // Sorting the key.
+            // The order of displaying each time the bail is taken is consistent.
+            let sortKeys = object.keys.sorted(by: <)
+            
+            if !sortKeys.isEmpty {
                 incIndent()
                 
                 // Process each value
-                for (i, (key, value)) in object.enumerated() {
+                for (i, key) in sortKeys.enumerated() {
+                    guard let value = object[key] else { continue }
                     let _isNeedComma = i != (object.count - 1)
                     let string = writeIndent() + "\"\(key)\""
                     
