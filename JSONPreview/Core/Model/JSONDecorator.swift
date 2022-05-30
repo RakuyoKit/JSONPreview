@@ -169,11 +169,20 @@ private extension JSONDecorator {
             
             _append(expand: startExpand, fold: startFold)
             
-            // Sorting the key.
-            // The order of displaying each time the bail is taken is consistent.
-            let sortKeys = object.keys.sorted(by: <)
+            func _appendObjectEnd() {
+                let endExpand = createObjectEndAttribute(isNeedComma: isNeedComma)
+                _append(expand: endExpand, fold: nil)
+            }
             
-            if !sortKeys.isEmpty {
+            if object.isEmpty {
+                // If the object is empty, add the end flag directly.
+                _appendObjectEnd()
+                
+            } else {
+                // Sorting the key.
+                // The order of displaying each time the bail is taken is consistent.
+                let sortKeys = object.rankingUnknownKeyLast()
+                
                 incIndent()
                 
                 // Process each value
@@ -242,10 +251,9 @@ private extension JSONDecorator {
                 }
                 
                 decIndent()
+                
+                _appendObjectEnd()
             }
-            
-            let endExpand = createObjectEndAttribute(isNeedComma: isNeedComma)
-            _append(expand: endExpand, fold: nil)
             
         case .string(let value):
             let indent = isNeedIndent ? writeIndent() : ""
