@@ -26,6 +26,7 @@
 		AE92DFD6283F13AD002A7DAF /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92DFD5283F13AD002A7DAF /* JSONParser.swift */; };
 		AE92DFD8283F13C7002A7DAF /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92DFD7283F13C7002A7DAF /* JSONValue.swift */; };
 		AE92DFDA283F14B0002A7DAF /* JSONError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92DFD9283F14B0002A7DAF /* JSONError.swift */; };
+		AEA693AA2844894C006BAF10 /* Dictionary+Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA693A92844894C006BAF10 /* Dictionary+Sort.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		AE92DFD5283F13AD002A7DAF /* JSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		AE92DFD7283F13C7002A7DAF /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
 		AE92DFD9283F14B0002A7DAF /* JSONError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONError.swift; sourceTree = "<group>"; };
+		AEA693A92844894C006BAF10 /* Dictionary+Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Sort.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				AE71889926FADA8300A16878 /* String+ValidURL.swift */,
+				AEA693A92844894C006BAF10 /* Dictionary+Sort.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -356,6 +359,7 @@
 				3A1F06D02508D74A00C16862 /* JSONPreview.swift in Sources */,
 				AE92DFD6283F13AD002A7DAF /* JSONParser.swift in Sources */,
 				3A97FCBC250CA0670017352A /* JSONTextView.swift in Sources */,
+				AEA693AA2844894C006BAF10 /* Dictionary+Sort.swift in Sources */,
 				3A1F06A22508D1D800C16862 /* ViewController.swift in Sources */,
 				3A9DB22F2509DA7A002E7B15 /* HighlightStyle.swift in Sources */,
 				3A9DB22D2509D7F4002E7B15 /* HighlightColor.swift in Sources */,
