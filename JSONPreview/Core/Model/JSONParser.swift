@@ -405,8 +405,8 @@ extension JSONParser {
             }
         }
         
-        public func readUnknown(start index: Int, leftCount: Int = 0) -> String {
-            let start = min(index, max(readerIndex, 0)) - leftCount
+        public func readUnknown(start index: Int) -> String {
+            let start = min(index, max(array.count, 1) - 1)
             return String(decoding: self[start ..< array.count], as: Unicode.UTF8.self)
         }
         
