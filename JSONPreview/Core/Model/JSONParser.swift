@@ -351,11 +351,11 @@ extension JSONParser {
         public mutating func readBool() throws -> Bool {
             switch self.read() {
             case UInt8(ascii: "t"):
-                try readGenericValue([UInt8]._true)
+                try readGenericValue([UInt8]._trueSub)
                 return true
                 
             case UInt8(ascii: "f"):
-                try readGenericValue([UInt8]._false)
+                try readGenericValue([UInt8]._falseSub)
                 return false
                 
             default:
@@ -729,7 +729,11 @@ extension UInt8 {
 }
 
 extension Array where Element == UInt8 {
-    fileprivate static let _true = [UInt8(ascii: "t"), UInt8(ascii: "r"), UInt8(ascii: "u"), UInt8(ascii: "e")]
-    fileprivate static let _false = [UInt8(ascii: "f"), UInt8(ascii: "a"), UInt8(ascii: "l"), UInt8(ascii: "s"), UInt8(ascii: "e")]
+    fileprivate static let _true = [UInt8(ascii: "t")] + _trueSub
+    fileprivate static let _trueSub = [UInt8(ascii: "r"), UInt8(ascii: "u"), UInt8(ascii: "e")]
+                    
+    fileprivate static let _false = [UInt8(ascii: "f")] + _falseSub
+    fileprivate static let _falseSub = [UInt8(ascii: "a"), UInt8(ascii: "l"), UInt8(ascii: "s"), UInt8(ascii: "e")]
+    
     fileprivate static let _null = [UInt8(ascii: "n"), UInt8(ascii: "u"), UInt8(ascii: "l"), UInt8(ascii: "l")]
 }
