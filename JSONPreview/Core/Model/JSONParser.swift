@@ -351,35 +351,34 @@ extension JSONParser {
         public mutating func readBool() throws -> Bool {
             switch self.read() {
             case UInt8(ascii: "t"):
-                guard self.read() == UInt8(ascii: "r"),
-                      self.read() == UInt8(ascii: "u"),
-                      self.read() == UInt8(ascii: "e")
-                else {
+                for (i, ascii) in [UInt8]._true.enumerated() {
+                    if self.read() == ascii { continue }
+                    
                     guard !self.isEOF else {
                         throw JSONError.unexpectedEndOfFile
                     }
-
+                    
+                    let offset = min(2 + i, self.readerIndex)
                     throw JSONError.unexpectedCharacter(
                         jsonValue: nil,
-                        ascii: self.peek(offset: -1)!,
-                        characterIndex: self.readerIndex - 1)
+                        ascii: self.peek(offset: -offset)!,
+                        characterIndex: self.readerIndex - offset)
                 }
 
                 return true
             case UInt8(ascii: "f"):
-                guard self.read() == UInt8(ascii: "a"),
-                      self.read() == UInt8(ascii: "l"),
-                      self.read() == UInt8(ascii: "s"),
-                      self.read() == UInt8(ascii: "e")
-                else {
+                for (i, ascii) in [UInt8]._false.enumerated() {
+                    if self.read() == ascii { continue }
+                    
                     guard !self.isEOF else {
                         throw JSONError.unexpectedEndOfFile
                     }
-
+                    
+                    let offset = min(2 + i, self.readerIndex)
                     throw JSONError.unexpectedCharacter(
                         jsonValue: nil,
-                        ascii: self.peek(offset: -1)!,
-                        characterIndex: self.readerIndex - 1)
+                        ascii: self.peek(offset: -offset)!,
+                        characterIndex: self.readerIndex - offset)
                 }
 
                 return false
@@ -389,19 +388,18 @@ extension JSONParser {
         }
 
         public mutating func readNull() throws {
-            guard self.read() == UInt8(ascii: "n"),
-                  self.read() == UInt8(ascii: "u"),
-                  self.read() == UInt8(ascii: "l"),
-                  self.read() == UInt8(ascii: "l")
-            else {
+            for (i, ascii) in [UInt8]._null.enumerated() {
+                if self.read() == ascii { continue }
+                
                 guard !self.isEOF else {
                     throw JSONError.unexpectedEndOfFile
                 }
-
+                
+                let offset = min(2 + i, self.readerIndex)
                 throw JSONError.unexpectedCharacter(
                     jsonValue: nil,
-                    ascii: self.peek(offset: -1)!,
-                    characterIndex: self.readerIndex - 1)
+                    ascii: self.peek(offset: -offset)!,
+                    characterIndex: self.readerIndex - offset)
             }
         }
         
