@@ -257,6 +257,24 @@ public struct JSONParser {
                 }
                 
             } catch let JSONError.unexpectedCharacter(jsonValue, ascii, characterIndex) {
+                /// In the scenario of nested container elements, if the value itself is
+                /// incorrectly formatted, it should be handled as an "error rendering".
+                ///
+                /// However, this kind of processing is currently missing,
+                /// and a good way to implement this logic has not been thought of yet.
+                ///
+                /// For example, if the value of an object is an array or an object,
+                /// and there is a missing `]` (array) or `}` (object), then this problem will occur.
+                ///
+                /// ```json
+                /// {
+                ///     "key": [
+                ///         "123"
+                ///     // Missing `]`, which will cause some json content to be missing when rendering.
+                /// }
+                /// ```
+                #warning("TODO Handling nested scenarios with wrong value")
+                
                 var _jsonValue = jsonValue
                 if _jsonValue == nil {
                     // There is only one possibility to have no value
