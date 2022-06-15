@@ -59,7 +59,8 @@ class ViewController: UIViewController {
         
         NSLayoutConstraint.activate(constraints)
         
-        let json = """
+        let json = 
+        """
         [
             [],
             [],
@@ -130,7 +131,6 @@ class ViewController: UIViewController {
             {123456}
         ]
         """
-        
         
         
         let start = Date().timeIntervalSince1970
