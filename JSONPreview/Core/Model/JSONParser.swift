@@ -351,44 +351,31 @@ extension JSONParser {
         public mutating func readBool() throws -> Bool {
             switch self.read() {
             case UInt8(ascii: "t"):
-                for (i, ascii) in [UInt8]._true.enumerated() {
-                    if self.read() == ascii { continue }
-                    
-                    guard !self.isEOF else {
-                        throw JSONError.unexpectedEndOfFile
-                    }
-                    
-                    let offset = min(2 + i, self.readerIndex)
-                    throw JSONError.unexpectedCharacter(
-                        jsonValue: nil,
-                        ascii: self.peek(offset: -offset)!,
-                        characterIndex: self.readerIndex - offset)
-                }
-
+                try readGenericValue([UInt8]._true)
                 return true
+                
             case UInt8(ascii: "f"):
-                for (i, ascii) in [UInt8]._false.enumerated() {
-                    if self.read() == ascii { continue }
-                    
-                    guard !self.isEOF else {
-                        throw JSONError.unexpectedEndOfFile
-                    }
-                    
-                    let offset = min(2 + i, self.readerIndex)
-                    throw JSONError.unexpectedCharacter(
-                        jsonValue: nil,
-                        ascii: self.peek(offset: -offset)!,
-                        characterIndex: self.readerIndex - offset)
-                }
-
+                try readGenericValue([UInt8]._false)
                 return false
+                
             default:
                 preconditionFailure("Expected to have `t` or `f` as first character")
             }
         }
 
         public mutating func readNull() throws {
-            for (i, ascii) in [UInt8]._null.enumerated() {
+            try readGenericValue([UInt8]._null)
+        }
+        
+        public func readUnknown(start index: Int) -> String {
+            let start = min(index, max(array.count, 1) - 1)
+            return String(decoding: self[start ..< array.count], as: Unicode.UTF8.self)
+        }
+        
+        // MARK: - Private Methods -
+        
+        mutating func readGenericValue(_ value: [UInt8]) throws {
+            for (i, ascii) in value.enumerated() {
                 if self.read() == ascii { continue }
                 
                 guard !self.isEOF else {
@@ -403,13 +390,6 @@ extension JSONParser {
             }
         }
         
-        public func readUnknown(start index: Int) -> String {
-            let start = min(index, max(array.count, 1) - 1)
-            return String(decoding: self[start ..< array.count], as: Unicode.UTF8.self)
-        }
-        
-        // MARK: - Private Methods -
-
         // MARK: String
         
         public enum EscapedSequenceError: Swift.Error {
