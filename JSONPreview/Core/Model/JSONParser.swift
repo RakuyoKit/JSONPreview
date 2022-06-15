@@ -378,10 +378,6 @@ extension JSONParser {
             for (i, ascii) in value.enumerated() {
                 if self.read() == ascii { continue }
                 
-                guard !self.isEOF else {
-                    throw JSONError.unexpectedEndOfFile
-                }
-                
                 let offset = min(2 + i, self.readerIndex)
                 throw JSONError.unexpectedCharacter(
                     jsonValue: nil,
