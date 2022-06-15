@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Dictionary where Key == String, Value == JSONValue {
+extension Dictionary where Key == JSONObjectKey, Value == JSONValue {
     /// Put the `.unknown` value in last place.
     ///
     /// Returns a sorted array of keys,
@@ -19,7 +19,7 @@ extension Dictionary where Key == String, Value == JSONValue {
     func rankingUnknownKeyLast() -> [Key] {
         guard !isEmpty else { return [] }
         
-        var unknownKey: String? = nil
+        var unknownKey: Key? = nil
         
         let otherKeys = keys.drop { key in
             guard case .unknown = self[key] else { return false }

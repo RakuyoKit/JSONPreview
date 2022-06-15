@@ -20,29 +20,62 @@ public struct JSONParser {
     }
 
     public mutating func parse() throws -> JSONValue {
-        try reader.consumeWhitespace()
-        let value = try self.parseValue()
-        #if DEBUG
-        defer {
-            guard self.depth == 0 else {
-                preconditionFailure("Expected to end parsing with a depth of 0")
+        do {
+            try reader.consumeWhitespace()
+            let value = try self.parseValue()
+            
+            #if DEBUG
+            defer {
+                guard self.depth == 0 else {
+                    preconditionFailure("Expected to end parsing with a depth of 0")
+                }
             }
-        }
-        #endif
-        
-        // ensure only white space is remaining
-        var whitespace = 0
-        while let next = reader.peek(offset: whitespace) {
-            switch next {
-            case ._space, ._tab, ._return, ._newline:
-                whitespace += 1
-                continue
-            default:
-                throw JSONError.unexpectedCharacter(ascii: next, characterIndex: reader.readerIndex + whitespace)
+            #endif
+            
+            // ensure only white space is remaining
+            var whitespace = 0
+            while let next = reader.peek(offset: whitespace) {
+                switch next {
+                case ._space, ._tab, ._return, ._newline:
+                    whitespace += 1
+                    continue
+                default:
+                    throw JSONError.unexpectedCharacter(
+                        jsonValue: value,
+                        ascii: next,
+                        characterIndex: self.reader.readerIndex + whitespace)
+                }
             }
+            
+            return value
+            
+        } catch let JSONError.unexpectedCharacter(jsonValue, _, characterIndex) {
+            guard let jsonValue = jsonValue else {
+                return .unknown(self.reader.readUnknown(start: characterIndex))
+            }
+            
+            switch jsonValue {
+            case .null, .number, .string, .bool:
+                let wrongString = self.reader.readUnknown(start: characterIndex)
+                return jsonValue.appendWrong(wrongString)
+                
+            case .array(var array):
+                guard let last = array.popLast() else {
+                    // Theoretically empty arrays do not execute here.
+                    return jsonValue
+                }
+                
+                let wrongString = self.reader.readUnknown(start: characterIndex)
+                array.append(last.appendWrong(wrongString))
+                return .array(array)
+                
+            case .object, .unknown:
+                return jsonValue
+            }
+            
+        } catch let error {
+            return .unknown("\(error)")
         }
-        
-        return value
     }
 
     // MARK: Generic Value Parsing
@@ -69,7 +102,7 @@ public struct JSONParser {
             case UInt8(ascii: "n"):
                 reader.moveReaderIndex(forwardBy: whitespace)
                 try reader.readNull()
-                return .null
+                return .null()
             case UInt8(ascii: "-"), UInt8(ascii: "0") ... UInt8(ascii: "9"):
                 reader.moveReaderIndex(forwardBy: whitespace)
                 let number = try self.reader.readNumber()
@@ -78,7 +111,10 @@ public struct JSONParser {
                 whitespace += 1
                 continue
             default:
-                throw JSONError.unexpectedCharacter(ascii: byte, characterIndex: self.reader.readerIndex)
+                throw JSONError.unexpectedCharacter(
+                    jsonValue: nil,
+                    ascii: byte,
+                    characterIndex: self.reader.readerIndex)
             }
         }
 
@@ -135,14 +171,17 @@ public struct JSONParser {
                 }
                 continue
             default:
-                throw JSONError.unexpectedCharacter(ascii: ascii, characterIndex: reader.readerIndex)
+                throw JSONError.unexpectedCharacter(
+                    jsonValue: .array(array),
+                    ascii: ascii,
+                    characterIndex: reader.readerIndex)
             }
         }
     }
 
     // MARK: - Object parsing -
 
-    mutating func parseObject() throws -> [String: JSONValue] {
+    mutating func parseObject() throws -> [JSONObjectKey: JSONValue] {
         precondition(self.reader.read() == ._openbrace)
         guard self.depth < 512 else {
             throw JSONError.tooManyNestedArraysOrDictionaries(characterIndex: self.reader.readerIndex - 1)
@@ -162,34 +201,76 @@ public struct JSONParser {
             break
         }
         
-        var object = [String: JSONValue]()
+        var object = [JSONObjectKey: JSONValue]()
         object.reserveCapacity(20)
 
         while true {
-            let key = try reader.readString()
+            let key: JSONObjectKey
+            do {
+                key = .init(try reader.readString())
+                
+            } catch JSONError.unexpectedCharacter(_, _, let characterIndex) {
+                object[.wrong] = .unknown(reader.readUnknown(start: characterIndex))
+                return object
+                
+            } catch let error {
+                throw error
+            }
+            
             let colon = try reader.consumeWhitespace()
             guard colon == ._colon else {
-                throw JSONError.unexpectedCharacter(ascii: colon, characterIndex: reader.readerIndex)
+                let characterIndex = reader.readerIndex
+                object[key] = .unknown(reader.readUnknown(start: characterIndex))
+                
+                throw JSONError.unexpectedCharacter(
+                    jsonValue: .object(object),
+                    ascii: colon,
+                    characterIndex: characterIndex)
             }
             reader.moveReaderIndex(forwardBy: 1)
             try reader.consumeWhitespace()
-            object[key] = try self.parseValue()
             
-            let commaOrBrace = try reader.consumeWhitespace()
-            switch commaOrBrace {
-            case ._closebrace:
-                reader.moveReaderIndex(forwardBy: 1)
-                return object
-            case ._comma:
-                reader.moveReaderIndex(forwardBy: 1)
-                if try reader.consumeWhitespace() == ._closebrace {
-                    // the foundation json implementation does support trailing commas
+            do {
+                object[key] = try self.parseValue()
+                
+                let commaOrBrace = try reader.consumeWhitespace()
+                switch commaOrBrace {
+                case ._closebrace:
                     reader.moveReaderIndex(forwardBy: 1)
                     return object
+                case ._comma:
+                    reader.moveReaderIndex(forwardBy: 1)
+                    if try reader.consumeWhitespace() == ._closebrace {
+                        // the foundation json implementation does support trailing commas
+                        reader.moveReaderIndex(forwardBy: 1)
+                        return object
+                    }
+                    continue
+                default:
+                    let characterIndex = reader.readerIndex
+                    object[.wrong] = .unknown(reader.readUnknown(start: characterIndex))
+                    
+                    throw JSONError.unexpectedCharacter(
+                        jsonValue: .object(object),
+                        ascii: commaOrBrace,
+                        characterIndex: characterIndex)
                 }
-                continue
-            default:
-                throw JSONError.unexpectedCharacter(ascii: commaOrBrace, characterIndex: reader.readerIndex)
+                
+            } catch let JSONError.unexpectedCharacter(jsonValue, ascii, characterIndex) {
+                var _jsonValue = jsonValue
+                if _jsonValue == nil {
+                    // There is only one possibility to have no value
+                    object[key] = .unknown(reader.readUnknown(start: characterIndex - 2))
+                    _jsonValue = .object(object)
+                }
+                
+                throw JSONError.unexpectedCharacter(
+                    jsonValue: _jsonValue,
+                    ascii: ascii,
+                    characterIndex: characterIndex)
+                
+            } catch let error {
+                throw error
             }
         }
     }
@@ -278,7 +359,10 @@ extension JSONParser {
                         throw JSONError.unexpectedEndOfFile
                     }
 
-                    throw JSONError.unexpectedCharacter(ascii: self.peek(offset: -1)!, characterIndex: self.readerIndex - 1)
+                    throw JSONError.unexpectedCharacter(
+                        jsonValue: nil,
+                        ascii: self.peek(offset: -1)!,
+                        characterIndex: self.readerIndex - 1)
                 }
 
                 return true
@@ -292,7 +376,10 @@ extension JSONParser {
                         throw JSONError.unexpectedEndOfFile
                     }
 
-                    throw JSONError.unexpectedCharacter(ascii: self.peek(offset: -1)!, characterIndex: self.readerIndex - 1)
+                    throw JSONError.unexpectedCharacter(
+                        jsonValue: nil,
+                        ascii: self.peek(offset: -1)!,
+                        characterIndex: self.readerIndex - 1)
                 }
 
                 return false
@@ -311,8 +398,16 @@ extension JSONParser {
                     throw JSONError.unexpectedEndOfFile
                 }
 
-                throw JSONError.unexpectedCharacter(ascii: self.peek(offset: -1)!, characterIndex: self.readerIndex - 1)
+                throw JSONError.unexpectedCharacter(
+                    jsonValue: nil,
+                    ascii: self.peek(offset: -1)!,
+                    characterIndex: self.readerIndex - 1)
             }
+        }
+        
+        public func readUnknown(start index: Int, leftCount: Int = 0) -> String {
+            let start = min(index, max(readerIndex, 0)) - leftCount
+            return String(decoding: self[start ..< array.count], as: Unicode.UTF8.self)
         }
         
         // MARK: - Private Methods -
@@ -327,7 +422,10 @@ extension JSONParser {
 
         private mutating func readUTF8StringTillNextUnescapedQuote() throws -> String {
             guard self.read() == ._quote else {
-                throw JSONError.unexpectedCharacter(ascii: self.peek(offset: -1)!, characterIndex: self.readerIndex - 1)
+                throw JSONError.unexpectedCharacter(
+                    jsonValue: nil,
+                    ascii: self.peek(offset: -1)!,
+                    characterIndex: self.readerIndex - 1)
             }
             var stringStartIndex = self.readerIndex
             var copy = 0
@@ -572,7 +670,10 @@ extension JSONParser {
                     numbersSinceControlChar += 1
                 case UInt8(ascii: "."):
                     guard numbersSinceControlChar > 0, pastControlChar == .operand else {
-                        throw JSONError.unexpectedCharacter(ascii: byte, characterIndex: readerIndex + numberchars)
+                        throw JSONError.unexpectedCharacter(
+                            jsonValue: nil,
+                            ascii: byte,
+                            characterIndex: readerIndex + numberchars)
                     }
 
                     numberchars += 1
@@ -584,7 +685,10 @@ extension JSONParser {
                     guard numbersSinceControlChar > 0,
                           pastControlChar == .operand || pastControlChar == .decimalPoint
                     else {
-                        throw JSONError.unexpectedCharacter(ascii: byte, characterIndex: readerIndex + numberchars)
+                        throw JSONError.unexpectedCharacter(
+                            jsonValue: nil,
+                            ascii: byte,
+                            characterIndex: readerIndex + numberchars)
                     }
 
                     numberchars += 1
@@ -593,7 +697,10 @@ extension JSONParser {
                     numbersSinceControlChar = 0
                 case UInt8(ascii: "+"), UInt8(ascii: "-"):
                     guard numbersSinceControlChar == 0, pastControlChar == .exp else {
-                        throw JSONError.unexpectedCharacter(ascii: byte, characterIndex: readerIndex + numberchars)
+                        throw JSONError.unexpectedCharacter(
+                            jsonValue: nil,
+                            ascii: byte,
+                            characterIndex: readerIndex + numberchars)
                     }
 
                     numberchars += 1
@@ -601,14 +708,20 @@ extension JSONParser {
                     numbersSinceControlChar = 0
                 case ._space, ._return, ._newline, ._tab, ._comma, ._closebracket, ._closebrace:
                     guard numbersSinceControlChar > 0 else {
-                        throw JSONError.unexpectedCharacter(ascii: byte, characterIndex: readerIndex + numberchars)
+                        throw JSONError.unexpectedCharacter(
+                            jsonValue: nil,
+                            ascii: byte,
+                            characterIndex: readerIndex + numberchars)
                     }
                     let numberStartIndex = self.readerIndex
                     self.moveReaderIndex(forwardBy: numberchars)
 
                     return self.makeStringFast(self[numberStartIndex ..< self.readerIndex])
                 default:
-                    throw JSONError.unexpectedCharacter(ascii: byte, characterIndex: readerIndex + numberchars)
+                    throw JSONError.unexpectedCharacter(
+                        jsonValue: nil,
+                        ascii: byte,
+                        characterIndex: readerIndex + numberchars)
                 }
             }
 

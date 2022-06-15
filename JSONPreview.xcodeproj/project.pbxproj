@@ -27,6 +27,7 @@
 		AE92DFD8283F13C7002A7DAF /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92DFD7283F13C7002A7DAF /* JSONValue.swift */; };
 		AE92DFDA283F14B0002A7DAF /* JSONError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE92DFD9283F14B0002A7DAF /* JSONError.swift */; };
 		AEA693AA2844894C006BAF10 /* Dictionary+Sort.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA693A92844894C006BAF10 /* Dictionary+Sort.swift */; };
+		AEF7BC2F28596D60009F4B3B /* JSONObjectKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF7BC2E28596D60009F4B3B /* JSONObjectKey.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +78,7 @@
 		AE92DFD7283F13C7002A7DAF /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
 		AE92DFD9283F14B0002A7DAF /* JSONError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONError.swift; sourceTree = "<group>"; };
 		AEA693A92844894C006BAF10 /* Dictionary+Sort.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Sort.swift"; sourceTree = "<group>"; };
+		AEF7BC2E28596D60009F4B3B /* JSONObjectKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONObjectKey.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 				AE92DFD9283F14B0002A7DAF /* JSONError.swift */,
 				AE92DFD7283F13C7002A7DAF /* JSONValue.swift */,
 				3A8F1AB32509C50C003BAC09 /* JSONSlice.swift */,
+				AEF7BC2E28596D60009F4B3B /* JSONObjectKey.swift */,
 			);
 			path = Entity;
 			sourceTree = "<group>";
@@ -359,6 +362,7 @@
 				3A1F06D02508D74A00C16862 /* JSONPreview.swift in Sources */,
 				AE92DFD6283F13AD002A7DAF /* JSONParser.swift in Sources */,
 				3A97FCBC250CA0670017352A /* JSONTextView.swift in Sources */,
+				AEF7BC2F28596D60009F4B3B /* JSONObjectKey.swift in Sources */,
 				AEA693AA2844894C006BAF10 /* Dictionary+Sort.swift in Sources */,
 				3A1F06A22508D1D800C16862 /* ViewController.swift in Sources */,
 				3A9DB22F2509DA7A002E7B15 /* HighlightStyle.swift in Sources */,
@@ -542,7 +546,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 14;
-				DEVELOPMENT_TEAM = 5C9JW4S9DE;
+				DEVELOPMENT_TEAM = W9J48S5PC5;
 				INFOPLIST_FILE = "$(SRCROOT)/JSONPreview/Other/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -564,7 +568,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 14;
-				DEVELOPMENT_TEAM = 5C9JW4S9DE;
+				DEVELOPMENT_TEAM = W9J48S5PC5;
 				INFOPLIST_FILE = "$(SRCROOT)/JSONPreview/Other/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (

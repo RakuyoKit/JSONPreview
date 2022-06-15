@@ -14,7 +14,7 @@ import Foundation
 
 public enum JSONError: Swift.Error, Equatable {
     case cannotConvertInputDataToUTF8
-    case unexpectedCharacter(ascii: UInt8, characterIndex: Int)
+    case unexpectedCharacter(jsonValue: JSONValue?, ascii: UInt8, characterIndex: Int)
     case unexpectedEndOfFile
     case tooManyNestedArraysOrDictionaries(characterIndex: Int)
     case invalidHexDigitSequence(String, index: Int)

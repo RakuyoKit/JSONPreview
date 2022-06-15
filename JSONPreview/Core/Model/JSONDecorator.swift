@@ -130,6 +130,11 @@ private extension JSONDecorator {
             result.append(slice)
         }
         
+        func createUnknownAttributedString(with string: String) -> AttributedString {
+            let newString = string.replacingOccurrences(of: "\n", with: "")
+            return .init(string: newString, attributes: unknownStyle)
+        }
+        
         // Process each json value
         switch jsonValue {
         // MARK: array
@@ -140,26 +145,39 @@ private extension JSONDecorator {
             
             _append(expand: startExpand, fold: startFold)
             
-            if !values.isEmpty {
-                incIndent()
-                
-                // Process each value
-                for (i, value) in values.enumerated() {
-                    let _isNeedComma = i != (values.count - 1)
-                    
-                    let slices = processJSONValueRecursively(
-                        value,
-                        currentSlicesCount: currentSlicesCount + result.count,
-                        isNeedIndent: true,
-                        isNeedComma: _isNeedComma)
-                    result.append(contentsOf: slices)
-                }
-                
-                decIndent()
+            func _appendArrayEnd() {
+                let endExpand = createArrayEndAttribute(isNeedComma: isNeedComma)
+                _append(expand: endExpand, fold: nil)
             }
             
-            let endExpand = createArrayEndAttribute(isNeedComma: isNeedComma)
-            _append(expand: endExpand, fold: nil)
+            guard !values.isEmpty else {
+                // If the array is empty, add the end flag directly.
+                _appendArrayEnd()
+                return result
+            }
+            
+            incIndent()
+            
+            // Process each value
+            for (i, value) in values.enumerated() {
+                let _isNeedComma = i != (values.count - 1)
+                
+                let slices = processJSONValueRecursively(
+                    value,
+                    currentSlicesCount: currentSlicesCount + result.count,
+                    isNeedIndent: true,
+                    isNeedComma: _isNeedComma)
+                result.append(contentsOf: slices)
+            }
+            
+            decIndent()
+            
+            // The end node is added only if the array is correct.
+            if case .wrong = values.last?.isRight { } else {
+                _appendArrayEnd()
+            }
+            
+            return result
             
         // MARK: object
         case .object(let object):
@@ -174,36 +192,68 @@ private extension JSONDecorator {
                 _append(expand: endExpand, fold: nil)
             }
             
-            if object.isEmpty {
+            guard !object.isEmpty else {
                 // If the object is empty, add the end flag directly.
                 _appendObjectEnd()
+                return result
+            }
+            
+            // Sorting the key.
+            // The order of displaying each time the bail is taken is consistent.
+            let sortKeys = object.rankingUnknownKeyLast()
+            
+            incIndent()
+            
+            // Process each value
+            for (i, key) in sortKeys.enumerated() {
+                guard let value = object[key] else { continue }
                 
-            } else {
-                // Sorting the key.
-                // The order of displaying each time the bail is taken is consistent.
-                let sortKeys = object.rankingUnknownKeyLast()
+                func createKeyAttribute(_ key: String, isNeedColon: Bool = true) -> AttributedString {
+                    let keyAttribute = AttributedString(string: key, attributes: keyStyle)
+                    if isNeedColon {
+                        keyAttribute.append(colonAttributeString)
+                    }
+                    return keyAttribute
+                }
                 
-                incIndent()
-                
-                // Process each value
-                for (i, key) in sortKeys.enumerated() {
-                    guard let value = object[key] else { continue }
-                    let _isNeedComma = i != (object.count - 1)
-                    let string = writeIndent() + "\"\(key)\""
+                // Different treatment according to different situations
+                switch value.isRight {
+                case .wrong:
+                    let slices = processJSONValueRecursively(
+                        value,
+                        currentSlicesCount: currentSlicesCount + result.count,
+                        isNeedIndent: true,
+                        isNeedComma: false)
                     
-                    let createKeyAttribute: () -> AttributedString = { [weak self] in
-                        guard let this = self else { return .init(string: "") }
+                    if key.isWrong {
+                        result.append(contentsOf: slices)
                         
-                        let keyAttribute = AttributedString(string: string, attributes: this.keyStyle)
-                        keyAttribute.append(this.colonAttributeString)
-                        return keyAttribute
+                    } else {
+                        let string = writeIndent() + "\"\(key.key)\""
+                        let expand = createKeyAttribute(string, isNeedColon: false)
+                        
+                        if let slice = slices.first {
+                            expand.append(slice.expand)
+                        }
+                        
+                        _append(expand: expand, fold: nil)
                     }
                     
-                    let expand = createKeyAttribute()
+                case .right(let isContainer):
+                    let string = writeIndent() + "\"\(key.key)\""
                     
-                    // Different treatment according to different situations
-                    if value.isContainer {
-                        let fold = createKeyAttribute()
+                    let _isNeedComma = (i != (object.count - 1)) && {
+                        guard sortKeys.indices.contains(i + 1) else { return false }
+                        switch object[sortKeys[i + 1]]?.isRight {
+                        case .right: return true
+                        default: return false
+                        }
+                    }()
+                    
+                    let expand = createKeyAttribute(string)
+                    
+                    if isContainer {
+                        let fold = createKeyAttribute(string)
                         
                         // Get the content of the subvalue
                         var slices = processJSONValueRecursively(
@@ -241,7 +291,7 @@ private extension JSONDecorator {
                             expand.append(slice.expand)
                             
                             if let valueFold = slice.folded {
-                                fold = createKeyAttribute()
+                                fold = createKeyAttribute(string)
                                 fold?.append(valueFold)
                             }
                             
@@ -249,13 +299,20 @@ private extension JSONDecorator {
                         }
                     }
                 }
-                
-                decIndent()
-                
+            }
+            
+            decIndent()
+            
+            // The end node is added only if the object is correct.
+            if let lastKey = sortKeys.last,
+               case .wrong = object[lastKey]?.isRight { }
+            else {
                 _appendObjectEnd()
             }
             
-        case .string(let value):
+            return result
+            
+        case let .string(value, wrong):
             let indent = isNeedIndent ? writeIndent() : ""
             let string = indent + "\"\(value)\""
             
@@ -280,10 +337,15 @@ private extension JSONDecorator {
                 expand.append(commaAttributeString)
             }
             
+            if let wrong = wrong {
+                expand.append(createUnknownAttributedString(with: wrong))
+            }
+            
             _append(expand: expand, fold: nil)
+            return result
             
         // MARK: number
-        case .number(let value):
+        case let .number(value, wrong):
             let indent = isNeedIndent ? writeIndent() : ""
             let string = indent + "\(value)"
             let expand = AttributedString(string: string, attributes: numberStyle)
@@ -292,10 +354,15 @@ private extension JSONDecorator {
                 expand.append(commaAttributeString)
             }
             
+            if let wrong = wrong {
+                expand.append(createUnknownAttributedString(with: wrong))
+            }
+            
             _append(expand: expand, fold: nil)
+            return result
             
         // MARK: bool
-        case .bool(let value):
+        case let .bool(value, wrong):
             let indent = isNeedIndent ? writeIndent() : ""
             let string = indent + (value ? "true" : "false")
             let expand = AttributedString(string: string, attributes: boolStyle)
@@ -304,10 +371,15 @@ private extension JSONDecorator {
                 expand.append(commaAttributeString)
             }
             
+            if let wrong = wrong {
+                expand.append(createUnknownAttributedString(with: wrong))
+            }
+            
             _append(expand: expand, fold: nil)
+            return result
             
         // MARK: null
-        case .null:
+        case .null(let wrong):
             let indent = isNeedIndent ? writeIndent() : ""
             let string = indent + "null"
             let expand = AttributedString(string: string, attributes: nullStyle)
@@ -316,20 +388,23 @@ private extension JSONDecorator {
                 expand.append(commaAttributeString)
             }
             
+            if let wrong = wrong {
+                expand.append(createUnknownAttributedString(with: wrong))
+            }
+            
             _append(expand: expand, fold: nil)
+            return result
             
         // MARK: unknown
         case .unknown(let string):
             let indent = isNeedIndent ? writeIndent() : ""
-            let newString = string.replacingOccurrences(of: "\n", with: "")
             
             let expand = AttributedString(string: indent)
-            expand.append(AttributedString(string: newString, attributes: unknownStyle))
+            expand.append(createUnknownAttributedString(with: string))
             
             _append(expand: expand, fold: nil)
+            return result
         }
-        
-        return result
     }
 }
 
