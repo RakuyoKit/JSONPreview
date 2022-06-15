@@ -118,27 +118,27 @@ previewView.preview(json, style: style)
 
 ### Rendering
 
-For rendering, `JSONPreview` performs only **limited** formatting checks, including.
+For rendering, `JSONPreview` only performs **limited** formatting checks.
 
-> None of the `previous nodes` mentioned below include `spaces`, `\t`, and `\n`.
+The conditions that are known to trigger `Error Rendering` include
 
-- The JSON to be previewed must start with `{` or `[`.
-- The previous node of `:` must be `.string`.
-- The previous node of `,` can only be one of `.null`, `.link`, `.string`, `.number`, `.boolean`, `}`, and `]`.
-- `{` must have a preceding node, and the preceding node must not be `{`.
-- `}` must appear in pairs with `{`.
-- `[` must exist for the previous node, and the previous node cannot be `]`.
-- `]` must occur in pairs with `[`.
-- `"` must occur in pairs.
-- The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
-- Spell checking for `null`, `true`, and `false`.
+- Value Unconventional JSON types. Supported types include `object`, `array`, `number`, `bool`, `string`, and `null`.
+- Checks for the `number` format, such as scientific notation and decimals.
+- Spell checking for `true`, `false` and `null`.
 - For scientific notation, the next node of `{E/e}` must be `+`, `-` or a number.
+- `array` elements are not separated by `,`.
+- `object` elements are not separated by `,`.
+- No `:` after the key of `object`.
+- `object` has `:` after the key but is missing the value.
+- The key of `object` is not a string.
 
-Any other syntax errors will not trigger a rendering error.
+In addition to the conditions explicitly mentioned above, other errors may also trigger an "error rendering". There may also be errors outside the scope of the formatting check that do not trigger "error rendering". However, they may **lead to missing json content**.
+
+It is recommended that you do not rely too much on `JSONPreview` format checking, and use it to preview correctly formatted json whenever possible.
 
 ### Link
 
-The *1.2.0* version adds rendering of links (`.link`). While rendering, `JSONPreview` performs a limited **de-escaping** operation.
+The *1.2.0* version adds rendering of links. While rendering, `JSONPreview` performs a limited **de-escaping** operation.
 
 The de-escaping operations supported by different versions are as follows:
 
