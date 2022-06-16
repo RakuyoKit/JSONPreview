@@ -103,7 +103,7 @@ open class JSONPreview: UIView {
     private var decorator: JSONDecorator! {
         didSet {
             // Combine the slice result into a string
-            let tmp = NSMutableAttributedString(string: "")
+            let tmp = AttributedString(string: "")
             
             decorator.slices.forEach {
                 tmp.append($0.expand)
@@ -115,6 +115,8 @@ open class JSONPreview: UIView {
                 guard let this = self else { return }
                 
                 this.jsonTextView.attributedText = tmp
+                
+                guard !this.decorator.slices.isEmpty else { return }
                 this.lineDataSource = (1 ... this.decorator.slices.count).map { $0 }
             }
         }
@@ -179,9 +181,9 @@ private extension JSONPreview {
             lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
         
-        constraints.append(lineNumberTableView.leftAnchor.constraint(equalTo: {
-            guard #available(iOS 11.0, *) else { return leftAnchor }
-            return safeAreaLayoutGuide.leftAnchor
+        constraints.append(lineNumberTableView.leadingAnchor.constraint(equalTo: {
+            guard #available(iOS 11.0, *) else { return leadingAnchor }
+            return safeAreaLayoutGuide.leadingAnchor
         }()))
         
         NSLayoutConstraint.activate(constraints)
@@ -189,14 +191,14 @@ private extension JSONPreview {
     
     func addJSONTextViewLayout() {
         var constraints = [
-            jsonTextView.leftAnchor.constraint(equalTo: lineNumberTableView.rightAnchor/*, constant: -1*/),
+            jsonTextView.leadingAnchor.constraint(equalTo: lineNumberTableView.trailingAnchor/*, constant: -1*/),
             jsonTextView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
             jsonTextView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
         ]
         
-        constraints.append(jsonTextView.rightAnchor.constraint(equalTo: {
-            guard #available(iOS 11.0, *) else { return rightAnchor }
-            return safeAreaLayoutGuide.rightAnchor
+        constraints.append(jsonTextView.trailingAnchor.constraint(equalTo: {
+            guard #available(iOS 11.0, *) else { return trailingAnchor }
+            return safeAreaLayoutGuide.trailingAnchor
         }()))
         
         NSLayoutConstraint.activate(constraints)
@@ -398,28 +400,28 @@ extension JSONPreview: JSONTextViewDelegate {
             var lines: [Int] = []
             var length = clickSlice.expand.length
             
-            for i in realRow + 1 ..< slices.count {
+            for i in (realRow + 1) ..< slices.count {
                 guard isExecution else { break }
                 
-                let _slices = slices[i]
+                let _slice = slices[i]
                 
-                guard _slices.level >= clickSlice.level else { continue }
+                guard _slice.level >= clickSlice.level else { continue }
                 
-                if _slices.level == clickSlice.level { isExecution = false }
+                if _slice.level == clickSlice.level { isExecution = false }
                 
                 // Increase the number of times being folded
                 decorator.slices[i].foldedTimes += 1
                 
-                guard _slices.foldedTimes == 0 else { continue }
+                guard _slice.foldedTimes == 0 else { continue }
                 
                 // Record the line number to be hidden
-                lines.append(_slices.lineNumber)
+                lines.append(_slice.lineNumber)
                 
                 // Accumulate the length of the string to be hidden
                 length = length + 1 /* Wrap */ + {
-                    switch _slices.state {
-                    case .expand: return _slices.expand.length
-                    case .folded: return _slices.folded?.length ?? 0
+                    switch _slice.state {
+                    case .expand: return _slice.expand.length
+                    case .folded: return _slice.folded?.length ?? 0
                     }
                 }()
             }
@@ -449,7 +451,7 @@ extension JSONPreview: JSONTextViewDelegate {
             var isExecution = true
             var lines: [Int] = []
             
-            let replaceString = NSMutableAttributedString(string: "")
+            let replaceString = AttributedString(string: "")
             
             for i in realRow + 1 ..< slices.count {
                 guard isExecution else { break }

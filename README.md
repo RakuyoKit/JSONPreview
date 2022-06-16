@@ -20,7 +20,7 @@ All of `JSONPreview`'s features are written using **native methods**, which mean
 
 Here is a gif of about 25 seconds (**about 2.5M**) that shows the effect when using this library to preview JSON.
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
+![screenshot](Images/screenshot.gif)
 
 ## Prerequisites
 
@@ -40,13 +40,13 @@ pod 'JSONPreview'
 
 - File > Swift Packages > Add Package Dependency
 - Add https://github.com/rakuyoMo/JSONPreview.git
-- Select "Up to Next Major" with "1.3.5"
+- Select "Up to Next Major" with "1.3.6"
 
 Or add the following to your `Package.swift` file:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.5")
+  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.6")
 ]
 ```
 
@@ -64,7 +64,7 @@ dependencies: [
 
 ## Usage
 
-> After downloading the project, [`ViewController.swift`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Other/ViewController.swift) file contains part of the test code, just run the project Check the corresponding effect.
+> After downloading the project, [`ViewController.swift`](JSONPreview/Other/ViewController.swift#L47) file contains part of the test code, just run the project Check the corresponding effect.
 
 1. Create the `JSONPreview` object and add it to the interface.
 
@@ -84,7 +84,7 @@ previewView.preview(json)
 
 3. If you want to customize the highlight style, you can set it through the `HighlightStyle` and `HighlightColor` types:
 
-> Among them, [`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/HighlightColor.swift#L119) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
+> Among them, [`ConvertibleToColor`](JSONPreview/Core/Entity/HighlightColor.swift#L117) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
 
 ```swift
 let highlightColor = HighlightColor(
@@ -118,27 +118,27 @@ previewView.preview(json, style: style)
 
 ### Rendering
 
-For rendering, `JSONPreview` performs only **limited** formatting checks, including.
+For rendering, `JSONPreview` only performs **limited** formatting checks.
 
-> None of the `previous nodes` mentioned below include `spaces`, `\t`, and `\n`.
+The conditions that are known to trigger `Error Rendering` include
 
-- The JSON to be previewed must start with `{` or `[`.
-- The previous node of `:` must be `.string`.
-- The previous node of `,` can only be one of `.null`, `.link`, `.string`, `.number`, `.boolean`, `}`, and `]`.
-- `{` must have a preceding node, and the preceding node must not be `{`.
-- `}` must appear in pairs with `{`.
-- `[` must exist for the previous node, and the previous node cannot be `]`.
-- `]` must occur in pairs with `[`.
-- `"` must occur in pairs.
-- The previous node of `"` can only be one of `{`, `[`, `,` and `:`.
-- Spell checking for `null`, `true`, and `false`.
+- Value Unconventional JSON types. Supported types include `object`, `array`, `number`, `bool`, `string`, and `null`.
+- Checks for the `number` format, such as scientific notation and decimals.
+- Spell checking for `true`, `false` and `null`.
 - For scientific notation, the next node of `{E/e}` must be `+`, `-` or a number.
+- `array` elements are not separated by `,`.
+- `object` elements are not separated by `,`.
+- No `:` after the key of `object`.
+- `object` has `:` after the key but is missing the value.
+- The key of `object` is not a string.
 
-Any other syntax errors will not trigger a rendering error.
+In addition to the conditions explicitly mentioned above, other errors may also trigger an "error rendering". There may also be errors outside the scope of the formatting check that do not trigger "error rendering". However, they may **lead to missing json content**.
+
+It is recommended that you do not rely too much on `JSONPreview` format checking, and use it to preview correctly formatted json whenever possible.
 
 ### Link
 
-The *1.2.0* version adds rendering of links (`.link`). While rendering, `JSONPreview` performs a limited **de-escaping** operation.
+The *1.2.0* version adds rendering of links. While rendering, `JSONPreview` performs a limited **de-escaping** operation.
 
 The de-escaping operations supported by different versions are as follows:
 
@@ -148,7 +148,7 @@ The de-escaping operations supported by different versions are as follows:
 
 ## Data Flow Diagram
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
+![DFD](Images/DFD.jpg)
 
 ## TODO
 
@@ -161,4 +161,4 @@ Thanks to [Awhisper](https://github.com/Awhisper) for his valuable input during 
 
 ## License
 
-`JSONPreview` is available under the **MIT** license. For more information, see [LICENSE](https://github.com/rakuyoMo/JSONPreview/blob/master/LICENSE).
+`JSONPreview` is available under the **MIT** license. For more information, see [LICENSE](LICENSE).

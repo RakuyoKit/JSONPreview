@@ -19,33 +19,51 @@ class ViewController: UIViewController {
         previewView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(previewView)
-        view.translatesAutoresizingMaskIntoConstraints = false
         
-        var constraints = [
-            previewView.heightAnchor.constraint(equalToConstant: 350),
-            previewView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        var constraints: [NSLayoutConstraint] = [
+//            previewView.heightAnchor.constraint(equalTo: view.heightAnchor),
+//            previewView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ]
         
-        constraints.append(previewView.leftAnchor.constraint(equalTo: {
+        constraints.append(previewView.topAnchor.constraint(equalTo: {
             if #available(iOS 11.0, *) {
-                return view.safeAreaLayoutGuide.leftAnchor
+                return view.safeAreaLayoutGuide.topAnchor
             } else {
-                return view.leftAnchor
+                return view.topAnchor
             }
         }()))
         
-        constraints.append(previewView.rightAnchor.constraint(equalTo: {
+        constraints.append(previewView.bottomAnchor.constraint(equalTo: {
             if #available(iOS 11.0, *) {
-                return view.safeAreaLayoutGuide.rightAnchor
+                return view.safeAreaLayoutGuide.bottomAnchor
             } else {
-                return view.rightAnchor
+                return view.bottomAnchor
+            }
+        }()))
+        
+        constraints.append(previewView.leadingAnchor.constraint(equalTo: {
+            if #available(iOS 11.0, *) {
+                return view.safeAreaLayoutGuide.leadingAnchor
+            } else {
+                return view.leadingAnchor
+            }
+        }()))
+        
+        constraints.append(previewView.trailingAnchor.constraint(equalTo: {
+            if #available(iOS 11.0, *) {
+                return view.safeAreaLayoutGuide.trailingAnchor
+            } else {
+                return view.trailingAnchor
             }
         }()))
         
         NSLayoutConstraint.activate(constraints)
         
-        let json = """
+        let json = 
+        """
         [
+            [],
+            [],
             {
                 "string" : "string",
                 "int" : 1024,
@@ -110,11 +128,10 @@ class ViewController: UIViewController {
                     }
                 }
             },
-            {
-                {123456}
-            }
+            {123456}
         ]
         """
+        
         
         let start = Date().timeIntervalSince1970
         print("will display json")

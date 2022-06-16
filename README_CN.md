@@ -18,7 +18,7 @@
 
 下面是一个大约25秒的gif（**大约2.5M**），它展示了使用本库预览 JSON 时的效果。
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/screenshot.gif)
+![screenshot](Images/screenshot.gif)
 
 ## 基本要求
 
@@ -38,13 +38,13 @@ pod 'JSONPreview'
 
 - 依次选择 File > Swift Packages > Add Package Dependency
 - 输入 https://github.com/rakuyoMo/JSONPreview.git
-- 选择 "Up to Next Major" 并填入 "1.3.5"
+- 选择 "Up to Next Major" 并填入 "1.3.6"
 
 或者将下面的内容添加到 `Package.swift` 文件中：
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.5")
+  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.6")
 ]
 ```
 
@@ -62,7 +62,7 @@ dependencies: [
 
 ## 使用
 
-> 下载项目后，[`ViewController.swift`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Other/ViewController.swift) 文件中包含部分测试代码，运行项目即可查看对应的效果。
+> 下载项目后，[`ViewController.swift`](JSONPreview/Other/ViewController.swift#L47) 文件中包含部分测试代码，运行项目即可查看对应的效果。
 
 1. 首先创建 `JSONPreview` 对象，并添加到界面上：
 
@@ -82,7 +82,7 @@ previewView.preview(json)
 
 3. 如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 类型进行设置：
 
-> 其中，[`ConvertibleToColor`](https://github.com/rakuyoMo/JSONPreview/blob/master/JSONPreview/JSONPreview/Core/HighlightColor.swift#L119) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
+> 其中，[`ConvertibleToColor`](JSONPreview/Core/Entity/HighlightColor.swift#L117) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
 
 ```swift
 let highlightColor = HighlightColor(
@@ -116,27 +116,27 @@ previewView.preview(json, style: style)
 
 ### 渲染
 
-对于渲染，`JSONPreview` 只进行**有限**的格式检查，包括：
+对于渲染，`JSONPreview` 只进行**有限**的格式检查。
 
-> 以下所提到的 “上一个节点” 均不包括 `空格`、`\t` 以及 `\n`。
+目前已知的会触发 “错误渲染” 的条件，包括：
 
-- 所要预览的JSON必须以 `{` 或 `[` 开头。
-- `:` 的上一个节点必须是 `.string`。
-- `,` 的上一个节点只能是 `.null`、`.link`、`.string`、`.number`、`.boolean`、`}` 以及 `]` 中的一个。
-- `{` 必须存在上一个节点，同时上一个节点不能为 `{`。
-- `}` 必须与 `{` 成对出现。
-- `[` 必须存在上一个节点，同时上一个节点不能为 `]`。
-- `]` 必须与 `[` 成对出现。
-- `"` 必须成对出现。
-- `"` 的上一个节点只能是 `{`、`[`、`,` 以及 `:`  中的一个。
-- 针对 `null`、`true` 以及 `false` 的拼写检查。
+- Value 非常规 JSON 类型。支持的类型包括 `object`、`array`、`number`、`bool`、`string` 以及 `null`。
+- 对于 `number` 格式的检查，例如科学计数法以及小数。
+- 针对于 `true`、`false` 以及 `null` 的拼写检查。
 - 针对科学计数法，`{E/e}` 的下一个节点必须是 `+`、`-` 或数字。
+- `array` 元素之间没有使用 `,` 进行分隔。
+- `object` 元素之间没有使用 `,` 进行分隔。
+- `object` 的 key 后没有`:`。
+- `object` 的 key 后有`:`，但是缺失 value。
+- `object` 的 key 不是字符串。
 
-除此之外的语法错误均不会触发渲染错误。
+除了上述明确提到的条件，其他错误也可能触发“错误渲染”。另外还有可能有一些错误在格式检查的范围之外，这些错误不会触发“错误渲染”。但是可能**会导致 json 内容的缺失**。
+
+建议您不要过于依赖 `JSONPreview` 的格式检查功能，尽可能用于预览格式正确的 json。
 
 ### 链接
 
-*1.2.0* 版本增加了对链接（`.link`）的渲染功能。在渲染的同时，`JSONPreview` 会进行有限的**去转义**操作。
+*1.2.0* 版本增加了对链接的渲染功能。在渲染的同时，`JSONPreview` 会进行有限的**去转义**操作。
 
 不同版本支持的去转义操作如下：
 
@@ -146,7 +146,7 @@ previewView.preview(json, style: style)
 
 ## DFD
 
-![image](https://github.com/rakuyoMo/JSONPreview/blob/master/Images/DFD.png)
+![DFD](Images/DFD.jpg)
 
 ## TODO
 
@@ -159,4 +159,4 @@ previewView.preview(json, style: style)
 
 ## License
 
-`License` 在 **MIT** 许可下可用。 有关更多信息，请参见 [LICENSE](https://github.com/rakuyoMo/License/blob/master/LICENSE) 文件。
+`License` 在 **MIT** 许可下可用。 有关更多信息，请参见 [LICENSE](LICENSE) 文件。

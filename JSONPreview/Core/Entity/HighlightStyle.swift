@@ -8,6 +8,10 @@
 
 import UIKit
 
+public typealias AttributedString = NSMutableAttributedString
+public typealias AttributedKey = AttributedString.Key
+public typealias StyleInfos = [AttributedKey : Any]
+
 /// Highlight style configuration
 public struct HighlightStyle {
     /// Initialization method
@@ -79,7 +83,6 @@ public extension HighlightStyle {
 
 fileprivate extension UIImage {
     convenience init?(name: String) {
-        
         if let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
             let bundle = Bundle(path: resourcePath + "JSONPreview.bundle") {
             
