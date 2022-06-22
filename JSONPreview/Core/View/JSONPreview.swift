@@ -88,7 +88,7 @@ open class JSONPreview: UIView {
     }
     
     /// Highlight style
-    private var highlightStyle: HighlightStyle = .default {
+    public private(set) var highlightStyle: HighlightStyle = .default {
         didSet {
             lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
             jsonTextView.backgroundColor = highlightStyle.color.jsonBackground
