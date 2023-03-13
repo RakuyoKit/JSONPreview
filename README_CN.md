@@ -24,7 +24,7 @@
 
 - 运行 **iOS 10** 及以上版本的设备。
 - 使用 **Xcode 10** 及以上版本编译。
-- **Swift 5.0** 以及以上版本。
+- **Swift 5.0** 及以上版本。
 
 ## 安装
 
@@ -38,13 +38,13 @@ pod 'JSONPreview'
 
 - 依次选择 File > Swift Packages > Add Package Dependency
 - 输入 https://github.com/rakuyoMo/JSONPreview.git
-- 选择 "Up to Next Major" 并填入 "1.3.6"
+- 选择 "Up to Next Major" 并填入 "2.0.0"
 
 或者将下面的内容添加到 `Package.swift` 文件中：
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "1.3.6")
+  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "2.0.0")
 ]
 ```
 
@@ -159,4 +159,4 @@ previewView.preview(json, style: style)
 
 ## License
 
-`License` 在 **MIT** 许可下可用。 有关更多信息，请参见 [LICENSE](LICENSE) 文件。
+`JSONPreview` 在 **MIT** 许可下可用。 有关更多信息，请参见 [LICENSE](LICENSE) 文件。
