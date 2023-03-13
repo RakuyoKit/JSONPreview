@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   
   s.name             = 'JSONPreview'
   
-  s.version          = '2.0.0-beta.2'
+  s.version          = '2.0.0'
   
   s.summary          = '🎨 A view that can be highlighted after formatting JSON.'
   
