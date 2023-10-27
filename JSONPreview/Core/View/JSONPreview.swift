@@ -206,7 +206,7 @@ private extension JSONPreview {
     
     /// Calculate the line height of the line number display area
     func calculateLineHeight(at index: Int, width: CGFloat) -> CGFloat {
-        let size = CGSize(width: width, height: CGFloat.greatestFiniteMagnitude)
+        let size = CGSize(width: width, height: .greatestFiniteMagnitude)
         
         let textContainer = NSTextContainer(size: size)
         textContainer.lineFragmentPadding = 0

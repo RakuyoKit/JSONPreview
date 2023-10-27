@@ -9,7 +9,7 @@
 import UIKit
 
 /// Responsible for beautifying JSON
-public class JSONDecorator {
+public final class JSONDecorator {
     // Do not want the caller to directly initialize the object
     private init(style: HighlightStyle) {
         self.style = style
