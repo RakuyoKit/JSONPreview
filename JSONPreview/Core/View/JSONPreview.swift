@@ -100,14 +100,16 @@ open class JSONPreview: UIView {
     }
     
     /// JSON Decoder
-    private var decorator: JSONDecorator! {
+    private lazy var decorator: JSONDecorator? = nil {
         didSet {
+            guard let _decorator = decorator else { return }
+            
             // Combine the slice result into a string
             let tmp = AttributedString(string: "")
             
-            decorator.slices.forEach {
+            _decorator.slices.forEach {
                 tmp.append($0.expand)
-                tmp.append(decorator.wrapString)
+                tmp.append(_decorator.wrapString)
             }
             
             // Switch to the main thread to update the UI
@@ -116,8 +118,13 @@ open class JSONPreview: UIView {
                 
                 this.jsonTextView.attributedText = tmp
                 
-                guard !this.decorator.slices.isEmpty else { return }
-                this.lineDataSource = (1 ... this.decorator.slices.count).map { $0 }
+                guard 
+                    let slices = this.decorator?.slices,
+                    !slices.isEmpty
+                else {
+                    return
+                }
+                this.lineDataSource = (1 ... slices.count).map { $0 }
             }
         }
     }
@@ -206,6 +213,8 @@ private extension JSONPreview {
     
     /// Calculate the line height of the line number display area
     func calculateLineHeight(at index: Int, width: CGFloat) -> CGFloat {
+        guard let slices = decorator?.slices else { return 0 }
+        
         let size = CGSize(width: width, height: .greatestFiniteMagnitude)
         
         let textContainer = NSTextContainer(size: size)
@@ -215,7 +224,7 @@ private extension JSONPreview {
         layoutManager.addTextContainer(textContainer)
         layoutManager.glyphRange(forBoundingRect: CGRect(origin: .zero, size: size), in: textContainer)
         
-        let attString = decorator.slices[index].expand
+        let attString = slices[index].expand
         let textStorage = NSTextStorage(attributedString: attString)
         textStorage.addLayoutManager(layoutManager)
         
@@ -343,6 +352,8 @@ extension JSONPreview: UITextViewDelegate {
 
 extension JSONPreview: JSONTextViewDelegate {
     public func textView(_ textView: JSONTextView, didClickZoomAt pointY: CGFloat) {
+        guard let decorator = decorator else { return }
+        
         defer {
             // Need to delay a small number of seconds,
             // otherwise the modification will not take effect
