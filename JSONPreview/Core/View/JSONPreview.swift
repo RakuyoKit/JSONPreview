@@ -140,9 +140,13 @@ public extension JSONPreview {
     func preview(_ json: String, style: HighlightStyle = .default, completion: (() -> Void)? = nil) {
         highlightStyle = style
         
-        DispatchQueue.global().async { [weak self] in
-            self?.decorator = JSONDecorator.highlight(json, style: style)
-            DispatchQueue.main.async { completion?() }
+        DispatchQueue.global().async {
+            let decorator = JSONDecorator.highlight(json, style: style)
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.decorator = decorator
+                completion?()
+            }
         }
     }
 }
