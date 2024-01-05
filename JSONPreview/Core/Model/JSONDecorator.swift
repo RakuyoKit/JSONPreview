@@ -65,13 +65,13 @@ public extension JSONDecorator {
     ///
     /// - Parameters:
     ///   - json: The JSON string to be highlighted.
-    ///   - judgmentValid: Whether to check the validity of JSON.
     ///   - style: style of highlight. See `HighlightStyle` for details.
+    ///   - judgmentValid: Whether to check the validity of JSON.
     /// - Returns: Return `nil` when JSON is invalid. See `JSONDecorator` for details.
     static func highlight(
         _ json: String,
-        judgmentValid: Bool = false,
-        style: HighlightStyle = .default
+        style: HighlightStyle = .default,
+        judgmentValid: Bool = false
     ) -> JSONDecorator? {
         guard let data = json.data(using: .utf8) else { return nil }
         
