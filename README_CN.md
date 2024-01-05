@@ -150,7 +150,6 @@ previewView.preview(json, style: style)
 
 ## TODO
 
-- [ ] 支持 `Carthage`。
 - [ ] 支持 intel 版本的 macOS。
 
 ## 致谢

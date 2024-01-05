@@ -152,7 +152,6 @@ The de-escaping operations supported by different versions are as follows:
 
 ## TODO
 
-- [ ] Support `Carthage`.
 - [ ] Support for intel macOS.
 
 ## Thanks
