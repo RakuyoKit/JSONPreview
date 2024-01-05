@@ -71,22 +71,6 @@ open class JSONPreview: UIView {
         case landscape
     }
     
-    /// Record the direction of the last equipment.
-    private lazy var lastOrientation: Orientation = .unknow
-    
-    // Record previous property values
-    private lazy var isOriginalGeneratingDeviceOrientationNotifications = UIDevice.current.isGeneratingDeviceOrientationNotifications
-    
-    private typealias LineHeightStorage = [Int: CGFloat]
-    
-    /// Line number view, height of each row.
-    private lazy var lineHeights: [Orientation: LineHeightStorage] = Orientation.allCases.reduce(into: [:], { $0[$1] = [:] })
-    
-    /// Data source for line number view
-    private var lineDataSource: [Int] = [] {
-        didSet { lineNumberTableView.reloadData() }
-    }
-    
     /// Highlight style
     public var highlightStyle: HighlightStyle = .`default` {
         didSet {
@@ -127,6 +111,22 @@ open class JSONPreview: UIView {
                 this.lineDataSource = (1 ... slices.count).map { $0 }
             }
         }
+    }
+    
+    /// Record the direction of the last equipment.
+    private lazy var lastOrientation: Orientation = .unknow
+    
+    // Record previous property values
+    private lazy var isOriginalGeneratingDeviceOrientationNotifications = UIDevice.current.isGeneratingDeviceOrientationNotifications
+    
+    private typealias LineHeightStorage = [Int: CGFloat]
+    
+    /// Line number view, height of each row.
+    private lazy var lineHeights: [Orientation: LineHeightStorage] = Orientation.allCases.reduce(into: [:], { $0[$1] = [:] })
+    
+    /// Data source for line number view
+    private var lineDataSource: [Int] = [] {
+        didSet { lineNumberTableView.reloadData() }
     }
 }
 
