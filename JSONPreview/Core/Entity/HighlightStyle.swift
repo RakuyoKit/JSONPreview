@@ -28,7 +28,7 @@ public struct HighlightStyle {
     public init(
         expandIcon: UIImage? = nil,
         foldIcon: UIImage? = nil,
-        color: HighlightColor = .default,
+        color: HighlightColor = .`default`,
         lineFont: UIFont? = nil,
         jsonFont: UIFont? = nil,
         lineHeight: CGFloat = 24
@@ -37,8 +37,10 @@ public struct HighlightStyle {
             #if SWIFT_PACKAGE
             let bundle = Bundle.module
             #else
-            guard let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
-                let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle") else {
+            guard 
+                let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
+                let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle") 
+            else {
                 return UIImage(named: $0)
             }
             #endif

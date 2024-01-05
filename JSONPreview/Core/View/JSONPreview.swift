@@ -372,8 +372,12 @@ extension JSONPreview: UIScrollViewDelegate {
 
 extension JSONPreview: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        guard let _delegate = delegate,
-              let openingURL = url.absoluteString.validURL?.openingURL else { return true }
+        guard 
+            let _delegate = delegate,
+            let openingURL = url.absoluteString.validURL?.openingURL
+        else {
+            return true
+        }
         
         return _delegate.jsonPreview(view: self, didClickURL: openingURL, on: textView)
     }

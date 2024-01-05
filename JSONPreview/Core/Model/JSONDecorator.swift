@@ -82,10 +82,9 @@ public extension JSONDecorator {
     ) -> JSONDecorator? {
         guard let data = json.data(using: .utf8) else { return nil }
         
-        if judgmentValid {
-            guard let _ = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) else {
-                return nil
-            }
+        if judgmentValid,
+           (try? JSONSerialization.jsonObject(with: data, options: .mutableContainers)) == nil {
+            return nil
         }
         
         let decorator = JSONDecorator(style: style)
