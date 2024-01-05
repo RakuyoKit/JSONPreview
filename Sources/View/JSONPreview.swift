@@ -233,15 +233,9 @@ private extension JSONPreview {
             skeletonStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
         
-        constraints.append(skeletonStackView.leadingAnchor.constraint(equalTo: {
-            guard #available(iOS 11.0, *) else { return leadingAnchor }
-            return safeAreaLayoutGuide.leadingAnchor
-        }()))
+        constraints.append(skeletonStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor))
         
-        constraints.append(skeletonStackView.trailingAnchor.constraint(equalTo: {
-            guard #available(iOS 11.0, *) else { return trailingAnchor }
-            return safeAreaLayoutGuide.trailingAnchor
-        }()))
+        constraints.append(skeletonStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor))
         
         NSLayoutConstraint.activate(constraints)
     }

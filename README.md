@@ -24,7 +24,7 @@ Here is a gif of about 25 seconds (**about 2.5M**) that shows the effect when us
 
 ## Prerequisites
 
-- **iOS 10 or later**.
+- **iOS 12 or later**.
 - **Xcode 10.0 or later** required.
 - **Swift 5.0 or later** required.
 

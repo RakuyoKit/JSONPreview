@@ -28,37 +28,13 @@ class ViewController: UIViewController {
 //            previewView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ]
         
-        constraints.append(previewView.topAnchor.constraint(equalTo: {
-            if #available(iOS 11.0, *) {
-                return view.safeAreaLayoutGuide.topAnchor
-            } else {
-                return view.topAnchor
-            }
-        }()))
+        constraints.append(previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor))
         
-        constraints.append(previewView.bottomAnchor.constraint(equalTo: {
-            if #available(iOS 11.0, *) {
-                return view.safeAreaLayoutGuide.bottomAnchor
-            } else {
-                return view.bottomAnchor
-            }
-        }()))
+        constraints.append(previewView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor))
         
-        constraints.append(previewView.leadingAnchor.constraint(equalTo: {
-            if #available(iOS 11.0, *) {
-                return view.safeAreaLayoutGuide.leadingAnchor
-            } else {
-                return view.leadingAnchor
-            }
-        }()))
+        constraints.append(previewView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor))
         
-        constraints.append(previewView.trailingAnchor.constraint(equalTo: {
-            if #available(iOS 11.0, *) {
-                return view.safeAreaLayoutGuide.trailingAnchor
-            } else {
-                return view.trailingAnchor
-            }
-        }()))
+        constraints.append(previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor))
         
         NSLayoutConstraint.activate(constraints)
         

@@ -28,10 +28,7 @@ private extension LineNumberTableView {
         canCancelContentTouches = true
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
-        
-        if #available(iOS 11, *) {
-            contentInsetAdjustmentBehavior = .never
-        }
+        contentInsetAdjustmentBehavior = .never
         
         separatorStyle = .none
         allowsMultipleSelection = true

@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "JSONPreview",
-    platforms: [.iOS(.v10)],
+    platforms: [.iOS(.v12)],
     products: [
         .library(
             name: "JSONPreview",
