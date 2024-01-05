@@ -20,6 +20,12 @@ public protocol JSONPreviewDelegate: NSObjectProtocol {
 }
 
 open class JSONPreview: UIView {
+    private enum Orientation: CaseIterable {
+        case unknow
+        case portrait
+        case landscape
+    }
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         config()
@@ -37,9 +43,6 @@ open class JSONPreview: UIView {
         
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
     }
-    
-    /// delegate for `JSONPreview`.
-    public weak var delegate: JSONPreviewDelegate? = nil
     
     /// TableView responsible for displaying row numbers
     open lazy var lineNumberTableView: LineNumberTableView = {
@@ -65,11 +68,8 @@ open class JSONPreview: UIView {
         return textView
     }()
     
-    private enum Orientation: CaseIterable {
-        case unknow
-        case portrait
-        case landscape
-    }
+    /// delegate for `JSONPreview`.
+    public weak var delegate: JSONPreviewDelegate? = nil
     
     /// Highlight style
     public var highlightStyle: HighlightStyle = .`default` {
