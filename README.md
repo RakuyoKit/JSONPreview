@@ -4,11 +4,11 @@
 
 <p align="center">
 <a><img src="https://img.shields.io/badge/language-swift-ffac45.svg"></a>
-<a href="https://github.com/rakuyoMo/JSONPreview/releases"><img src="https://img.shields.io/cocoapods/v/JSONPreview.svg"></a>
-<a href="https://github.com/rakuyoMo/JSONPreview/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JSONPreview.svg?style=flat"></a>
+<a href="https://github.com/RakuyoKit/JSONPreview/releases"><img src="https://img.shields.io/cocoapods/v/JSONPreview.svg"></a>
+<a href="https://github.com/RakuyoKit/JSONPreview/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JSONPreview.svg?style=flat"></a>
 </p>
 
-> [中文](https://github.com/rakuyoMo/JSONPreview/blob/master/README_CN.md)
+> [中文](https://github.com/RakuyoKit/JSONPreview/blob/master/README_CN.md)
 
 `JSONPreview` inherits from `UIView` and implements functionality based on `UITextView`. You can use it to **format** your JSON data and **highlight** it for display.
 
@@ -39,21 +39,21 @@ pod 'JSONPreview'
 ### Swift Package Manager
 
 - File > Swift Packages > Add Package Dependency
-- Add https://github.com/rakuyoMo/JSONPreview.git
+- Add https://github.com/RakuyoKit/JSONPreview.git
 - Select "Up to Next Major" with "2.0.0"
 
 Or add the following to your `Package.swift` file:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "2.0.0")
+  .package(url: "https://github.com/RakuyoKit/JSONPreview.git", from: "2.0.0")
 ]
 ```
 
 ## Features
 
 > In `1.3.0` version, we removed the ability to slide diagonally. 
-> Now if a JSON row is not displayed, it will be displayed folded instead of going beyond the screen. If you wish to use this feature, please use the [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3) version
+> Now if a JSON row is not displayed, it will be displayed folded instead of going beyond the screen. If you wish to use this feature, please use the [1.2.3](https://github.com/RakuyoKit/JSONPreview/releases/tag/1.2.3) version
 
 - [x] Support for **formatted** display of JSON data.
 - [x] Support for **highlighting** JSON data, with various color and font configuration options.
@@ -64,7 +64,7 @@ dependencies: [
 
 ## Usage
 
-> After downloading the project, [`ViewController.swift`](JSONPreview/Other/ViewController.swift#L47) file contains part of the test code, just run the project Check the corresponding effect.
+> After downloading the project, [`ViewController.swift`](Demo/JSONPreviewDemo/ViewController.swift) file contains part of the test code, just run the project Check the corresponding effect.
 
 1. Create the `JSONPreview` object and add it to the interface.
 
@@ -84,7 +84,7 @@ previewView.preview(json)
 
 3. If you want to customize the highlight style, you can set it through the `HighlightStyle` and `HighlightColor` types:
 
-> Among them, [`ConvertibleToColor`](JSONPreview/Core/Entity/HighlightColor.swift#L117) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
+> Among them, [`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L117) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
 
 ```swift
 let highlightColor = HighlightColor(

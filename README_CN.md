@@ -4,8 +4,8 @@
 
 <p align="center">
 <a><img src="https://img.shields.io/badge/language-swift-ffac45.svg"></a>
-<a href="https://github.com/rakuyoMo/JSONPreview/releases"><img src="https://img.shields.io/cocoapods/v/JSONPreview.svg"></a>
-<a href="https://github.com/rakuyoMo/JSONPreview/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JSONPreview.svg?style=flat"></a>
+<a href="https://github.com/RakuyoKit/JSONPreview/releases"><img src="https://img.shields.io/cocoapods/v/JSONPreview.svg"></a>
+<a href="https://github.com/RakuyoKit/JSONPreview/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JSONPreview.svg?style=flat"></a>
 </p>
 
 `JSONPreview` 继承自 `UIView`，并基于 `UITextView` 实现功能。您可以通过它来**格式化**您的 JSON 数据，并**高亮**展示。
@@ -37,21 +37,21 @@ pod 'JSONPreview'
 ### Swift Package Manager
 
 - 依次选择 File > Swift Packages > Add Package Dependency
-- 输入 https://github.com/rakuyoMo/JSONPreview.git
+- 输入 https://github.com/RakuyoKit/JSONPreview.git
 - 选择 "Up to Next Major" 并填入 "2.0.0"
 
 或者将下面的内容添加到 `Package.swift` 文件中：
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/rakuyoMo/JSONPreview.git", from: "2.0.0")
+  .package(url: "https://github.com/RakuyoKit/JSONPreview.git", from: "2.0.0")
 ]
 ```
 
 ## 功能
 
 > 在 `1.3.0` 版本中，我们删除了斜向滑动的功能。
-> 现在如果JSON一行展示不开，那么它将折行展示，而不是超出屏幕。如果您希望使用该功能，请使用 [1.2.3](https://github.com/rakuyoMo/JSONPreview/releases/tag/1.2.3) 版本
+> 现在如果JSON一行展示不开，那么它将折行展示，而不是超出屏幕。如果您希望使用该功能，请使用 [1.2.3](https://github.com/RakuyoKit/JSONPreview/releases/tag/1.2.3) 版本
 
 - [x] 支持**格式化**显示 JSON 数据。
 - [x] 支持**高亮** JSON 数据，提供多种颜色与字体配置选项。
@@ -62,7 +62,7 @@ dependencies: [
 
 ## 使用
 
-> 下载项目后，[`ViewController.swift`](JSONPreview/Other/ViewController.swift#L47) 文件中包含部分测试代码，运行项目即可查看对应的效果。
+> 下载项目后，[`ViewController.swift`](Demo/JSONPreviewDemo/ViewController.swift) 文件中包含部分测试代码，运行项目即可查看对应的效果。
 
 1. 首先创建 `JSONPreview` 对象，并添加到界面上：
 
@@ -82,7 +82,7 @@ previewView.preview(json)
 
 3. 如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 类型进行设置：
 
-> 其中，[`ConvertibleToColor`](JSONPreview/Core/Entity/HighlightColor.swift#L117) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
+> 其中，[`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L117) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
 
 ```swift
 let highlightColor = HighlightColor(
