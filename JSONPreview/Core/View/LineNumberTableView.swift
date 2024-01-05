@@ -22,8 +22,6 @@ open class LineNumberTableView: UITableView {
 
 private extension LineNumberTableView {
     func config() {
-        translatesAutoresizingMaskIntoConstraints = false
-        
         bounces = false
         scrollsToTop = false
         delaysContentTouches = false

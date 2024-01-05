@@ -34,8 +34,6 @@ open class JSONTextView: UITextView {
 
 private extension JSONTextView {
     func config() {
-        translatesAutoresizingMaskIntoConstraints = false
-        
         bounces = false
         delaysContentTouches = false
         canCancelContentTouches = true

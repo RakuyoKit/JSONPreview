@@ -44,6 +44,16 @@ open class JSONPreview: UIView {
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
+    /// View skeleton, containing all subviews
+    open lazy var skeletonStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        
+        return stackView
+    }()
+    
     /// TableView responsible for displaying row numbers
     open lazy var lineNumberTableView: LineNumberTableView = {
         let tableView = LineNumberTableView(frame: .zero, style: .plain)
@@ -74,8 +84,10 @@ open class JSONPreview: UIView {
     /// Highlight style
     public var highlightStyle: HighlightStyle = .`default` {
         didSet {
-            lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
-            jsonTextView.backgroundColor = highlightStyle.color.jsonBackground
+            let colorStyle = highlightStyle.color
+            lineNumberTableView.backgroundColor = colorStyle.lineBackground
+            jsonTextView.backgroundColor = colorStyle.jsonBackground
+            skeletonStackView.backgroundColor = colorStyle.jsonBackground
             
             jsonTextView.textContainerInset = UIEdgeInsets(
                 top: 0, left: 10, bottom: 0, right: 10
@@ -199,47 +211,47 @@ private extension JSONPreview {
 
 private extension JSONPreview {
     func config() {
-        addSubview(lineNumberTableView)
-        addSubview(jsonTextView)
+        addSubview(skeletonStackView)
+        skeletonStackView.addArrangedSubview(lineNumberTableView)
+        skeletonStackView.addArrangedSubview(jsonTextView)
+        
+        // skeletonStackView
+        addSkeletonStackViewLayout()
         
         // lineNumberTableView
         addLineNumberTableViewLayout()
-        
-        // jsonTextView
-        addJSONTextViewLayout()
         
         // Listening to device rotation in preparation for recalculating cell height
         listeningDeviceRotation()
     }
     
-    func addLineNumberTableViewLayout() {
+    func addSkeletonStackViewLayout() {
+        skeletonStackView.translatesAutoresizingMaskIntoConstraints = false
+        
         var constraints = [
-            lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith),
-            lineNumberTableView.topAnchor.constraint(equalTo: topAnchor),
-            lineNumberTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            skeletonStackView.topAnchor.constraint(equalTo: topAnchor),
+            skeletonStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
         
-        constraints.append(lineNumberTableView.leadingAnchor.constraint(equalTo: {
+        constraints.append(skeletonStackView.leadingAnchor.constraint(equalTo: {
             guard #available(iOS 11.0, *) else { return leadingAnchor }
             return safeAreaLayoutGuide.leadingAnchor
         }()))
         
-        NSLayoutConstraint.activate(constraints)
-    }
-    
-    func addJSONTextViewLayout() {
-        var constraints = [
-            jsonTextView.leadingAnchor.constraint(equalTo: lineNumberTableView.trailingAnchor/*, constant: -1*/),
-            jsonTextView.topAnchor.constraint(equalTo: lineNumberTableView.topAnchor),
-            jsonTextView.bottomAnchor.constraint(equalTo: lineNumberTableView.bottomAnchor),
-        ]
-        
-        constraints.append(jsonTextView.trailingAnchor.constraint(equalTo: {
+        constraints.append(skeletonStackView.trailingAnchor.constraint(equalTo: {
             guard #available(iOS 11.0, *) else { return trailingAnchor }
             return safeAreaLayoutGuide.trailingAnchor
         }()))
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    func addLineNumberTableViewLayout() {
+        lineNumberTableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith),
+        ])
     }
     
     /// Calculate the line height of the line number display area
