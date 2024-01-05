@@ -10,24 +10,31 @@ import UIKit
 
 /// Responsible for beautifying JSON
 public final class JSONDecorator {
-    // Do not want the caller to directly initialize the object
-    private init(style: HighlightStyle) {
+    /// Initialization method
+    ///
+    /// - Parameters:
+    ///   - style: Style of highlight. See `HighlightStyle` for details.
+    ///   - initialState: The initial state of the rendering result.
+    public init(style: HighlightStyle, initialState: JSONSlice.State) {
         self.style = style
+        self.initialState = initialState
     }
     
     /// Style of highlight. See `HighlightStyle` for details.
-    private let style: HighlightStyle
-    
-    /// Current number of indent
-    private var indent = 0
-    
-    /// JSON slice. See `JSONSlice` for details.
-    public var slices: [JSONSlice] = []
+    public let style: HighlightStyle
     
     /// The initial state of the rendering result.
     ///
     /// All nodes with a folding effect have an initial state consistent with this value.
-    public var initialState: JSONSlice.State = .`default`
+    public let initialState: JSONSlice.State
+    
+    /// JSON slice.
+    ///
+    /// See the `JSONSlice` and `createSlices(from:)` method for details.
+    public internal(set) var slices: [JSONSlice] = []
+    
+    /// Current number of indent
+    private var indent = 0
     
     // MARK: - Style
     
@@ -87,10 +94,22 @@ public extension JSONDecorator {
             return nil
         }
         
-        let decorator = JSONDecorator(style: style)
-        decorator.initialState = initialState
+        let decorator = JSONDecorator(style: style, initialState: initialState)
         decorator.slices = decorator.createSlices(from: data)
         return decorator
+    }
+    
+    /// Create json slice.
+    ///
+    /// Although you can initialize the `JSONDecorator` object directly,
+    /// we still don't want you to assign the `slices` property directly
+    /// because the internal logic of the JSONPreview is still incomplete and doesn't handle many situations.
+    ///
+    /// - Parameter json: The JSON string to be highlighted.
+    /// - Returns: json slice. Returns an empty array in case of a json error.
+    func createSlices(from json: String) -> [JSONSlice] {
+        guard let data = json.data(using: .utf8) else { return [] }
+        return createSlices(from: data)
     }
 }
 
