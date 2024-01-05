@@ -7,7 +7,10 @@
 //
 
 import UIKit
+
 import SafariServices
+
+import JSONPreview
 
 class ViewController: UIViewController {
     lazy var previewView = JSONPreview()
@@ -59,7 +62,7 @@ class ViewController: UIViewController {
         
         NSLayoutConstraint.activate(constraints)
         
-        let json = 
+        let json =
         """
         [
             [],
