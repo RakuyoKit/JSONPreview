@@ -88,7 +88,7 @@ open class JSONPreview: UIView {
     }
     
     /// Highlight style
-    public private(set) var highlightStyle: HighlightStyle = .default {
+    public var highlightStyle: HighlightStyle = .`default` {
         didSet {
             lineNumberTableView.backgroundColor = highlightStyle.color.lineBackground
             jsonTextView.backgroundColor = highlightStyle.color.jsonBackground
@@ -100,7 +100,7 @@ open class JSONPreview: UIView {
     }
     
     /// JSON Decoder
-    private lazy var decorator: JSONDecorator? = nil {
+    public lazy var decorator: JSONDecorator? = nil {
         didSet {
             guard let _decorator = decorator else { return }
             
