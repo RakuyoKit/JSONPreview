@@ -47,16 +47,12 @@ public struct JSONSlice {
         expand: (String, StyleInfos),
         folded: (String, StyleInfos)? = nil
     ) {
-        self.level = level
-        self.lineNumber = lineNumber
-        
-        self.expand = AttributedString(string: expand.0, attributes: expand.1)
-        
-        if let folded = folded {
-            self.folded = AttributedString(string: folded.0, attributes: folded.1)
-        } else {
-            self.folded = nil
-        }
+        self.init(
+            level: level,
+            lineNumber: lineNumber, 
+            expand: .init(string: expand.0, attributes: expand.1),
+            folded: folded.flatMap { .init(string: $0.0, attributes: $0.1) }
+        )
     }
     
     /// The current display state of the slice. The default is `.expand`.
