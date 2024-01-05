@@ -88,27 +88,48 @@ open class JSONPreview: UIView {
         didSet {
             guard let _decorator = decorator else { return }
             
-            // Combine the slice result into a string
-            let tmp = AttributedString(string: "")
-            
-            _decorator.slices.forEach {
-                tmp.append($0.expand)
-                tmp.append(_decorator.wrapString)
+            var foldedLevel: Int? = nil
+            let displayedStrings: [AttributedString] = _decorator.slices.compactMap {
+                if let _level = foldedLevel {
+                    if $0.level > _level { return nil }
+                    
+                    if $0.level == _level {
+                        foldedLevel = nil
+                        return nil
+                    }
+                }
+                
+                let result = AttributedString(string: "")
+                
+                switch $0.state {
+                case .expand:
+                    result.append($0.expand)
+                    result.append(_decorator.wrapString)
+                    
+                    return result
+                    
+                case .folded:
+                    guard let _folded = $0.folded else { return nil }
+                    
+                    foldedLevel = $0.level
+                    
+                    result.append(_folded)
+                    result.append(_decorator.wrapString)
+                    
+                    return result
+                }
             }
             
-            // Switch to the main thread to update the UI
             DispatchQueue.main.async { [weak self] in
                 guard let this = self else { return }
                 
-                this.jsonTextView.attributedText = tmp
+                this.jsonTextView.attributedText = displayedStrings.reduce(
+                    into: AttributedString(string: ""),
+                    { $0.append($1) }
+                )
                 
-                guard 
-                    let slices = this.decorator?.slices,
-                    !slices.isEmpty
-                else {
-                    return
-                }
-                this.lineDataSource = (1 ... slices.count).map { $0 }
+                guard !displayedStrings.isEmpty else { return }
+                this.lineDataSource = (1 ... displayedStrings.count).map { $0 }
             }
         }
     }
@@ -136,12 +157,18 @@ public extension JSONPreview {
     /// - Parameters:
     ///   - json: The json to be previewed
     ///   - style: Highlight style. See `HighlightStyle` for details.
+    ///   - initialState: The initial state of the rendering result. The initial state of all nodes will be consistent with this value.
     ///   - completion: Callback after data processing is completed.
-    func preview(_ json: String, style: HighlightStyle = .default, completion: (() -> Void)? = nil) {
+    func preview(
+        _ json: String,
+        style: HighlightStyle = .`default`,
+        initialState: JSONSlice.State = .`default`,
+        completion: (() -> Void)? = nil
+    ) {
         highlightStyle = style
         
         DispatchQueue.global().async {
-            let decorator = JSONDecorator.highlight(json, style: style)
+            let decorator = JSONDecorator.highlight(json, style: style, initialState: initialState)
             
             DispatchQueue.main.async { [weak self] in
                 self?.decorator = decorator
