@@ -11,7 +11,7 @@ import Foundation
 /// Used to represent a certain part of JSON
 public struct JSONSlice {
     /// The current display state of the slice
-    public enum State {
+    public enum State: Hashable {
         public static let `default`: Self = .expand
         
         case expand, folded

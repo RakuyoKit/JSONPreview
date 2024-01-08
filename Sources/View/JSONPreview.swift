@@ -20,12 +20,6 @@ public protocol JSONPreviewDelegate: NSObjectProtocol {
 }
 
 open class JSONPreview: UIView {
-    private enum Orientation: CaseIterable {
-        case unknow
-        case portrait
-        case landscape
-    }
-    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         config()
@@ -152,10 +146,8 @@ open class JSONPreview: UIView {
     // Record previous property values
     private lazy var isOriginalGeneratingDeviceOrientationNotifications = UIDevice.current.isGeneratingDeviceOrientationNotifications
     
-    private typealias LineHeightStorage = [Int: CGFloat]
-    
-    /// Line number view, height of each row.
-    private lazy var lineHeights: [Orientation: LineHeightStorage] = Orientation.allCases.reduce(into: [:], { $0[$1] = [:] })
+    /// Line Number Height Manager.
+    private lazy var lineNumberHeightManager = LineNumberHeightManager()
     
     /// Data source for line number view
     private var lineDataSource: [Int] = [] {
@@ -248,27 +240,6 @@ private extension JSONPreview {
         ])
     }
     
-    /// Calculate the line height of the line number display area
-    func calculateLineHeight(at index: Int, width: CGFloat) -> CGFloat {
-        guard let slices = decorator?.slices else { return 0 }
-        
-        let size = CGSize(width: width, height: .greatestFiniteMagnitude)
-        
-        let textContainer = NSTextContainer(size: size)
-        textContainer.lineFragmentPadding = 0
-        
-        let layoutManager = NSLayoutManager()
-        layoutManager.addTextContainer(textContainer)
-        layoutManager.glyphRange(forBoundingRect: CGRect(origin: .zero, size: size), in: textContainer)
-        
-        let attString = slices[index].expand
-        let textStorage = NSTextStorage(attributedString: attString)
-        textStorage.addLayoutManager(layoutManager)
-        
-        let rect = layoutManager.usedRect(for: textContainer)
-        return rect.size.height
-    }
-    
     func listeningDeviceRotation() {
         if !isOriginalGeneratingDeviceOrientationNotifications {
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
@@ -296,16 +267,18 @@ private extension JSONPreview {
     }
     
     func getLineHeight(at index: Int) -> CGFloat {
-        let line = lineDataSource[index]
+        guard let slices = decorator?.slices else { return 0 }
         
-        if let height = lineHeights[lastOrientation]![line] {
+        let line = lineDataSource[index]
+        let slice = slices[line - 1]
+        
+        if let height = lineNumberHeightManager.height(at: index, orientation: lastOrientation, state: slice.state) {
             return height
         }
         
         let width = jsonTextView.frame.width - { $0.left + $0.right }(jsonTextView.textContainerInset)
-        let height = calculateLineHeight(at: line - 1, width: width)
-        
-        lineHeights[lastOrientation]![line] = height
+        let height = lineNumberHeightManager.calculateHeight(with: slice, width: width)
+        lineNumberHeightManager.cache(height, at: index, orientation: lastOrientation, state: slice.state)
         
         return height
     }

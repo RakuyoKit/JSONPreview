@@ -19,6 +19,10 @@ All notable changes to this project are documented in this file.
 - [**Break**] Adjusted the order of parameters of `JSONDecorator.highlight` method.
 - Adjusted the code format of some codes.
 
+### Fixed
+
+- Fix the problem of miscalculation of line number height when `Value` is too long.
+
 ---
 
 ## [2.0.0 - Performance Enhancement](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.0.0) (2023-3-13)
@@ -77,7 +81,7 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
-- Removed the diagonal swipe feature.
+- [**Break**] Removed the diagonal swipe feature.
 - Since JSON is now displayed in line breaks, the line height is no longer a fixed value.
 - Improved the judgment rules for URLs, and now IP addresses can be correctly identified as URLs.
 
