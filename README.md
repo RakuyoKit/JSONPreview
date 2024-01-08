@@ -60,7 +60,7 @@ dependencies: [
 
 ## Usage
 
-> After downloading the project, [`ViewController.swift`](Demo/JSONPreviewDemo/ViewController.swift) contains some test code. Run the project to see the corresponding effect.
+> After downloading the project, [`EntranceTableViewController.swift`](Demo/JSONPreviewDemo/Example/EntranceTableViewController.swift) contains some example code. Run the project to see the corresponding effect.
 
 ### Basic Usage and Default Configuration
 

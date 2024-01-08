@@ -60,7 +60,7 @@ dependencies: [
 
 ## 使用
 
-> 下载项目后，[`ViewController.swift`](Demo/JSONPreviewDemo/ViewController.swift) 文件中包含部分测试代码，运行项目即可查看对应的效果。
+> 下载项目后，[`EntranceTableViewController.swift`](Demo/JSONPreviewDemo/Example/EntranceTableViewController.swift) 文件中包含部分示例代码，运行项目即可查看对应的效果。
 
 ### 基础用法及默认配置
 
