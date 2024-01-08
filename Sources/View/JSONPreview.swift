@@ -75,6 +75,12 @@ open class JSONPreview: UIView {
     /// delegate for `JSONPreview`.
     public weak var delegate: JSONPreviewDelegate? = nil
     
+    /// Whether to hide the line number view
+    public var isHiddenLineNumber: Bool {
+        get { lineNumberTableView.isHidden }
+        set { lineNumberTableView.isHidden = newValue }
+    }
+    
     /// Highlight style
     public var highlightStyle: HighlightStyle = .`default` {
         didSet {

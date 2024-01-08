@@ -18,7 +18,7 @@ class HideLineNumberExampleViewController: BaseJSONPreviewController {
         
         title = "Hide Line Number"
         
-        previewView.lineNumberTableView.isHidden = true
+        previewView.isHiddenLineNumber = true
         
         addPreviewViewLayout()
         
