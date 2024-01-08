@@ -25,6 +25,11 @@ class EntranceTableViewController: UITableViewController {
             desc: "Initial collapse of all JSON nodes. You need to expand each node manually.",
             action: { InitialFoldedExampleViewController() }
         ),
+        .init(
+            title: "Hide line number",
+            desc: "Example of how to hide line numbers.",
+            action: { HideLineNumberExampleViewController() }
+        ),
     ]
 }
 

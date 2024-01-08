@@ -18,6 +18,7 @@
 		AEBD0FED2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */; };
 		AEBD0FEF2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */; };
 		AEBD0FF12B4BF69E0080ED15 /* BaseJSONPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */; };
+		AEBD0FF42B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialFoldedExampleViewController.swift; sourceTree = "<group>"; };
 		AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomStyleExampleViewController.swift; sourceTree = "<group>"; };
 		AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseJSONPreviewController.swift; sourceTree = "<group>"; };
+		AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideLineNumberExampleViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */,
 				AE4CE2DA2B47F88F00286E34 /* BasicExampleViewController.swift */,
 				AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */,
+				AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */,
 				AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */,
 			);
 			path = Controller;
@@ -184,6 +187,7 @@
 			files = (
 				AEBD0FF12B4BF69E0080ED15 /* BaseJSONPreviewController.swift in Sources */,
 				AEBD0FEF2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift in Sources */,
+				AEBD0FF42B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift in Sources */,
 				AEBD0F392B4BEE220080ED15 /* EntranceTableViewController.swift in Sources */,
 				AE4CE2DB2B47F88F00286E34 /* BasicExampleViewController.swift in Sources */,
 				AEBD0FED2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift in Sources */,
