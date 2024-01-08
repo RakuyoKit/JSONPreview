@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/rakuyoMo/JSONPreview/master/Images/logo.png" alt="JSONPreview" title="JSONPreview" width="1000"/>
+<img src="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/Images/logo.png" alt="JSONPreview" title="JSONPreview" width="1000"/>
 </p>
 
 <p align="center">
@@ -8,27 +8,23 @@
 <a href="https://github.com/RakuyoKit/JSONPreview/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JSONPreview.svg?style=flat"></a>
 </p>
 
-> [中文](https://github.com/RakuyoKit/JSONPreview/blob/master/README_CN.md)
+`JSONPreview` is a JSON preview component that allows you to **format** your JSON data and display it with **syntax highlighting**. Additionally, `JSONPreview` offers **fold and expand** functionality, allowing you to collapse nodes you're not currently focusing on and re-display them at any time.
 
-`JSONPreview` inherits from `UIView` and implements functionality based on `UITextView`. You can use it to **format** your JSON data and **highlight** it for display.
+`JSONPreview` inherits from `UIView` and implements related features based on `UITextView`. The entire framework is entirely implemented based on native frameworks, which means when using this framework on Apple platforms, you can achieve a better user experience.
 
-Also `JSONPreview` provides **fold and expand** functionality, so you can collapse nodes that you are not interested in at the moment and re-display them at any time.
+## Preview
 
-All of `JSONPreview`'s features are written using **native methods**, which means you get a great experience on the Apple platform.
-
-## Screenshot
-
-Here is a gif of about 25 seconds (**about 2.5M**) that shows the effect when using this library to preview JSON.
+Below is a roughly 25-second gif (**approximately 2.5M**) demonstrating the effect of previewing JSON using this library.
 
 ![screenshot](Images/screenshot.gif)
 
-## Prerequisites
+## Requirements
 
 - **iOS 12 or later**.
 - **Xcode 10.0 or later** required.
 - **Swift 5.0 or later** required.
 
-## Install
+## Installation
 
 ### CocoaPods
 
@@ -38,11 +34,11 @@ pod 'JSONPreview'
 
 ### Swift Package Manager
 
-- File > Swift Packages > Add Package Dependency
+- Select File > Swift Packages > Add Package Dependency
 - Add https://github.com/RakuyoKit/JSONPreview.git
 - Select "Up to Next Major" with "2.0.0"
 
-Or add the following to your `Package.swift` file:
+Or add the following content to your `Package.swift` file:
 
 ```swift
 dependencies: [
@@ -52,39 +48,41 @@ dependencies: [
 
 ## Features
 
-> In `1.3.0` version, we removed the ability to slide diagonally. 
-> Now if a JSON row is not displayed, it will be displayed folded instead of going beyond the screen. If you wish to use this feature, please use the [1.2.3](https://github.com/RakuyoKit/JSONPreview/releases/tag/1.2.3) version
+- [x] Support for **formatting** JSON data.
+- [x] Support for syntax **highlighting** of JSON data, offering various color and font configuration options.
+- [x] **fold and expand** functionality for `Array` and `Object`.
+- [x] Allow setting the initial state of nodes, `.folded` or `.expand`.
+- [x] Implemented based on `UITextView`. This means you can copy any content from `JSONPreview`.
 
-- [x] Support for **formatted** display of JSON data.
-- [x] Support for **highlighting** JSON data, with various color and font configuration options.
-- [x] Provide **fold** and **expand** for `Array` and `Object`.
-- [x] Based on `UITextView`, meaning you can copy any content in `JSONPreview`.
-
-- `JSONPreview` provides limited, incomplete format checking functionality, so this feature is not provided as a main feature. For more details, please refer to: [Format check](#format-check)
+> Additional Details:
+> 1. `JSONPreview` provides limited and incomplete formatting checks, so this feature is not offered as a primary function. Details can be found in: [Format check](#format-check).
+> 2. Version [1.2.0](https://github.com/RakuyoKit/JSONPreview/releases/tag/1.2.0) added support for rendering links. Alongside rendering, `JSONPreview` performs limited unescaping: supporting replacing `"\\/"` with `"/"`.
 
 ## Usage
 
-> After downloading the project, [`ViewController.swift`](Demo/JSONPreviewDemo/ViewController.swift) file contains part of the test code, just run the project Check the corresponding effect.
+> After downloading the project, [`ViewController.swift`](Demo/JSONPreviewDemo/ViewController.swift) contains some test code. Run the project to see the corresponding effect.
 
-1. Create the `JSONPreview` object and add it to the interface.
+### Basic Usage and Default Configuration
+
+1. Create a `JSONPreview` object and add it to the interface:
 
 ```swift
 let previewView = JSONPreview()
-
 view.addSubview(previewView)
 ```
 
-2. Call the `preview(_:style:)` method to preview the data in the default style:
+2. Call the `JSONPreview.preview` method to preview the data with the default style:
 
 ```swift
 let json = "{\"key\":\"value\"}"
-
 previewView.preview(json)
 ```
 
-3. If you want to customize the highlight style, you can set it through the `HighlightStyle` and `HighlightColor` types:
+### Custom Styles
 
-> Among them, [`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L117) is a protocol for providing colors. Through this protocol, you can directly use the `UIColor` object, or easily convert such objects as `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` to `UIColor` objects.
+If you want to customize the syntax highlighting style, you can set it using `HighlightStyle` and `HighlightColor`:
+
+> [`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L117) is a protocol for providing colors. Through this protocol, you can directly use `UIColor` objects or easily convert values like `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` into `UIColor` objects.
 
 ```swift
 let highlightColor = HighlightColor(
@@ -114,37 +112,32 @@ let style = HighlightStyle(
 previewView.preview(json, style: style)
 ```
 
+You can also configure the `initialState` parameter to set the initial state of JSON child nodes.
+
+```swift
+// By default, all nodes are initially in a collapsed state during preview.
+previewView.preview(json, style: style, initialState: .folded)
+```
+
 ## Format Check
 
-### Rendering
+When rendering JSON, `JSONPreview` performs **limited** formatting checks.
 
-For rendering, `JSONPreview` only performs **limited** formatting checks.
+Known conditions that trigger "error rendering" include:
 
-The conditions that are known to trigger `Error Rendering` include
+- Values of unconventional JSON types. Supported types are `object`, `array`, `number`, `bool`, `string`, and `null`.
+- Checking for formatting in `number`, such as scientific notation and decimals.
+- Spelling check for `true`, `false`, and `null`.
+- For scientific notation, the next node after `{E/e}` must be `+`, `-`, or a digit.
+- Missing `,` separators between elements in an `array`.
+- Missing `,` separators between elements in an `object`.
+- No `:` after a key in an `object`.
+- `object` has `:` after a key but lacks a value.
+- Keys in `object` are not strings.
 
-- Value Unconventional JSON types. Supported types include `object`, `array`, `number`, `bool`, `string`, and `null`.
-- Checks for the `number` format, such as scientific notation and decimals.
-- Spell checking for `true`, `false` and `null`.
-- For scientific notation, the next node of `{E/e}` must be `+`, `-` or a number.
-- `array` elements are not separated by `,`.
-- `object` elements are not separated by `,`.
-- No `:` after the key of `object`.
-- `object` has `:` after the key but is missing the value.
-- The key of `object` is not a string.
+Apart from the explicitly mentioned conditions, other errors might trigger "error rendering". Additionally, there could be some errors outside the scope of formatting checks that might **result in missing content** in the JSON.
 
-In addition to the conditions explicitly mentioned above, other errors may also trigger an "error rendering". There may also be errors outside the scope of the formatting check that do not trigger "error rendering". However, they may **lead to missing json content**.
-
-It is recommended that you do not rely too much on `JSONPreview` format checking, and use it to preview correctly formatted json whenever possible.
-
-### Link
-
-The *1.2.0* version adds rendering of links. While rendering, `JSONPreview` performs a limited **de-escaping** operation.
-
-The de-escaping operations supported by different versions are as follows:
-
-> If not otherwise specified, the following functions are cumulative.
-
-- 1.2.0: Support replacing `"\\/"` with `"/"`.
+It's recommended not to overly rely on the formatting check feature of `JSONPreview` and to use it for previewing correctly formatted JSON as much as possible.
 
 ## Data Flow Diagram
 
@@ -156,7 +149,7 @@ The de-escaping operations supported by different versions are as follows:
 
 ## Thanks
 
-Thanks to [Awhisper](https://github.com/Awhisper) for his valuable input during the development of `JSONPreview`.
+Thanks to [Awhisper](https://github.com/Awhisper) for valuable insights during the development of `JSONPreview`.
 
 ## License
 

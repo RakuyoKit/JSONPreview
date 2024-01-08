@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/rakuyoMo/JSONPreview/master/Images/logo.png" alt="JSONPreview" title="JSONPreview" width="1000"/>
+<img src="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/Images/logo.png" alt="JSONPreview" title="JSONPreview" width="1000"/>
 </p>
 
 <p align="center">
@@ -8,11 +8,9 @@
 <a href="https://github.com/RakuyoKit/JSONPreview/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JSONPreview.svg?style=flat"></a>
 </p>
 
-`JSONPreview` 继承自 `UIView`，并基于 `UITextView` 实现功能。您可以通过它来**格式化**您的 JSON 数据，并**高亮**展示。
+`JSONPreview` 是一个 JSON 预览组件，您可以通过它来**格式化**您的 JSON 数据，并**高亮**展示。除此之外，`JSONPreview` 还提供了**折叠与展开**功能，您可以折叠那些您暂时不关注的节点，并在任意时刻重新展示它。
 
-同时 `JSONPreview` 还提供**折叠与展开**功能，您可以折叠那些您暂时不关注的节点，并在任意时刻重新展示它。
-
-`JSONPreview` 的全部功能都使用**原生方法**编写，这意味着您可以在 Apple 平台获得较好的使用体验。
+`JSONPreview` 继承自 `UIView`，并基于 `UITextView` 实现相关功能。整个框架完全基于原生框架实现，这意味着在 Apple 平台上使用本框架时，您可以获得较好的用户体验。
 
 ## 预览
 
@@ -50,39 +48,41 @@ dependencies: [
 
 ## 功能
 
-> 在 `1.3.0` 版本中，我们删除了斜向滑动的功能。
-> 现在如果JSON一行展示不开，那么它将折行展示，而不是超出屏幕。如果您希望使用该功能，请使用 [1.2.3](https://github.com/RakuyoKit/JSONPreview/releases/tag/1.2.3) 版本
-
 - [x] 支持**格式化**显示 JSON 数据。
 - [x] 支持**高亮** JSON 数据，提供多种颜色与字体配置选项。
-- [x] 针对 `Array` 与 `Object` 提供**折叠**与**展开**功能。
-- [x] 基于 `UITextView` 实现功能。意味着您可以复制 `JSONPreview` 中的任意内容。
+- [x] 针对 `Array` 与 `Object` 提供**折叠与展开**功能。
+- [x] 允许设置节点的初始状态，折叠或展开。
+- [x] 基于 `UITextView` 实现。意味着您可以复制 `JSONPreview` 中的任意内容。
 
-- `JSONPreview` 提供有限的，不完整的格式检查功能，故该功能不作为主要功能提供。详情可以参考：[格式检查](#格式检查)
+> 细节补充：
+> 1. `JSONPreview` 提供有限的，不完整的格式检查功能，故该功能不作为主要功能提供。详情可以参考：[格式检查](#格式检查)。
+> 2. [1.2.0](https://github.com/RakuyoKit/JSONPreview/releases/tag/1.2.0) 版本支持了对链接的渲染。在渲染的同时，`JSONPreview` 会进行有限的**去转义**操作：支持将 `"\\/"` 替换为 `"/"`。
 
 ## 使用
 
 > 下载项目后，[`ViewController.swift`](Demo/JSONPreviewDemo/ViewController.swift) 文件中包含部分测试代码，运行项目即可查看对应的效果。
 
+### 基础用法及默认配置
+
 1. 首先创建 `JSONPreview` 对象，并添加到界面上：
 
 ```swift
 let previewView = JSONPreview()
-
 view.addSubview(previewView)
 ```
 
-2. 调用 `preview(_:style:)` 方法，以默认样式预览数据：
+2. 调用 `JSONPreview.preview` 方法，以默认样式预览数据：
 
 ```swift
 let json = "{\"key\":\"value\"}"
-
 previewView.preview(json)
 ```
 
-3. 如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 类型进行设置：
+### 自定义样式
 
-> 其中，[`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L117) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
+如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 这两个类型来进行设置：
+
+> [`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L117) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
 
 ```swift
 let highlightColor = HighlightColor(
@@ -112,11 +112,18 @@ let style = HighlightStyle(
 previewView.preview(json, style: style)
 ```
 
+您还可以通过 initialState 参数配置 json 子节点的初始状态。
+
+```swift
+// 预览时，所有节点默认均为折叠状态
+previewView.preview(json, style: style, initialState: .folded)
+```
+
+其他更多功能请参考 demo。
+
 ## 格式检查
 
-### 渲染
-
-对于渲染，`JSONPreview` 只进行**有限**的格式检查。
+`JSONPreview` 在渲染 JSON 时只进行**有限**的格式检查。
 
 目前已知的会触发 “错误渲染” 的条件，包括：
 
@@ -133,16 +140,6 @@ previewView.preview(json, style: style)
 除了上述明确提到的条件，其他错误也可能触发“错误渲染”。另外还有可能有一些错误在格式检查的范围之外，这些错误不会触发“错误渲染”。但是可能**会导致 json 内容的缺失**。
 
 建议您不要过于依赖 `JSONPreview` 的格式检查功能，尽可能用于预览格式正确的 json。
-
-### 链接
-
-*1.2.0* 版本增加了对链接的渲染功能。在渲染的同时，`JSONPreview` 会进行有限的**去转义**操作。
-
-不同版本支持的去转义操作如下：
-
-> 如无特殊说明，以下功能均为累加。
-
-- 1.2.0：支持将 `"\\/"` 替换为 `"/"`。
 
 ## DFD
 
