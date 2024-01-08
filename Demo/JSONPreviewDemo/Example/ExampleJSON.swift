@@ -1,44 +1,15 @@
 //
-//  ViewController.swift
-//  JSONPreview
+//  ExampleJSON.swift
+//  JSONPreviewDemo
 //
-//  Created by Rakuyo on 2020/9/9.
-//  Copyright © 2020 Rakuyo. All rights reserved.
+//  Created by Rakuyo on 2024/1/8.
 //
 
-import UIKit
+import Foundation
 
-import SafariServices
-
-import JSONPreview
-
-class ViewController: UIViewController {
-    lazy var previewView = JSONPreview()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        previewView.delegate = self
-        previewView.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubview(previewView)
-        
-        var constraints: [NSLayoutConstraint] = [
-//            previewView.heightAnchor.constraint(equalTo: view.heightAnchor),
-//            previewView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ]
-        
-        constraints.append(previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor))
-        
-        constraints.append(previewView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor))
-        
-        constraints.append(previewView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor))
-        
-        constraints.append(previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor))
-        
-        NSLayoutConstraint.activate(constraints)
-        
-        let json =
+enum ExampleJSON {
+    /// Able to demonstrate the most comprehensive support
+    static var mostComprehensive: String {
         """
         [
             [],
@@ -110,30 +81,33 @@ class ViewController: UIViewController {
             {123456}
         ]
         """
-        
-        
-        let start = Date().timeIntervalSince1970
-        print("will display json")
-        
-        previewView.preview(json, style: .`default`, initialState: .folded) {
-            let end = Date().timeIntervalSince1970
-            let timeConsuming = end - start
-            
-            print("did display json at: \(timeConsuming)")
-        }
     }
-}
-
-// MARK: - UITextViewDelegate
-
-extension ViewController: JSONPreviewDelegate {
-    func jsonPreview(view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
-        print(url)
-        
-        let safari = SFSafariViewController(url: url)
-        safari.modalPresentationStyle = .overFullScreen
-        present(safari, animated: true, completion: nil)
-        
-        return false
+    
+    static var legalJson: String {
+        """
+        {
+            "nested" : {
+                "object" : {
+                    "array" : [
+                        "string",
+                        1234,
+                        null,
+                        [
+                            {
+                                "key1" : "value2"
+                            },
+                            {
+                                "key2" : "value2"
+                            },
+                        ]
+                    ],
+                    "other empty object" : {},
+                    "other object" : {
+                        "key": "value"
+                    }
+                }
+            }
+        }
+        """
     }
 }
