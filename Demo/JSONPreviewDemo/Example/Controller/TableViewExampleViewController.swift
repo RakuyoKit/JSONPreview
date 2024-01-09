@@ -13,18 +13,35 @@ import JSONPreview
 class TableViewExampleViewController: UITableViewController {
     private lazy var dataSource: [ListConfig] = [
         .desc("""
-            If you use this framework in conjunction with UITableView, we recommend that a list contain only one JSON Cell, so as to avoid some unresolved Cell reuse issues.
+            This file contains two sample scenes, which can also be treated as three, that is, a composite scene when the two scenes are used together.
             """),
         .desc("""
-            See the example below. UITableView does not update its height after obtaining the initial height. The height of Cell is always the maximum height of JSONPreview.
+            1. The Cell hosting JSONPreview needs to dynamically change its height.
+            
+            A common situation is: JSONPreview is displayed in the middle of the list. When the node is expanded or collapsed, the height of the Cell needs to change accordingly.
+            
+            The specific effects are as follows:
+            """),
+        .json(.init(content: ExampleJSON.legalJson, heightStyle: .dynamic)),
+        .desc("""
+            One thing you need to pay attention to:
+            the method shown in this example is not the only one. For example, you can also monitor changes in contentSize through KVO and then update the Cell height.
+            """),
+        .desc("""
+            2. The height of JSONPreview is fixed.
+            
+            Its value is the maximum height of JSON. Unaffected by the collapsed or expanded state of slice nodes.
+            
+            Often this kind of JSON appears at the end of the list, and its height does not have much impact on the overall list.
             """),
         .json(.init(content: ExampleJSON.mostComprehensive, heightStyle: .fixed)),
         .desc("""
-            If you want the height of the Cell to change as you fold/expand JSON, then unfortunately, there are still some problems with this feature that have not been resolved.
+            3. Mixed use.
+            
+            As this example shows, mix both situations.
             """),
-        .desc("This file contains some unfinished test code, if you are interested you can try it out."),
-//        .json(.init(content: ExampleJSON.mostComprehensive, heightStyle: .dynamic(nil))),
-    ]
+        .desc("Below are some placeholder Cells that you can use to check the reuse of Cells."),
+    ] + (1 ... 30).map { ListConfig.desc("\($0)") }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,26 +71,29 @@ extension TableViewExampleViewController {
         
         switch dataSource[index] {
         case .json(var model):
-            func _preview<C: BaseJSONCell>(
-                initialState state: JSONSlice.State,
-                cell: C,
-                completion: ((JSONDecorator?) -> Void)? = nil
-            ) {
+            func _preview<C: BaseJSONCell>(initialState state: JSONSlice.State, cell: C) {
                 cell.previewView.tag = index
-                cell.previewView.preview(model.content, initialState: state) { (decorator) in
-                    guard model.height == nil else { return }
+                
+                if let _decorator = model.decorator {
+                    cell.previewView.tag = index
+                    cell.previewView.update(with: _decorator)
                     
-                    DispatchQueue.main.async { [weak self] in
-                        guard let this = self else { return }
+                } else {
+                    cell.previewView.preview(model.content, initialState: state) { (decorator) in
+                        guard model.height == nil else { return }
                         
-                        // Sometimes the obtained height is inaccurate, differing by 5.
-                        // If you don't care about this error, you can do this:
-                        model.height = cell.previewView.contentSize.height // + 5
-                        
-                        completion?(decorator)
-                        
-                        this.dataSource[index] = .json(model)
-                        this.tableView.reloadRows(at: [indexPath], with: .automatic)
+                        DispatchQueue.main.async { [weak self] in
+                            guard let this = self else { return }
+                            
+                            // Sometimes the obtained height is inaccurate, differing by 5.
+                            // If you don't care about this error, you can do this:
+                            model.height = cell.previewView.contentSize.height // + 5
+                            
+                            model.decorator = decorator
+                            
+                            this.dataSource[index] = .json(model)
+                            this.tableView.reloadRows(at: [indexPath], with: .automatic)
+                        }
                     }
                 }
             }
@@ -84,20 +104,12 @@ extension TableViewExampleViewController {
                 _preview(initialState: .expand, cell: cell)
                 return cell
                 
-            case .dynamic(let decorator):
+            case .dynamic:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "JSON Delegate Cell", for: indexPath) as! JSONDelegateCell
                 
                 cell.previewView.delegate = self
                 
-                if let _decorator = decorator {
-                    cell.previewView.tag = index
-                    cell.previewView.update(with: _decorator)
-                    
-                } else {
-                    _preview(initialState: .expand, cell: cell) {
-                        model.heightStyle = .dynamic($0)
-                    }
-                }
+                _preview(initialState: .folded, cell: cell)
                 
                 return cell
             }
@@ -134,13 +146,14 @@ extension TableViewExampleViewController {
 extension TableViewExampleViewController: JSONPreviewDelegate {
     func jsonPreview(_ view: JSONPreview, didChangeSliceState slice: JSONSlice, decorator: JSONDecorator) {
         let indexPath = IndexPath(row: view.tag, section: 0)
+        let index = indexPath.row
         
-        guard case .json(var model) = dataSource[indexPath.row] else { return }
+        guard case .json(var model) = dataSource[index] else { return }
         
         model.height = view.contentSize.height
-        model.heightStyle = .dynamic(decorator)
+        model.decorator = decorator
         
-        dataSource[indexPath.row] = .json(model)
+        dataSource[index] = .json(model)
         
         tableView.reloadRows(at: [indexPath], with: .none)
     }
@@ -153,11 +166,13 @@ private enum ListConfig {
         enum HeightStyle {
             case fixed
             
-            case dynamic(JSONDecorator?)
+            case dynamic
         }
         
         let content: String
-    
+        
+        var decorator :JSONDecorator? = nil
+        
         var height: CGFloat? = nil
         
         var heightStyle: HeightStyle
