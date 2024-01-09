@@ -42,7 +42,7 @@ private extension BasicExampleViewController {
         print("will display json")
         let start = Date().timeIntervalSince1970
         
-        previewView.preview(json) {
+        previewView.preview(json) { _ in
             let end = Date().timeIntervalSince1970
             print("did display json at: \(end - start)")
         }

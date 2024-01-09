@@ -151,27 +151,34 @@ open class JSONPreview: UIView {
 }
 
 public extension JSONPreview {
+    typealias Completion = (Bool) -> Void
+    
     /// Preview json.
     ///
     /// - Parameters:
     ///   - json: The json to be previewed
     ///   - style: Highlight style. See `HighlightStyle` for details.
     ///   - initialState: The initial state of the rendering result. The initial state of all nodes will be consistent with this value.
-    ///   - completion: Callback after data processing is completed.
+    ///   - completion: Callback after rendering is completed.
     func preview(
         _ json: String,
         style: HighlightStyle = .`default`,
         initialState: JSONSlice.State = .`default`,
-        completion: (() -> Void)? = nil
+        completion: Completion? = nil
     ) {
         highlightStyle = style
         
         DispatchQueue.global().async {
             let decorator = JSONDecorator.highlight(json, style: style, initialState: initialState)
             
+            guard let _decorator = decorator else {
+                completion?(false)
+                return
+            }
+            
             DispatchQueue.main.async { [weak self] in
                 self?.decorator = decorator
-                completion?()
+                completion?(true)
             }
         }
     }

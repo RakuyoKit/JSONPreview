@@ -44,7 +44,7 @@ private extension CustomStyleExampleViewController {
         print("will display json")
         let start = Date().timeIntervalSince1970
         
-        previewView.preview(json, style: .mariana) {
+        previewView.preview(json, style: .mariana) { _ in
             let end = Date().timeIntervalSince1970
             print("did display json at: \(end - start)")
         }

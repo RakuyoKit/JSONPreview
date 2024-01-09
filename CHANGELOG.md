@@ -11,6 +11,7 @@ All notable changes to this project are documented in this file.
 - The `JSONPreview.preview` method adds the `initialState` parameter to support setting the default folding and unfolding states when rendering json.
 - `JSONPreview` supports hiding line number view.
 - Opens access to the `highlightStyle` and `decorator` properties in `JSONPreview` to support a more flexible rendering method.
+- Add rendering result callback.
 
 ### Changed
 
