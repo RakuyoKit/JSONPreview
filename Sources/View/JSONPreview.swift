@@ -445,16 +445,16 @@ extension JSONPreview: JSONTextViewDelegate {
         // 3. Get the clicked slice
         let clickSlice = slices[realRow]
         
-        defer {
-            delegate?.jsonPreview(self, didChangeSliceState: slices[realRow], decorator: decorator)
-        }
-        
         // 4. Perform different operations based on slice status
         switch clickSlice.state {
         
         // 4.1. Expanded state: perform folded operation
         case .expand:
             guard let folded = clickSlice.folded else { return }
+            
+            defer {
+                delegate?.jsonPreview(self, didChangeSliceState: slices[realRow], decorator: decorator)
+            }
             
             decorator.slices[realRow].state = .folded
             
@@ -507,6 +507,10 @@ extension JSONPreview: JSONTextViewDelegate {
         // 4.2. Folded state: perform expand operation
         case .folded:
             guard let folded = clickSlice.folded else { return }
+            
+            defer {
+                delegate?.jsonPreview(self, didChangeSliceState: slices[realRow], decorator: decorator)
+            }
             
             decorator.slices[realRow].state = .expand
             
