@@ -70,19 +70,19 @@ public struct JSONSlice {
     }
     
     /// Position in the complete structure.
-    internal let lineNumber: Int
+    public let lineNumber: Int
     
     /// The current display state of the slice.
-    internal var state: State
+    public var state: State
     
     /// Indentation level.
-    internal let level: Int
+    public let level: Int
     
     /// The complete content of the JSON slice in the expanded state.
-    internal var expand: AttributedString
+    public var expand: AttributedString
     
     /// The summary content of the JSON slice in the folded state.
-    internal var folded: AttributedString?
+    public var folded: AttributedString?
     
     /// The number of times the slice was folded.
     ///
@@ -93,7 +93,7 @@ public struct JSONSlice {
     internal var foldedTimes: Int
 }
 
-internal extension JSONSlice {
+public extension JSONSlice {
     /// According to different status, return the content that should be displayed currently.
     var showContent: AttributedString? {
         switch state {
