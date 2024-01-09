@@ -57,17 +57,21 @@ extension TableViewExampleViewController {
             func _preview<C: BaseJSONCell>(
                 initialState state: JSONSlice.State,
                 cell: C,
-                completion: (() -> Void)? = nil
+                completion: ((JSONDecorator?) -> Void)? = nil
             ) {
                 cell.previewView.tag = index
-                cell.previewView.preview(model.content, initialState: state) { _ in
+                cell.previewView.preview(model.content, initialState: state) { (decorator) in
                     guard model.height == nil else { return }
                     
                     DispatchQueue.main.async { [weak self] in
                         guard let this = self else { return }
                         
-                        model.height = cell.previewView.contentSize.height
-                        completion?()
+                        // Sometimes the obtained height is inaccurate, differing by 5.
+                        // If you don't care about this error, you can do this:
+                        model.height = cell.previewView.contentSize.height // + 5
+                        
+                        completion?(decorator)
+                        
                         this.dataSource[index] = .json(model)
                         this.tableView.reloadRows(at: [indexPath], with: .automatic)
                     }
@@ -87,12 +91,11 @@ extension TableViewExampleViewController {
                 
                 if let _decorator = decorator {
                     cell.previewView.tag = index
-                    cell.previewView.highlightStyle = .default
-                    cell.previewView.decorator = _decorator
+                    cell.previewView.update(with: _decorator)
                     
                 } else {
                     _preview(initialState: .expand, cell: cell) {
-                        model.heightStyle = .dynamic(cell.previewView.decorator)
+                        model.heightStyle = .dynamic($0)
                     }
                 }
                 
@@ -129,13 +132,13 @@ extension TableViewExampleViewController {
 // MARK: - JSONPreviewDelegate
 
 extension TableViewExampleViewController: JSONPreviewDelegate {
-    func jsonPreview(_ view: JSONPreview, didChangeJSONSliceState slice: JSONSlice) {
+    func jsonPreview(_ view: JSONPreview, didChangeSliceState slice: JSONSlice, decorator: JSONDecorator) {
         let indexPath = IndexPath(row: view.tag, section: 0)
         
         guard case .json(var model) = dataSource[indexPath.row] else { return }
         
         model.height = view.contentSize.height
-        model.heightStyle = .dynamic(view.decorator)
+        model.heightStyle = .dynamic(decorator)
         
         dataSource[indexPath.row] = .json(model)
         

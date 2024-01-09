@@ -23,7 +23,8 @@ public protocol JSONPreviewDelegate: NSObjectProtocol {
     /// - Parameters:
     ///   - view: The view itself for previewing the json.
     ///   - slice: Slice nodes whose status has changed.
-    func jsonPreview(_ view: JSONPreview, didChangeJSONSliceState slice: JSONSlice)
+    ///   - decorator: Stores the rendering result of the current JSON.
+    func jsonPreview(_ view: JSONPreview, didChangeSliceState slice: JSONSlice, decorator: JSONDecorator)
 }
 
 // MARK: - Default
@@ -33,5 +34,5 @@ public extension JSONPreviewDelegate {
         return true
     }
     
-    func jsonPreview(_ view: JSONPreview, didChangeJSONSliceState slice: JSONSlice) { }
+    func jsonPreview(_ view: JSONPreview, didChangeSliceState slice: JSONSlice, decorator: JSONDecorator) { }
 }

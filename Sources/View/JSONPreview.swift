@@ -76,15 +76,6 @@ open class JSONPreview: UIView {
         set { lineNumberTableView.isHidden = newValue }
     }
     
-    /// JSON Decoder.
-    ///
-    /// We also provide the `setJSONDecoratort(_: completion:)` method to provide
-    /// a callback when rendering is complete.
-    public var decorator: JSONDecorator? {
-        get { _decorator }
-        set { setJSONDecoratort(newValue) }
-    }
-    
     /// delegate for `JSONPreview`.
     public weak var delegate: JSONPreviewDelegate? = nil
     
@@ -94,9 +85,7 @@ open class JSONPreview: UIView {
     }
     
     /// JSON Decoder.
-    ///
-    /// The actual storage object
-    private lazy var _decorator: JSONDecorator? = nil
+    private lazy var decorator: JSONDecorator? = nil
     
     /// Record the direction of the last equipment.
     private lazy var lastOrientation: Orientation = .unknow
@@ -114,9 +103,15 @@ open class JSONPreview: UIView {
 }
 
 public extension JSONPreview {
-    typealias Completion = (Bool) -> Void
+    typealias Completion = (JSONDecorator?) -> Void
     
     /// Preview json.
+    ///
+    /// If you want to use it in a list, such as a `UITableView`, then this method can only
+    /// be called when the JSON is displayed for the first time.
+    ///
+    /// You should obtain and hold the JSONDecorator object from completion, and then call the 
+    /// `update(with:)` method to set the content when the Cell is reused.
     ///
     /// - Parameters:
     ///   - json: The json to be previewed
@@ -142,64 +137,17 @@ public extension JSONPreview {
         }
     }
     
-    /// Set JSON Decoder.
+    /// Update JSON content.
+    ///
+    /// If you do not want to destroy the existing JSON folding state,
+    /// you need to do some processing on the JSON slices, such as re-rendering the style.
+    /// Then you should call this method to update after processing.
     ///
     /// - Parameters:
     ///   - decorator: JSON Decoder.
-    ///   - completion: Callback when rendering is complete.
-    func setJSONDecoratort(_ decorator: JSONDecorator?, completion: Completion? = nil) {
-        self._decorator = decorator
-        
-        guard let _decorator = decorator else {
-            DispatchQueue.main.async { completion?(false) }
-            return
-        }
-        
-        var foldedLevel: Int? = nil
-        let displayedStrings: [AttributedString] = _decorator.slices.compactMap {
-            if let _level = foldedLevel {
-                if $0.level > _level { return nil }
-                
-                if $0.level == _level {
-                    foldedLevel = nil
-                    return nil
-                }
-            }
-            
-            let result = AttributedString(string: "")
-            
-            switch $0.state {
-            case .expand:
-                result.append($0.expand)
-                result.append(_decorator.wrapString)
-                
-                return result
-                
-            case .folded:
-                guard let _folded = $0.folded else { return nil }
-                
-                foldedLevel = $0.level
-                
-                result.append(_folded)
-                result.append(_decorator.wrapString)
-                
-                return result
-            }
-        }
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let this = self else { return }
-            
-            defer { completion?(true) }
-            
-            this.jsonTextView.attributedText = displayedStrings.reduce(
-                into: AttributedString(string: ""),
-                { $0.append($1) }
-            )
-            
-            guard !displayedStrings.isEmpty else { return }
-            this.lineDataSource = Array(1 ... displayedStrings.count)
-        }
+    ///   - completion: Callback when rendering is complete. Always callback on the main thread.
+    func update(with decorator: JSONDecorator?, completion: Completion? = nil) {
+        setJSONDecoratort(decorator, completion: completion)
     }
 }
 
@@ -315,6 +263,61 @@ private extension JSONPreview {
         lineNumberTableView.backgroundColor = colorStyle.lineBackground
         jsonTextView.backgroundColor = colorStyle.jsonBackground
         skeletonStackView.backgroundColor = colorStyle.jsonBackground
+    }
+    
+    func setJSONDecoratort(_ decorator: JSONDecorator?, completion: Completion?) {
+        self.decorator = decorator
+        
+        guard let _decorator = decorator else {
+            DispatchQueue.main.async { completion?(nil) }
+            return
+        }
+        
+        var foldedLevel: Int? = nil
+        let displayedStrings: [AttributedString] = _decorator.slices.compactMap {
+            if let _level = foldedLevel {
+                if $0.level > _level { return nil }
+                
+                if $0.level == _level {
+                    foldedLevel = nil
+                    return nil
+                }
+            }
+            
+            let result = AttributedString(string: "")
+            
+            switch $0.state {
+            case .expand:
+                result.append($0.expand)
+                result.append(_decorator.wrapString)
+                
+                return result
+                
+            case .folded:
+                guard let _folded = $0.folded else { return nil }
+                
+                foldedLevel = $0.level
+                
+                result.append(_folded)
+                result.append(_decorator.wrapString)
+                
+                return result
+            }
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let this = self else { return }
+            
+            defer { completion?(_decorator) }
+            
+            this.jsonTextView.attributedText = displayedStrings.reduce(
+                into: AttributedString(string: ""),
+                { $0.append($1) }
+            )
+            
+            guard !displayedStrings.isEmpty else { return }
+            this.lineDataSource = Array(1 ... displayedStrings.count)
+        }
     }
 }
 
@@ -447,7 +450,7 @@ extension JSONPreview: JSONTextViewDelegate {
         let clickSlice = slices[realRow]
         
         defer {
-            delegate?.jsonPreview(self, didChangeJSONSliceState: slices[realRow])
+            delegate?.jsonPreview(self, didChangeSliceState: slices[realRow], decorator: decorator)
         }
         
         // 4. Perform different operations based on slice status

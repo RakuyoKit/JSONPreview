@@ -10,17 +10,17 @@ All notable changes to this project are documented in this file.
 
 - The `JSONPreview.preview` method adds the `initialState` parameter to support setting the default folding and unfolding states when rendering json.
 - `JSONPreview` supports hiding line number view.
-- Opens access to the `highlightStyle` and `decorator` properties in `JSONPreview` to support a more flexible rendering method.
-- In the closure callback of the `preview` method, add a judgment flag for whether the preview was successful or not.
+- The `highlightStyle` property now has `public` read and write permissions.
+- Now in the closure of the `JSONPreview.preview` method, the initialized `JSONDecorator` object will be returned.
 - Add delegate callback when json slice node state changes.
 - Add some easy access properties to `JSONPreview`.
 
 ### Changed
 
 - [**Break**] The minimum iOS supported version of the project is upgraded to iOS 12. 
-- [**Break**] Setting JSONSlice's Initialization method to internal.
+- [**Break**] Setting `JSONSlice`'s Initialization method to `internal`.
 - [**Break**] Adjusted the order of parameters of `JSONDecorator.highlight` method.
-- [**Break**] Because `highlightStyle` is now publicly accessible, and to allow for more complex scenarios, the `JSONPreview.preview` method now removes the `style` parameter.
+- [**Break**] Because `highlightStyle` is now publicly accessible, `JSONPreview.preview` method now removes the `style` parameter.
 - Provide default implementation for `JSONPreviewDelegate`.
 - Refine the timing of json completion preview callback calls.
 - Adjusted the code format of some codes.
