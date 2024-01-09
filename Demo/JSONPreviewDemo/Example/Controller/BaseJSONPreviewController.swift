@@ -29,7 +29,7 @@ class BaseJSONPreviewController: UIViewController {
 // MARK: - UITextViewDelegate
 
 extension BaseJSONPreviewController: JSONPreviewDelegate {
-    func jsonPreview(view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
+    func jsonPreview(_ view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
         print(url)
         
         let safari = SFSafariViewController(url: url)
