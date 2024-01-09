@@ -11,11 +11,13 @@ import UIKit
 open class JSONPreview: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
+        
         config()
     }
     
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
+        
         config()
     }
     
@@ -61,8 +63,12 @@ open class JSONPreview: UIView {
         return textView
     }()
     
-    /// delegate for `JSONPreview`.
-    public weak var delegate: JSONPreviewDelegate? = nil
+    public var contentSize: CGSize { jsonTextView.contentSize }
+    
+    public var scrollsToTop: Bool {
+        get { jsonTextView.scrollsToTop }
+        set { jsonTextView.scrollsToTop = newValue }
+    }
     
     /// Whether to hide the line number view
     public var isHiddenLineNumber: Bool {
@@ -70,17 +76,25 @@ open class JSONPreview: UIView {
         set { lineNumberTableView.isHidden = newValue }
     }
     
+    /// JSON Decoder.
+    ///
+    /// We also provide the `setJSONDecoratort(_: completion:)` method to provide
+    /// a callback when rendering is complete.
+    public var decorator: JSONDecorator? {
+        get { _decorator }
+        set { setJSONDecoratort(newValue) }
+    }
+    
+    /// delegate for `JSONPreview`.
+    public weak var delegate: JSONPreviewDelegate? = nil
+    
     /// Highlight style
-    public var highlightStyle: HighlightStyle = .`default` {
+    public lazy var highlightStyle: HighlightStyle = .`default` {
         didSet {
             let colorStyle = highlightStyle.color
             lineNumberTableView.backgroundColor = colorStyle.lineBackground
             jsonTextView.backgroundColor = colorStyle.jsonBackground
             skeletonStackView.backgroundColor = colorStyle.jsonBackground
-            
-            jsonTextView.textContainerInset = UIEdgeInsets(
-                top: 0, left: 10, bottom: 0, right: 10
-            )
         }
     }
     
@@ -122,41 +136,12 @@ public extension JSONPreview {
     ) {
         highlightStyle = style
         
-        DispatchQueue.global().async { [weak self] in
+        DispatchQueue.global().async {
             let decorator = JSONDecorator.highlight(json, style: style, initialState: initialState)
             
-            guard let _decorator = decorator else {
-                completion?(false)
-                return
-            }
-            
             DispatchQueue.main.async { [weak self] in
-                guard let this = self else { return }
-                
-                this._decorator = _decorator
-                this.setJSONDecoratort(_decorator, completion: completion)
+                self?.setJSONDecoratort(decorator, completion: completion)
             }
-        }
-    }
-    
-    var contentSize: CGSize { jsonTextView.contentSize }
-    
-    var scrollsToTop: Bool {
-        get { jsonTextView.scrollsToTop }
-        set { jsonTextView.scrollsToTop = newValue }
-    }
-    
-    /// JSON Decoder.
-    ///
-    /// We also provide the `setJSONDecoratort(_: completion:)` method to provide
-    /// a callback when rendering is complete.
-    var decorator: JSONDecorator? {
-        get { _decorator }
-        set {
-            _decorator = newValue
-            
-            guard let decorator = newValue else { return }
-            setJSONDecoratort(decorator)
         }
     }
     
@@ -165,9 +150,16 @@ public extension JSONPreview {
     /// - Parameters:
     ///   - decorator: JSON Decoder.
     ///   - completion: Callback when rendering is complete.
-    func setJSONDecoratort(_ decorator: JSONDecorator, completion: Completion? = nil) {
+    func setJSONDecoratort(_ decorator: JSONDecorator?, completion: Completion? = nil) {
+        self._decorator = decorator
+        
+        guard let _decorator = decorator else {
+            DispatchQueue.main.async { completion?(false) }
+            return
+        }
+        
         var foldedLevel: Int? = nil
-        let displayedStrings: [AttributedString] = decorator.slices.compactMap {
+        let displayedStrings: [AttributedString] = _decorator.slices.compactMap {
             if let _level = foldedLevel {
                 if $0.level > _level { return nil }
                 
@@ -182,7 +174,7 @@ public extension JSONPreview {
             switch $0.state {
             case .expand:
                 result.append($0.expand)
-                result.append(decorator.wrapString)
+                result.append(_decorator.wrapString)
                 
                 return result
                 
@@ -192,7 +184,7 @@ public extension JSONPreview {
                 foldedLevel = $0.level
                 
                 result.append(_folded)
-                result.append(decorator.wrapString)
+                result.append(_decorator.wrapString)
                 
                 return result
             }
@@ -201,9 +193,7 @@ public extension JSONPreview {
         DispatchQueue.main.async { [weak self] in
             guard let this = self else { return }
             
-            defer {
-                DispatchQueue.main.async { completion?(true) }
-            }
+            defer { completion?(true) }
             
             this.jsonTextView.attributedText = displayedStrings.reduce(
                 into: AttributedString(string: ""),
@@ -211,7 +201,7 @@ public extension JSONPreview {
             )
             
             guard !displayedStrings.isEmpty else { return }
-            this.lineDataSource = (1 ... displayedStrings.count).map { $0 }
+            this.lineDataSource = Array(1 ... displayedStrings.count)
         }
     }
 }
@@ -249,6 +239,10 @@ private extension JSONPreview {
         
         // Listening to device rotation in preparation for recalculating cell height
         listeningDeviceRotation()
+        
+        jsonTextView.textContainerInset = UIEdgeInsets(
+            top: 0, left: 10, bottom: 0, right: 10
+        )
     }
     
     func addSkeletonStackViewLayout() {
