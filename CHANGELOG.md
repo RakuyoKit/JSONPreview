@@ -20,6 +20,7 @@ All notable changes to this project are documented in this file.
 - [**Break**] The minimum iOS supported version of the project is upgraded to iOS 12. 
 - [**Break**] Setting JSONSlice's Initialization method to internal.
 - [**Break**] Adjusted the order of parameters of `JSONDecorator.highlight` method.
+- [**Break**] Because `highlightStyle` is now publicly accessible, and to allow for more complex scenarios, the `JSONPreview.preview` method now removes the `style` parameter.
 - Provide default implementation for `JSONPreviewDelegate`.
 - Refine the timing of json completion preview callback calls.
 - Adjusted the code format of some codes.

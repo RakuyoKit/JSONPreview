@@ -18,6 +18,8 @@ class CustomStyleExampleViewController: BaseJSONPreviewController {
         
         title = "Custom Style example"
         
+        previewView.highlightStyle = .mariana
+        
         addPreviewViewLayout()
         
         preview()
@@ -44,7 +46,7 @@ private extension CustomStyleExampleViewController {
         print("will display json")
         let start = Date().timeIntervalSince1970
         
-        previewView.preview(json, style: .mariana) { _ in
+        previewView.preview(json) { _ in
             let end = Date().timeIntervalSince1970
             print("did display json at: \(end - start)")
         }

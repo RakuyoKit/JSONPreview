@@ -90,12 +90,7 @@ open class JSONPreview: UIView {
     
     /// Highlight style
     public lazy var highlightStyle: HighlightStyle = .`default` {
-        didSet {
-            let colorStyle = highlightStyle.color
-            lineNumberTableView.backgroundColor = colorStyle.lineBackground
-            jsonTextView.backgroundColor = colorStyle.jsonBackground
-            skeletonStackView.backgroundColor = colorStyle.jsonBackground
-        }
+        didSet { updateHighlightStyle() }
     }
     
     /// JSON Decoder.
@@ -125,22 +120,24 @@ public extension JSONPreview {
     ///
     /// - Parameters:
     ///   - json: The json to be previewed
-    ///   - style: Highlight style. See `HighlightStyle` for details.
     ///   - initialState: The initial state of the rendering result. The initial state of all nodes will be consistent with this value.
     ///   - completion: Callback after rendering is completed.
     func preview(
         _ json: String,
-        style: HighlightStyle = .`default`,
         initialState: JSONSlice.State = .`default`,
         completion: Completion? = nil
     ) {
-        highlightStyle = style
-        
-        DispatchQueue.global().async {
-            let decorator = JSONDecorator.highlight(json, style: style, initialState: initialState)
+        DispatchQueue.global().async { [weak self] in
+            guard let this = self else { return }
             
-            DispatchQueue.main.async { [weak self] in
-                self?.setJSONDecoratort(decorator, completion: completion)
+            let decorator = JSONDecorator.highlight(
+                json,
+                style: this.highlightStyle,
+                initialState: initialState
+            )
+            
+            DispatchQueue.main.async { [weak this] in
+                this?.setJSONDecoratort(decorator, completion: completion)
             }
         }
     }
@@ -240,6 +237,8 @@ private extension JSONPreview {
         // Listening to device rotation in preparation for recalculating cell height
         listeningDeviceRotation()
         
+        updateHighlightStyle()
+        
         jsonTextView.textContainerInset = UIEdgeInsets(
             top: 0, left: 10, bottom: 0, right: 10
         )
@@ -309,6 +308,13 @@ private extension JSONPreview {
         lineNumberHeightManager.cache(height, at: index, orientation: lastOrientation, state: slice.state)
         
         return height
+    }
+    
+    func updateHighlightStyle() {
+        let colorStyle = highlightStyle.color
+        lineNumberTableView.backgroundColor = colorStyle.lineBackground
+        jsonTextView.backgroundColor = colorStyle.jsonBackground
+        skeletonStackView.backgroundColor = colorStyle.jsonBackground
     }
 }
 
