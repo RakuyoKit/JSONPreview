@@ -273,35 +273,36 @@ private extension JSONPreview {
             return
         }
         
+        let attributedText = AttributedString(string: "")
+        var lines: [Int] = []
+        
         var foldedLevel: Int? = nil
-        let displayedStrings: [AttributedString] = _decorator.slices.compactMap {
+        for (index, slice) in _decorator.slices.enumerated() {
             if let _level = foldedLevel {
-                if $0.level > _level { return nil }
+                if slice.level > _level { continue }
                 
-                if $0.level == _level {
+                if slice.level == _level {
                     foldedLevel = nil
-                    return nil
+                    continue
                 }
             }
             
-            let result = AttributedString(string: "")
-            
-            switch $0.state {
+            switch slice.state {
             case .expand:
-                result.append($0.expand)
-                result.append(_decorator.wrapString)
+                attributedText.append(slice.expand)
+                attributedText.append(_decorator.wrapString)
                 
-                return result
+                lines.append(index + 1)
                 
             case .folded:
-                guard let _folded = $0.folded else { return nil }
+                guard let _folded = slice.folded else { continue }
                 
-                foldedLevel = $0.level
+                foldedLevel = slice.level
                 
-                result.append(_folded)
-                result.append(_decorator.wrapString)
+                attributedText.append(_folded)
+                attributedText.append(_decorator.wrapString)
                 
-                return result
+                lines.append(index + 1)
             }
         }
         
@@ -310,13 +311,8 @@ private extension JSONPreview {
             
             defer { completion?(_decorator) }
             
-            this.jsonTextView.attributedText = displayedStrings.reduce(
-                into: AttributedString(string: ""),
-                { $0.append($1) }
-            )
-            
-            guard !displayedStrings.isEmpty else { return }
-            this.lineDataSource = Array(1 ... displayedStrings.count)
+            this.jsonTextView.attributedText = attributedText
+            this.lineDataSource = lines
         }
     }
 }
