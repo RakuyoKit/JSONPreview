@@ -139,6 +139,13 @@ public extension JSONPreview {
         }
     }
     
+    var contentSize: CGSize { jsonTextView.contentSize }
+    
+    var scrollsToTop: Bool {
+        get { jsonTextView.scrollsToTop }
+        set { jsonTextView.scrollsToTop = newValue }
+    }
+    
     /// JSON Decoder.
     ///
     /// We also provide the `setJSONDecoratort(_: completion:)` method to provide

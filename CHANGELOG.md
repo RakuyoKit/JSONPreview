@@ -13,6 +13,7 @@ All notable changes to this project are documented in this file.
 - Opens access to the `highlightStyle` and `decorator` properties in `JSONPreview` to support a more flexible rendering method.
 - In the closure callback of the `preview` method, add a judgment flag for whether the preview was successful or not.
 - Add delegate callback when json slice node state changes.
+- Add some easy access properties to `JSONPreview`.
 
 ### Changed
 
