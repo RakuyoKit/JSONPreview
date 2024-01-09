@@ -439,6 +439,10 @@ extension JSONPreview: JSONTextViewDelegate {
         // 3. Get the clicked slice
         let clickSlice = slices[realRow]
         
+        defer {
+            delegate?.jsonPreview(self, didChangeJSONSliceState: slices[realRow])
+        }
+        
         // 4. Perform different operations based on slice status
         switch clickSlice.state {
         

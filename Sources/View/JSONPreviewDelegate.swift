@@ -17,6 +17,13 @@ public protocol JSONPreviewDelegate: NSObjectProtocol {
     ///   - textView: The `UITextView` to which the URL belongs.
     /// - Returen: `true` if interaction with the URL should be allowed; `false` if interaction should not be allowed.
     func jsonPreview(_ view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool
+    
+    /// Callback when the status of the json slice node changes.
+    ///
+    /// - Parameters:
+    ///   - view: The view itself for previewing the json.
+    ///   - slice: Slice nodes whose status has changed.
+    func jsonPreview(_ view: JSONPreview, didChangeJSONSliceState slice: JSONSlice)
 }
 
 // MARK: - Default
@@ -25,4 +32,6 @@ public extension JSONPreviewDelegate {
     func jsonPreview(_ view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
         return true
     }
+    
+    func jsonPreview(_ view: JSONPreview, didChangeJSONSliceState slice: JSONSlice) { }
 }
