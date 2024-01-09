@@ -84,56 +84,10 @@ open class JSONPreview: UIView {
         }
     }
     
-    /// JSON Decoder
-    public lazy var decorator: JSONDecorator? = nil {
-        didSet {
-            guard let _decorator = decorator else { return }
-            
-            var foldedLevel: Int? = nil
-            let displayedStrings: [AttributedString] = _decorator.slices.compactMap {
-                if let _level = foldedLevel {
-                    if $0.level > _level { return nil }
-                    
-                    if $0.level == _level {
-                        foldedLevel = nil
-                        return nil
-                    }
-                }
-                
-                let result = AttributedString(string: "")
-                
-                switch $0.state {
-                case .expand:
-                    result.append($0.expand)
-                    result.append(_decorator.wrapString)
-                    
-                    return result
-                    
-                case .folded:
-                    guard let _folded = $0.folded else { return nil }
-                    
-                    foldedLevel = $0.level
-                    
-                    result.append(_folded)
-                    result.append(_decorator.wrapString)
-                    
-                    return result
-                }
-            }
-            
-            DispatchQueue.main.async { [weak self] in
-                guard let this = self else { return }
-                
-                this.jsonTextView.attributedText = displayedStrings.reduce(
-                    into: AttributedString(string: ""),
-                    { $0.append($1) }
-                )
-                
-                guard !displayedStrings.isEmpty else { return }
-                this.lineDataSource = (1 ... displayedStrings.count).map { $0 }
-            }
-        }
-    }
+    /// JSON Decoder.
+    ///
+    /// The actual storage object
+    private lazy var _decorator: JSONDecorator? = nil
     
     /// Record the direction of the last equipment.
     private lazy var lastOrientation: Orientation = .unknow
@@ -168,7 +122,7 @@ public extension JSONPreview {
     ) {
         highlightStyle = style
         
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [weak self] in
             let decorator = JSONDecorator.highlight(json, style: style, initialState: initialState)
             
             guard let _decorator = decorator else {
@@ -177,9 +131,80 @@ public extension JSONPreview {
             }
             
             DispatchQueue.main.async { [weak self] in
-                self?.decorator = decorator
-                completion?(true)
+                guard let this = self else { return }
+                
+                this._decorator = _decorator
+                this.setJSONDecoratort(_decorator, completion: completion)
             }
+        }
+    }
+    
+    /// JSON Decoder.
+    ///
+    /// We also provide the `setJSONDecoratort(_: completion:)` method to provide
+    /// a callback when rendering is complete.
+    var decorator: JSONDecorator? {
+        get { _decorator }
+        set {
+            _decorator = newValue
+            
+            guard let decorator = newValue else { return }
+            setJSONDecoratort(decorator)
+        }
+    }
+    
+    /// Set JSON Decoder.
+    ///
+    /// - Parameters:
+    ///   - decorator: JSON Decoder.
+    ///   - completion: Callback when rendering is complete.
+    func setJSONDecoratort(_ decorator: JSONDecorator, completion: Completion? = nil) {
+        var foldedLevel: Int? = nil
+        let displayedStrings: [AttributedString] = decorator.slices.compactMap {
+            if let _level = foldedLevel {
+                if $0.level > _level { return nil }
+                
+                if $0.level == _level {
+                    foldedLevel = nil
+                    return nil
+                }
+            }
+            
+            let result = AttributedString(string: "")
+            
+            switch $0.state {
+            case .expand:
+                result.append($0.expand)
+                result.append(decorator.wrapString)
+                
+                return result
+                
+            case .folded:
+                guard let _folded = $0.folded else { return nil }
+                
+                foldedLevel = $0.level
+                
+                result.append(_folded)
+                result.append(decorator.wrapString)
+                
+                return result
+            }
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let this = self else { return }
+            
+            defer {
+                DispatchQueue.main.async { completion?(true) }
+            }
+            
+            this.jsonTextView.attributedText = displayedStrings.reduce(
+                into: AttributedString(string: ""),
+                { $0.append($1) }
+            )
+            
+            guard !displayedStrings.isEmpty else { return }
+            this.lineDataSource = (1 ... displayedStrings.count).map { $0 }
         }
     }
 }
