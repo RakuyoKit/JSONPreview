@@ -13,6 +13,7 @@
 		AE4CE2E02B47F89000286E34 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE4CE2DF2B47F89000286E34 /* Assets.xcassets */; };
 		AE4CE2E32B47F89000286E34 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE4CE2E12B47F89000286E34 /* LaunchScreen.storyboard */; };
 		AE4CE2EC2B47FAE200286E34 /* JSONPreview in Frameworks */ = {isa = PBXBuildFile; productRef = AE4CE2EB2B47FAE200286E34 /* JSONPreview */; };
+		AEB5D5292B4CE0C500105EED /* TableViewExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */; };
 		AEBD0F392B4BEE220080ED15 /* EntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0F382B4BEE220080ED15 /* EntranceTableViewController.swift */; };
 		AEBD0FEB2B4BF3130080ED15 /* ExampleJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */; };
 		AEBD0FED2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */; };
@@ -29,6 +30,7 @@
 		AE4CE2DF2B47F89000286E34 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE4CE2E22B47F89000286E34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AE4CE2E42B47F89000286E34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewExampleViewController.swift; sourceTree = "<group>"; };
 		AEBD0F382B4BEE220080ED15 /* EntranceTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceTableViewController.swift; sourceTree = "<group>"; };
 		AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleJSON.swift; sourceTree = "<group>"; };
 		AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialFoldedExampleViewController.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 				AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */,
 				AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */,
 				AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */,
+				AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -185,6 +188,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEB5D5292B4CE0C500105EED /* TableViewExampleViewController.swift in Sources */,
 				AEBD0FF12B4BF69E0080ED15 /* BaseJSONPreviewController.swift in Sources */,
 				AEBD0FEF2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift in Sources */,
 				AEBD0FF42B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift in Sources */,

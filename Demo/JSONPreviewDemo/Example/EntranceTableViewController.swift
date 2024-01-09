@@ -20,6 +20,11 @@ class EntranceTableViewController: UITableViewController {
             desc: "This example only shows the usage when customizing colors, using another set of colors built into JSONPreview. You can follow suit to make your own color scheme.",
             action: { CustomStyleExampleViewController() }
         ),
+        .init( 
+            title: "In UITableView",
+            desc: "Show how to use it in UITableView and dynamically adapt to Cell height.",
+            action: { TableViewExampleViewController() }
+        ),
         .init(
             title: "Initial folded",
             desc: "Initial collapse of all JSON nodes. You need to expand each node manually.",
