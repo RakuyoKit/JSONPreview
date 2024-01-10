@@ -36,13 +36,13 @@ pod 'JSONPreview'
 
 - Select File > Swift Packages > Add Package Dependency
 - Add https://github.com/RakuyoKit/JSONPreview.git
-- Select "Up to Next Major" with "2.0.0"
+- Select "Up to Next Major" with "2.1.0"
 
 Or add the following content to your `Package.swift` file:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/RakuyoKit/JSONPreview.git", from: "2.0.0")
+  .package(url: "https://github.com/RakuyoKit/JSONPreview.git", from: "2.1.0")
 ]
 ```
 
