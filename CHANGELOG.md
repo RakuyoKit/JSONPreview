@@ -4,7 +4,11 @@ All notable changes to this project are documented in this file.
 
 -----
 
-## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.0.0...HEAD)
+## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.1.0...HEAD)
+
+---
+
+## [2.1.0 - Annual update](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.1.0) (2024-1-10)
 
 ### Added
 
