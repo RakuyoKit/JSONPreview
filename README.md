@@ -6,7 +6,6 @@
 <a href="https://swiftpackageindex.com/RakuyoKit/JSONPreview"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FRakuyoKit%2FJSONPreview%2Fbadge%3Ftype%3Dswift-versions"></a>
 <a href="https://swiftpackageindex.com/RakuyoKit/JSONPreview"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FRakuyoKit%2FJSONPreview%2Fbadge%3Ftype%3Dplatforms"></a>
 <a href="https://cocoapods.org/pods/JSONPreview"><img src="https://img.shields.io/github/v/tag/RakuyoKit/JSONPreview.svg?include_prereleases=&sort=semver"></a>
-<a href="https://swift.org/package-manager/"><img src="https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat"></a>
 <a href="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black"></a>
 </p>
 
