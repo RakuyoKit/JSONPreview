@@ -12,9 +12,11 @@ let package = Package(
     targets: [
         .target(
             name: "JSONPreview",
+            path: "Sources"
             resources: [.process("./Resources/Assets.xcassets")]),
         .testTarget(
             name: "JSONPreviewTests",
-            dependencies: ["JSONPreview"]),
+            dependencies: ["JSONPreview"],
+            path: "Tests"),
     ]
 )
