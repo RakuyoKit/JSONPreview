@@ -3,9 +3,11 @@
 </p>
 
 <p align="center">
-<a><img src="https://img.shields.io/badge/language-swift-ffac45.svg"></a>
-<a href="https://github.com/RakuyoKit/JSONPreview/releases"><img src="https://img.shields.io/cocoapods/v/JSONPreview.svg"></a>
-<a href="https://github.com/RakuyoKit/JSONPreview/blob/master/LICENSE"><img src="https://img.shields.io/cocoapods/l/JSONPreview.svg?style=flat"></a>
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FRakuyoKit%2FJSONPreview%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/RakuyoKit/JSONPreview)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FRakuyoKit%2FJSONPreview%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/RakuyoKit/JSONPreview)
+<a href="https://cocoapods.org/pods/JSONPreview"><img src="https://img.shields.io/github/v/tag/RakuyoKit/JSONPreview.svg?include_prereleases=&sort=semver"></a>
+<a href="https://swift.org/package-manager/"><img src="https://img.shields.io/badge/SPM-supported-DE5C43.svg?style=flat"></a>
+<a href="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-black"></a>
 </p>
 
 `JSONPreview` 是一个 JSON 预览组件，您可以通过它来**格式化**您的 JSON 数据，并**高亮**展示。除此之外，`JSONPreview` 还提供了**折叠与展开**功能，您可以折叠那些您暂时不关注的节点，并在任意时刻重新展示它。

@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.9
 import PackageDescription
 
 let package = Package(
@@ -12,7 +12,10 @@ let package = Package(
     targets: [
         .target(
             name: "JSONPreview",
-            resources: [.process("./Resources/Assets.xcassets")]),
+            resources: [
+                .copy("PrivacyInfo.xcprivacy"),
+                .process("./Resources/Assets.xcassets"),
+            ]),
         .testTarget(
             name: "JSONPreviewTests",
             dependencies: ["JSONPreview"]),
