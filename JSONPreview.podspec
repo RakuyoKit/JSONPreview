@@ -32,7 +32,10 @@ Pod::Spec.new do |s|
   s.source_files     = 'Sources/*/*.swift'
   
   s.resource_bundle = {
-      'JSONPreviewBundle' => [ 'Sources/Resources/*.xcassets' ]
+      'JSONPreviewBundle' => [
+        'Sources/Resources/*.xcassets',
+        'Sources/PrivacyInfo.xcprivacy'
+      ]
   }
   
 end

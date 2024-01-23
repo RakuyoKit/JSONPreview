@@ -13,6 +13,7 @@ let package = Package(
         .target(
             name: "JSONPreview",
             resources: [
+                .copy("PrivacyInfo.xcprivacy"),
                 .process("./Resources/Assets.xcassets"),
             ]),
         .testTarget(
