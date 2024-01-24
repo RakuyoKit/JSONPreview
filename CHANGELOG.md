@@ -4,15 +4,19 @@ All notable changes to this project are documented in this file.
 
 -----
 
-## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.2.2...HEAD)
+## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.2.3...HEAD)
 
 ---
 
-## [2.2.2 - PrivacyInfo](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.2.2) (2024-1-24)
+## [2.2.3 - PrivacyInfo](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.2.3) (2024-1-24)
 
 ### Added
 
 - Add PrivacyInfo.xcprivacy.
+
+### Fixed
+
+- `Package.swift` supports wider Swift versions.
 
 ---
 
