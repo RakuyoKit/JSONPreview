@@ -12,7 +12,7 @@ let package = Package(
     targets: [
         .target(
             name: "JSONPreview",
-            path: "Sources"
+            path: "Sources",
             resources: [.process("./Resources/Assets.xcassets")]),
         .testTarget(
             name: "JSONPreviewTests",
