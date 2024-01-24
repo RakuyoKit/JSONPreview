@@ -4,11 +4,11 @@ All notable changes to this project are documented in this file.
 
 -----
 
-## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.2.1...HEAD)
+## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.2.2...HEAD)
 
 ---
 
-## [2.2.1 - PrivacyInfo](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.2.1) (2024-1-23)
+## [2.2.2 - PrivacyInfo](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.2.2) (2024-1-24)
 
 ### Added
 
