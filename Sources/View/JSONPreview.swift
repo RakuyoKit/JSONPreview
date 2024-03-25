@@ -104,6 +104,12 @@ open class JSONPreview: UIView {
     private var lineDataSource: [Int] = [] {
         didSet { lineNumberTableView.reloadData() }
     }
+    
+    /// The row number where the search results are stored is used to
+    /// optimize operations when clearing search results.
+    ///
+    /// Currently, this object stores the position index after json is fully expanded.
+    private lazy var searchResultIndex: [Int] = []
 }
 
 public extension JSONPreview {
@@ -114,7 +120,7 @@ public extension JSONPreview {
     /// If you want to use it in a list, such as a `UITableView`, then this method can only
     /// be called when the JSON is displayed for the first time.
     ///
-    /// You should obtain and hold the JSONDecorator object from completion, and then call the 
+    /// You should obtain and hold the JSONDecorator object from completion, and then call the
     /// `update(with:)` method to set the content when the Cell is reused.
     ///
     /// - Parameters:
@@ -152,6 +158,98 @@ public extension JSONPreview {
     ///   - completion: Callback when rendering is complete. Always callback on the main thread.
     func update(with decorator: JSONDecorator?, completion: Completion? = nil) {
         setJSONDecoratort(decorator, completion: completion)
+    }
+}
+
+public extension JSONPreview {
+    typealias SearchCompletion = (_ index: [Int], JSONDecorator?) -> Void
+    
+    /// Search the currently rendered json for target content.
+    ///
+    /// - Parameters:
+    ///   - content: What to search for
+    ///   - completion: Returns the line number where the search results are located. The subscript starts from 0 and is the index after the json is fully expanded.
+    func search(_ content: String, completion: SearchCompletion? = nil) {
+        guard let _decorator = decorator else {
+            completion?([], decorator)
+            return
+        }
+        
+        removeSearchStyle()
+        
+        let attrs: [NSAttributedString.Key : Any] = [
+            .backgroundColor: highlightStyle.color.searchHitBackground,
+            .font: highlightStyle.boldOfJSONFont()
+        ].compactMapValues { $0 }
+        
+        let processSlice: (AttributedString) -> Bool = { (attributedString) in
+            let ranges = attributedString.string.findNSRanges(of: content)
+            guard !ranges.isEmpty else { return false }
+            
+            ranges.forEach {
+                attributedString.addAttributes(attrs, range: $0)
+            }
+            return true
+        }
+        
+        let indexs: [Int] = _decorator.slices.enumerated().compactMap {
+            var appendLine = processSlice($1.expand)
+            
+            if let foldedString = $1.folded, processSlice(foldedString) {
+                appendLine = true
+            }
+            
+            return appendLine ? $0 : nil
+        }
+        
+        defer {
+            searchResultIndex = indexs
+        }
+        
+        if indexs.isEmpty {
+            completion?([], _decorator)
+        } else {
+            assembleAttributedText(with: _decorator) {
+                completion?(indexs, $0)
+            }
+        }
+    }
+    
+    /// Clear all search result styles.
+    func removeSearchStyle(completion: Completion? = nil) {
+        guard
+            let _decorator = decorator,
+            !searchResultIndex.isEmpty
+        else {
+            completion?(decorator)
+            return
+        }
+        
+        defer {
+            searchResultIndex = []
+        }
+        
+        for line in searchResultIndex {
+            guard _decorator.slices.indices.contains(line) else { continue }
+            let slice = _decorator.slices[line]
+            
+            let range = NSRange(location: 0, length: slice.expand.length)
+            
+            let attributedStrings = [slice.expand, slice.folded].compactMap { $0 }
+            
+            attributedStrings.forEach {
+                $0.removeAttribute(.backgroundColor, range: range)
+            }
+            
+            if highlightStyle.isBoldedSearchResult {
+                let font = highlightStyle.jsonFont
+                attributedStrings.forEach {
+                    $0.addAttribute(.font, value: font, range: range)
+                }
+            }
+        }
+        
+        assembleAttributedText(with: _decorator, completion: completion)
     }
 }
 
@@ -281,11 +379,15 @@ private extension JSONPreview {
             return
         }
         
+        assembleAttributedText(with: _decorator, completion: completion)
+    }
+    
+    func assembleAttributedText(with decorator: JSONDecorator, completion: Completion?) {
         let attributedText = AttributedString(string: "")
         var lines: [Int] = []
         
         var foldedLevel: Int? = nil
-        for (index, slice) in _decorator.slices.enumerated() {
+        for (index, slice) in decorator.slices.enumerated() {
             if let _level = foldedLevel {
                 if slice.level > _level { continue }
                 
@@ -298,7 +400,7 @@ private extension JSONPreview {
             switch slice.state {
             case .expand:
                 attributedText.append(slice.expand)
-                attributedText.append(_decorator.wrapString)
+                attributedText.append(decorator.wrapString)
                 
                 lines.append(index + 1)
                 
@@ -308,7 +410,7 @@ private extension JSONPreview {
                 foldedLevel = slice.level
                 
                 attributedText.append(_folded)
-                attributedText.append(_decorator.wrapString)
+                attributedText.append(decorator.wrapString)
                 
                 lines.append(index + 1)
             }
@@ -317,7 +419,7 @@ private extension JSONPreview {
         DispatchQueue.main.async { [weak self] in
             guard let this = self else { return }
             
-            defer { completion?(_decorator) }
+            defer { completion?(decorator) }
             
             this.jsonTextView.attributedText = attributedText
             this.lineDataSource = lines
@@ -392,7 +494,7 @@ extension JSONPreview: UIScrollViewDelegate {
 
 extension JSONPreview: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        guard 
+        guard
             let _delegate = delegate,
             let openingURL = url.absoluteString.validURL?.openingURL
         else {

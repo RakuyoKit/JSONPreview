@@ -25,13 +25,15 @@ public struct HighlightStyle {
     ///   - lineFont: Text font in line number area.
     ///   - jsonFont: Text font in json preview area.
     ///   - lineHeight: Line height of JSON preview area.
+    ///   - boldedSearchResult: Whether to bold search results.
     public init(
         expandIcon: UIImage? = nil,
         foldIcon: UIImage? = nil,
         color: HighlightColor = .`default`,
         lineFont: UIFont? = nil,
         jsonFont: UIFont? = nil,
-        lineHeight: CGFloat = 24
+        lineHeight: CGFloat = 24,
+        boldedSearchResult: Bool = true
     ) {
         let getImage: (String) -> UIImage? = {
             #if SWIFT_PACKAGE
@@ -54,25 +56,29 @@ public struct HighlightStyle {
         self.lineFont = lineFont ?? UIFont(name:"Helvetica Neue", size: 16)!
         self.jsonFont = jsonFont ?? UIFont(name:"Helvetica Neue", size: 16)!
         self.lineHeight = lineHeight
+        self.isBoldedSearchResult = boldedSearchResult
     }
     
     /// The icon of the expand button.
-    public let expandIcon: UIImage
+    public var expandIcon: UIImage
     
     /// The icon of the fold button.
-    public let foldIcon: UIImage
+    public var foldIcon: UIImage
     
     /// Color-related configuration, see `HighlightColor` for details.
-    public let color: HighlightColor
+    public var color: HighlightColor
     
     /// Text font in line number area.
-    public let lineFont: UIFont
+    public var lineFont: UIFont
     
     /// Text font in json preview area.
-    public let jsonFont: UIFont
+    public var jsonFont: UIFont
     
     /// Line height of JSON preview area.
-    public let lineHeight: CGFloat
+    public var lineHeight: CGFloat
+    
+    /// Whether to bold search results.
+    public var isBoldedSearchResult: Bool
 }
 
 public extension HighlightStyle {
@@ -81,6 +87,20 @@ public extension HighlightStyle {
     
     /// A darker style scheme that the author likes.
     static let mariana = HighlightStyle(color: .mariana)
+}
+
+extension HighlightStyle {
+    func boldOfJSONFont() -> UIFont? {
+        guard
+            isBoldedSearchResult,
+            let boldFontDescriptor = jsonFont.fontDescriptor.withSymbolicTraits(.traitBold)
+        else {
+            return nil
+        }
+        
+        // If bold is supported, get the bold version
+        return .init(descriptor: boldFontDescriptor, size: jsonFont.pointSize)
+    }
 }
 
 fileprivate extension UIImage {
