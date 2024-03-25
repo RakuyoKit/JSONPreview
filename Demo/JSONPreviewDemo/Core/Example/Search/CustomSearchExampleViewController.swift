@@ -5,7 +5,7 @@
 //  Created by Rakuyo on 2024/3/25.
 //  Copyright © 2024 Rakuyo. All rights reserved.
 //
-
+#if !os(tvOS)
 import UIKit
 
 import JSONPreview
@@ -160,3 +160,4 @@ private extension CustomSearchExampleViewController {
         previewView.preview(json)
     }
 }
+#endif

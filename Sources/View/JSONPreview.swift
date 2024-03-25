@@ -22,7 +22,7 @@ open class JSONPreview: UIView {
     }
     
     deinit {
-#if !os(visionOS)
+#if !os(visionOS) && !os(tvOS)
         if !isOriginalGeneratingDeviceOrientationNotifications {
             UIDevice.current.endGeneratingDeviceOrientationNotifications()
         }
@@ -67,10 +67,12 @@ open class JSONPreview: UIView {
     
     public var contentSize: CGSize { jsonTextView.contentSize }
     
+#if !os(tvOS)
     public var scrollsToTop: Bool {
         get { jsonTextView.scrollsToTop }
         set { jsonTextView.scrollsToTop = newValue }
     }
+#endif
     
     /// Whether to hide the line number view
     public var isHiddenLineNumber: Bool {
@@ -92,7 +94,7 @@ open class JSONPreview: UIView {
     /// Record the direction of the last equipment.
     private lazy var lastOrientation: Orientation = .unknow
     
-#if !os(visionOS)
+#if !os(visionOS) && !os(tvOS)
     // Record previous property values
     private lazy var isOriginalGeneratingDeviceOrientationNotifications = UIDevice.current.isGeneratingDeviceOrientationNotifications
 #endif
@@ -318,7 +320,7 @@ private extension JSONPreview {
     }
     
     func listeningDeviceRotation() {
-#if !os(visionOS)
+#if !os(visionOS) && !os(tvOS)
         if !isOriginalGeneratingDeviceOrientationNotifications {
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         }
@@ -331,7 +333,7 @@ private extension JSONPreview {
 private extension JSONPreview {
     @objc
     func handleDeviceOrientationChange(_ notification: NSNotification) {
-#if !os(visionOS)
+#if !os(visionOS) && !os(tvOS)
         switch UIDevice.current.orientation {
         case .portrait:
             lastOrientation = .portrait

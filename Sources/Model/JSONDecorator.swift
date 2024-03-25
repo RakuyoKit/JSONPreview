@@ -589,7 +589,7 @@ private extension JSONDecorator {
         let lineHeightMultiple: CGFloat = 1
         let paragraphStyle = NSMutableParagraphStyle()
         
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15.0, tvOS 15.0, *) {
             paragraphStyle.usesDefaultHyphenation = false
         }
         

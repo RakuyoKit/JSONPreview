@@ -8,8 +8,6 @@
 
 import UIKit
 
-import SafariServices
-
 import JSONPreview
 
 class CustomStyleExampleViewController: BaseJSONPreviewController {

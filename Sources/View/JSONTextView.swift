@@ -39,7 +39,9 @@ private extension JSONTextView {
         canCancelContentTouches = true
         showsHorizontalScrollIndicator = false
         
+#if !os(tvOS)
         isEditable = false
+#endif
         textAlignment = .left
         linkTextAttributes = [:]
         textContainer.lineFragmentPadding = 0
