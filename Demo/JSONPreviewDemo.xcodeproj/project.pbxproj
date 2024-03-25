@@ -11,6 +11,25 @@
 		AE2E240A2BB140820050D5AE /* BaseSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E24092BB140820050D5AE /* BaseSearchExampleViewController.swift */; };
 		AE2E25462BB158E30050D5AE /* BasicSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25452BB158E30050D5AE /* BasicSearchExampleViewController.swift */; };
 		AE2E25482BB1594D0050D5AE /* CustomSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25472BB1594D0050D5AE /* CustomSearchExampleViewController.swift */; };
+		AE2E25E82BB1829D0050D5AE /* TableViewExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */; };
+		AE2E25E92BB1829D0050D5AE /* BaseJSONPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */; };
+		AE2E25EA2BB1829D0050D5AE /* CustomStyleExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */; };
+		AE2E25EB2BB1829D0050D5AE /* HideLineNumberExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */; };
+		AE2E25EC2BB1829D0050D5AE /* SearchEntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E24072BB13FAC0050D5AE /* SearchEntranceTableViewController.swift */; };
+		AE2E25ED2BB1829D0050D5AE /* ListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0F382B4BEE220080ED15 /* ListTableViewController.swift */; };
+		AE2E25EE2BB1829D0050D5AE /* BasicExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CE2DA2B47F88F00286E34 /* BasicExampleViewController.swift */; };
+		AE2E25EF2BB1829D0050D5AE /* BaseSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E24092BB140820050D5AE /* BaseSearchExampleViewController.swift */; };
+		AE2E25F02BB1829D0050D5AE /* InitialFoldedExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */; };
+		AE2E25F12BB1829D0050D5AE /* BasicSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25452BB158E30050D5AE /* BasicSearchExampleViewController.swift */; };
+		AE2E25F22BB1829D0050D5AE /* ExampleJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */; };
+		AE2E25F32BB1829D0050D5AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CE2D62B47F88F00286E34 /* AppDelegate.swift */; };
+		AE2E25F42BB1829D0050D5AE /* EntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */; };
+		AE2E25F52BB1829D0050D5AE /* DemoCaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */; };
+		AE2E25F62BB1829D0050D5AE /* CustomSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25472BB1594D0050D5AE /* CustomSearchExampleViewController.swift */; };
+		AE2E25F72BB1829D0050D5AE /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E932BB138CD0015D968 /* ListTableViewCell.swift */; };
+		AE2E25F92BB1829D0050D5AE /* JSONPreview in Frameworks */ = {isa = PBXBuildFile; productRef = AE2E25E62BB1829D0050D5AE /* JSONPreview */; };
+		AE2E25FC2BB1829D0050D5AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE4CE2DF2B47F89000286E34 /* Assets.xcassets */; };
+		AE2E26032BB183C40050D5AE /* Info-for-tvOS.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE2E26022BB183C40050D5AE /* Info-for-tvOS.plist */; };
 		AE4CE2D72B47F88F00286E34 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CE2D62B47F88F00286E34 /* AppDelegate.swift */; };
 		AE4CE2DB2B47F88F00286E34 /* BasicExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CE2DA2B47F88F00286E34 /* BasicExampleViewController.swift */; };
 		AE4CE2E02B47F89000286E34 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE4CE2DF2B47F89000286E34 /* Assets.xcassets */; };
@@ -33,6 +52,8 @@
 		AE2E24092BB140820050D5AE /* BaseSearchExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSearchExampleViewController.swift; sourceTree = "<group>"; };
 		AE2E25452BB158E30050D5AE /* BasicSearchExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSearchExampleViewController.swift; sourceTree = "<group>"; };
 		AE2E25472BB1594D0050D5AE /* CustomSearchExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSearchExampleViewController.swift; sourceTree = "<group>"; };
+		AE2E26002BB1829D0050D5AE /* JSONPreviewDemo for tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "JSONPreviewDemo for tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE2E26022BB183C40050D5AE /* Info-for-tvOS.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-for-tvOS.plist"; sourceTree = "<group>"; };
 		AE4CE2D32B47F88F00286E34 /* JSONPreviewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JSONPreviewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE4CE2D62B47F88F00286E34 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE4CE2DA2B47F88F00286E34 /* BasicExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicExampleViewController.swift; sourceTree = "<group>"; };
@@ -52,6 +73,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AE2E25F82BB1829D0050D5AE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE2E25F92BB1829D0050D5AE /* JSONPreview in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE4CE2D02B47F88F00286E34 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -86,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				AE4CE2D32B47F88F00286E34 /* JSONPreviewDemo.app */,
+				AE2E26002BB1829D0050D5AE /* JSONPreviewDemo for tvOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -124,6 +154,7 @@
 		AEBD0F3B2B4BEE680080ED15 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				AE2E26022BB183C40050D5AE /* Info-for-tvOS.plist */,
 				AE4CE2E42B47F89000286E34 /* Info.plist */,
 				AE4CE2DF2B47F89000286E34 /* Assets.xcassets */,
 				AE4CE2E12B47F89000286E34 /* LaunchScreen.storyboard */,
@@ -148,6 +179,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AE2E25E52BB1829D0050D5AE /* JSONPreviewDemo for tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE2E25FD2BB1829D0050D5AE /* Build configuration list for PBXNativeTarget "JSONPreviewDemo for tvOS" */;
+			buildPhases = (
+				AE2E25E72BB1829D0050D5AE /* Sources */,
+				AE2E25F82BB1829D0050D5AE /* Frameworks */,
+				AE2E25FA2BB1829D0050D5AE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "JSONPreviewDemo for tvOS";
+			packageProductDependencies = (
+				AE2E25E62BB1829D0050D5AE /* JSONPreview */,
+			);
+			productName = JSONPreviewDemo;
+			productReference = AE2E26002BB1829D0050D5AE /* JSONPreviewDemo for tvOS.app */;
+			productType = "com.apple.product-type.application";
+		};
 		AE4CE2D22B47F88F00286E34 /* JSONPreviewDemo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AE4CE2E72B47F89000286E34 /* Build configuration list for PBXNativeTarget "JSONPreviewDemo" */;
@@ -200,11 +251,21 @@
 			projectRoot = "";
 			targets = (
 				AE4CE2D22B47F88F00286E34 /* JSONPreviewDemo */,
+				AE2E25E52BB1829D0050D5AE /* JSONPreviewDemo for tvOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AE2E25FA2BB1829D0050D5AE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE2E26032BB183C40050D5AE /* Info-for-tvOS.plist in Resources */,
+				AE2E25FC2BB1829D0050D5AE /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE4CE2D12B47F88F00286E34 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -217,6 +278,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AE2E25E72BB1829D0050D5AE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE2E25E82BB1829D0050D5AE /* TableViewExampleViewController.swift in Sources */,
+				AE2E25E92BB1829D0050D5AE /* BaseJSONPreviewController.swift in Sources */,
+				AE2E25EA2BB1829D0050D5AE /* CustomStyleExampleViewController.swift in Sources */,
+				AE2E25EB2BB1829D0050D5AE /* HideLineNumberExampleViewController.swift in Sources */,
+				AE2E25EC2BB1829D0050D5AE /* SearchEntranceTableViewController.swift in Sources */,
+				AE2E25ED2BB1829D0050D5AE /* ListTableViewController.swift in Sources */,
+				AE2E25EE2BB1829D0050D5AE /* BasicExampleViewController.swift in Sources */,
+				AE2E25EF2BB1829D0050D5AE /* BaseSearchExampleViewController.swift in Sources */,
+				AE2E25F02BB1829D0050D5AE /* InitialFoldedExampleViewController.swift in Sources */,
+				AE2E25F12BB1829D0050D5AE /* BasicSearchExampleViewController.swift in Sources */,
+				AE2E25F22BB1829D0050D5AE /* ExampleJSON.swift in Sources */,
+				AE2E25F32BB1829D0050D5AE /* AppDelegate.swift in Sources */,
+				AE2E25F42BB1829D0050D5AE /* EntranceTableViewController.swift in Sources */,
+				AE2E25F52BB1829D0050D5AE /* DemoCaseConfig.swift in Sources */,
+				AE2E25F62BB1829D0050D5AE /* CustomSearchExampleViewController.swift in Sources */,
+				AE2E25F72BB1829D0050D5AE /* ListTableViewCell.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE4CE2CF2B47F88F00286E34 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -254,6 +338,74 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		AE2E25FE2BB1829D0050D5AE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0;
+				DEVELOPMENT_TEAM = 5C9JW4S9DE;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "JSONPreviewDemo/Other/Info-for-tvOS.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+			};
+			name = Debug;
+		};
+		AE2E25FF2BB1829D0050D5AE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 0;
+				DEVELOPMENT_TEAM = 5C9JW4S9DE;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "JSONPreviewDemo/Other/Info-for-tvOS.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 13.0;
+			};
+			name = Release;
+		};
 		AE4CE2E52B47F89000286E34 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -394,11 +546,11 @@
 				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
@@ -426,11 +578,11 @@
 				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
@@ -438,6 +590,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AE2E25FD2BB1829D0050D5AE /* Build configuration list for PBXNativeTarget "JSONPreviewDemo for tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE2E25FE2BB1829D0050D5AE /* Debug */,
+				AE2E25FF2BB1829D0050D5AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AE4CE2CE2B47F88F00286E34 /* Build configuration list for PBXProject "JSONPreviewDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -466,6 +627,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		AE2E25E62BB1829D0050D5AE /* JSONPreview */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = JSONPreview;
+		};
 		AE4CE2EB2B47FAE200286E34 /* JSONPreview */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = JSONPreview;
