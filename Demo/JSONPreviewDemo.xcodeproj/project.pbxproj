@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE15063B2BB18F4A0095EF5B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE15063A2BB18F4A0095EF5B /* SceneDelegate.swift */; };
 		AE2E24082BB13FAC0050D5AE /* SearchEntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E24072BB13FAC0050D5AE /* SearchEntranceTableViewController.swift */; };
 		AE2E240A2BB140820050D5AE /* BaseSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E24092BB140820050D5AE /* BaseSearchExampleViewController.swift */; };
 		AE2E25462BB158E30050D5AE /* BasicSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25452BB158E30050D5AE /* BasicSearchExampleViewController.swift */; };
@@ -48,6 +49,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AE15063A2BB18F4A0095EF5B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		AE2E24072BB13FAC0050D5AE /* SearchEntranceTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchEntranceTableViewController.swift; sourceTree = "<group>"; };
 		AE2E24092BB140820050D5AE /* BaseSearchExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSearchExampleViewController.swift; sourceTree = "<group>"; };
 		AE2E25452BB158E30050D5AE /* BasicSearchExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSearchExampleViewController.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				AE4CE2D62B47F88F00286E34 /* AppDelegate.swift */,
+				AE15063A2BB18F4A0095EF5B /* SceneDelegate.swift */,
 				AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */,
 				AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */,
 				AE780E922BB138BD0015D968 /* List */,
@@ -312,6 +315,7 @@
 				AE2E24082BB13FAC0050D5AE /* SearchEntranceTableViewController.swift in Sources */,
 				AEBD0F392B4BEE220080ED15 /* ListTableViewController.swift in Sources */,
 				AE4CE2DB2B47F88F00286E34 /* BasicExampleViewController.swift in Sources */,
+				AE15063B2BB18F4A0095EF5B /* SceneDelegate.swift in Sources */,
 				AE2E240A2BB140820050D5AE /* BaseSearchExampleViewController.swift in Sources */,
 				AEBD0FED2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift in Sources */,
 				AE2E25462BB158E30050D5AE /* BasicSearchExampleViewController.swift in Sources */,
@@ -538,7 +542,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -546,11 +550,12 @@
 				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
@@ -570,7 +575,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -578,11 +583,12 @@
 				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
