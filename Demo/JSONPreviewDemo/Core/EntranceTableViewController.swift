@@ -10,7 +10,7 @@ import UIKit
 
 final class EntranceTableViewController: ListTableViewController {
     init() {
-        super.init(dataSource: [
+        var dataSource: [DemoCaseConfig] = [
             .init(
                 title: "Basic",
                 desc: "The most basic, out-of-the-box example.",
@@ -36,18 +36,16 @@ final class EntranceTableViewController: ListTableViewController {
                 desc: "Show how to use it in UITableView and dynamically adapt to Cell height.",
                 action: { TableViewExampleViewController() }
             ),
-            .init(
-                title: "Seach",
-                desc: "Related examples of search functionality.",
-                action: {
-#if os(tvOS)
-                    return nil
-#else
-                    return SearchEntranceTableViewController()
+        ]
+        
+#if !os(tvOS)
+        dataSource.append(.init(
+            title: "Seach",
+            desc: "Related examples of search functionality.",
+            action: { SearchEntranceTableViewController() }
+        ))
 #endif
-                }
-            ),
-        ])
+        super.init(dataSource: dataSource)
     }
     
     required init?(coder: NSCoder) {
