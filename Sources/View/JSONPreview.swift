@@ -176,45 +176,54 @@ public extension JSONPreview {
             return
         }
         
-        guard jsonTextView.attributedText.string.contains(content) else {
-            // Clear all search result
-            let _removedResultDecorator = removeSearchStyle()
-            completion?(searchResultLines, _removedResultDecorator)
-            return
-        }
+        removeSearchStyle()
         
         let attrs: [NSAttributedString.Key : Any] = [
-            .backgroundColor: _decorator.style.color.searchHitBackground,
-            .font: _decorator.style.boldOfJSONFont()
+            .backgroundColor: highlightStyle.color.searchHitBackground,
+            .font: highlightStyle.boldOfJSONFont()
         ].compactMapValues { $0 }
         
-        var lines: [LineNumber] = []
-        
-        for (index, slice) in _decorator.slices.enumerated() {
-            let nsRanges = slice.expand.string.findNSRanges(of: content)
-            guard !nsRanges.isEmpty else { continue }
+        let processSlice: (AttributedString) -> Bool = { (attributedString) in
+            let ranges = attributedString.string.findNSRanges(of: content)
+            guard !ranges.isEmpty else { return false }
             
-            lines.append(index)
-            for nsRange in nsRanges  {
-                slice.expand.addAttributes(attrs, range: nsRange)
+            ranges.forEach {
+                attributedString.addAttributes(attrs, range: $0)
             }
+            return true
         }
         
-        searchResultLines = lines
+        let lines: [LineNumber] = _decorator.slices.enumerated().compactMap {
+            var appendLine = processSlice($1.expand)
+            
+            if let foldedString = $1.folded, processSlice(foldedString) {
+                appendLine = true
+            }
+            
+            return appendLine ? $0 : nil
+        }
         
-        assembleAttributedText(with: _decorator) {
-            completion?(lines, $0)
+        defer {
+            searchResultLines = lines
+        }
+        
+        if lines.isEmpty {
+            completion?([], _decorator)
+        } else {
+            assembleAttributedText(with: _decorator) {
+                completion?(lines, $0)
+            }
         }
     }
     
     /// Clear all search result styles.
-    @discardableResult
-    func removeSearchStyle() -> JSONDecorator? {
+    func removeSearchStyle(completion: Completion? = nil) {
         guard
             let _decorator = decorator,
             !searchResultLines.isEmpty
         else {
-            return decorator
+            completion?(decorator)
+            return
         }
         
         defer {
@@ -227,14 +236,21 @@ public extension JSONPreview {
             
             let range = NSRange(location: 0, length: slice.expand.length)
             
-            slice.expand.removeAttribute(.backgroundColor, range: range)
+            let attributedStrings = [slice.expand, slice.folded].compactMap { $0 }
             
-            if _decorator.style.isBoldedSearchResult {
-                slice.expand.addAttribute(.font, value: _decorator.style.jsonFont, range: range)
+            attributedStrings.forEach {
+                $0.removeAttribute(.backgroundColor, range: range)
+            }
+            
+            if highlightStyle.isBoldedSearchResult {
+                let font = highlightStyle.jsonFont
+                attributedStrings.forEach {
+                    $0.addAttribute(.font, value: font, range: range)
+                }
             }
         }
         
-        return _decorator
+        assembleAttributedText(with: _decorator, completion: completion)
     }
 }
 
@@ -479,7 +495,7 @@ extension JSONPreview: UIScrollViewDelegate {
 
 extension JSONPreview: UITextViewDelegate {
     public func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        guard 
+        guard
             let _delegate = delegate,
             let openingURL = url.absoluteString.validURL?.openingURL
         else {
