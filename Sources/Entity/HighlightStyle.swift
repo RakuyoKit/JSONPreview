@@ -57,22 +57,22 @@ public struct HighlightStyle {
     }
     
     /// The icon of the expand button.
-    public let expandIcon: UIImage
+    public var expandIcon: UIImage
     
     /// The icon of the fold button.
-    public let foldIcon: UIImage
+    public var foldIcon: UIImage
     
     /// Color-related configuration, see `HighlightColor` for details.
-    public let color: HighlightColor
+    public var color: HighlightColor
     
     /// Text font in line number area.
-    public let lineFont: UIFont
+    public var lineFont: UIFont
     
     /// Text font in json preview area.
-    public let jsonFont: UIFont
+    public var jsonFont: UIFont
     
     /// Line height of JSON preview area.
-    public let lineHeight: CGFloat
+    public var lineHeight: CGFloat
 }
 
 public extension HighlightStyle {

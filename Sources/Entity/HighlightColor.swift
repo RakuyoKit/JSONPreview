@@ -39,40 +39,40 @@ public struct HighlightColor {
     }
     
     /// Keyword color. Including `{}`, `[]`, `:`, `,`
-    public let keyWord: UIColor
+    public var keyWord: UIColor
     
     /// The color of the key of the object
-    public let key: UIColor
+    public var key: UIColor
     
     /// The color of the link
-    public let link: UIColor
+    public var link: UIColor
     
     /// The color of the string
-    public let string: UIColor
+    public var string: UIColor
     
     /// The color of the number
-    public let number: UIColor
+    public var number: UIColor
     
     /// The color of the boolean
-    public let boolean: UIColor
+    public var boolean: UIColor
     
     /// The color of the null
-    public let null: UIColor
+    public var null: UIColor
     
     /// Text color of unknown type data
-    public let unknownText: UIColor
+    public var unknownText: UIColor
     
     /// Background color of unknown type data
-    public let unknownBackground: UIColor
+    public var unknownBackground: UIColor
     
     /// The background color of the JSON preview area
-    public let jsonBackground: UIColor
+    public var jsonBackground: UIColor
     
     /// The background color of the line number area
-    public let lineBackground: UIColor
+    public var lineBackground: UIColor
     
     /// Text color in line number area
-    public let lineText: UIColor
+    public var lineText: UIColor
 }
 
 // MARK: - Built-in color style
