@@ -9,9 +9,6 @@
 import UIKit
 
 open class JSONPreview: UIView {
-    /// Line numbers of this type start counting from 0.
-    public typealias LineNumber = Int
-    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -104,13 +101,15 @@ open class JSONPreview: UIView {
     private lazy var lineNumberHeightManager = LineNumberHeightManager()
     
     /// Data source for line number view
-    private var lineDataSource: [LineNumber] = [] {
+    private var lineDataSource: [Int] = [] {
         didSet { lineNumberTableView.reloadData() }
     }
     
     /// The row number where the search results are stored is used to
     /// optimize operations when clearing search results.
-    private lazy var searchResultLines: [LineNumber] = []
+    ///
+    /// Currently, this object stores the position index after json is fully expanded.
+    private lazy var searchResultIndex: [Int] = []
 }
 
 public extension JSONPreview {
@@ -163,13 +162,13 @@ public extension JSONPreview {
 }
 
 public extension JSONPreview {
-    typealias SearchCompletion = ([LineNumber], JSONDecorator?) -> Void
+    typealias SearchCompletion = (_ index: [Int], JSONDecorator?) -> Void
     
     /// Search the currently rendered json for target content.
     ///
     /// - Parameters:
     ///   - content: What to search for
-    ///   - completion: The callback of the search results will return the line number where the search results are located (the subscript starts from 0).
+    ///   - completion: Returns the line number where the search results are located. The subscript starts from 0 and is the index after the json is fully expanded.
     func search(_ content: String, completion: SearchCompletion? = nil) {
         guard let _decorator = decorator else {
             completion?([], decorator)
@@ -193,7 +192,7 @@ public extension JSONPreview {
             return true
         }
         
-        let lines: [LineNumber] = _decorator.slices.enumerated().compactMap {
+        let indexs: [Int] = _decorator.slices.enumerated().compactMap {
             var appendLine = processSlice($1.expand)
             
             if let foldedString = $1.folded, processSlice(foldedString) {
@@ -204,14 +203,14 @@ public extension JSONPreview {
         }
         
         defer {
-            searchResultLines = lines
+            searchResultIndex = indexs
         }
         
-        if lines.isEmpty {
+        if indexs.isEmpty {
             completion?([], _decorator)
         } else {
             assembleAttributedText(with: _decorator) {
-                completion?(lines, $0)
+                completion?(indexs, $0)
             }
         }
     }
@@ -220,17 +219,17 @@ public extension JSONPreview {
     func removeSearchStyle(completion: Completion? = nil) {
         guard
             let _decorator = decorator,
-            !searchResultLines.isEmpty
+            !searchResultIndex.isEmpty
         else {
             completion?(decorator)
             return
         }
         
         defer {
-            searchResultLines = []
+            searchResultIndex = []
         }
         
-        for line in searchResultLines {
+        for line in searchResultIndex {
             guard _decorator.slices.indices.contains(line) else { continue }
             let slice = _decorator.slices[line]
             
@@ -348,7 +347,7 @@ private extension JSONPreview {
 #endif
     }
     
-    func getLineHeight(at index: LineNumber) -> CGFloat {
+    func getLineHeight(at index: Int) -> CGFloat {
         guard let slices = decorator?.slices else { return 0 }
         
         let line = lineDataSource[index]
@@ -385,7 +384,7 @@ private extension JSONPreview {
     
     func assembleAttributedText(with decorator: JSONDecorator, completion: Completion?) {
         let attributedText = AttributedString(string: "")
-        var lines: [LineNumber] = []
+        var lines: [Int] = []
         
         var foldedLevel: Int? = nil
         for (index, slice) in decorator.slices.enumerated() {
@@ -570,7 +569,7 @@ extension JSONPreview: JSONTextViewDelegate {
             decorator.slices[realRow].state = .folded
             
             var isExecution = true
-            var lines: [LineNumber] = []
+            var lines: [Int] = []
             var length = clickSlice.expand.length
             
             for i in (realRow + 1) ..< slices.count {
@@ -626,7 +625,7 @@ extension JSONPreview: JSONTextViewDelegate {
             decorator.slices[realRow].state = .expand
             
             var isExecution = true
-            var lines: [LineNumber] = []
+            var lines: [Int] = []
             
             let replaceString = AttributedString(string: "")
             
