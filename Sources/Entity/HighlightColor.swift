@@ -20,6 +20,7 @@ public struct HighlightColor {
         null: ConvertibleToColor,
         unknownText: ConvertibleToColor,
         unknownBackground: ConvertibleToColor,
+        searchHitBackground: ConvertibleToColor? = nil,
         jsonBackground: ConvertibleToColor,
         lineBackground: ConvertibleToColor,
         lineText: ConvertibleToColor
@@ -33,6 +34,7 @@ public struct HighlightColor {
         self.null = null.color
         self.unknownText = unknownText.color
         self.unknownBackground = unknownBackground.color
+        self.searchHitBackground = searchHitBackground?.color
         self.jsonBackground = jsonBackground.color
         self.lineBackground = lineBackground.color
         self.lineText = lineText.color
@@ -65,6 +67,11 @@ public struct HighlightColor {
     /// Background color of unknown type data
     public var unknownBackground: UIColor
     
+    /// This color is used to highlight text that matches within the search.
+    ///
+    /// This is optional because you may not need search functionality.
+    public var searchHitBackground: UIColor?
+    
     /// The background color of the JSON preview area
     public var jsonBackground: UIColor
     
@@ -89,6 +96,7 @@ public extension HighlightColor {
         null: 0xEA2E22,
         unknownText: 0xD5412E,
         unknownBackground: 0xFBE3E4,
+        searchHitBackground: 0xFFFB00,
         jsonBackground: UIColor.white,
         lineBackground: 0xEDEDED,
         lineText: 0xA3A3A3
@@ -105,6 +113,7 @@ public extension HighlightColor {
         null: 0xD16D71,
         unknownText: 0xD5412E,
         unknownBackground: 0xFBE3E4,
+        searchHitBackground: 0xFFFB00,
         jsonBackground: 0x3D444C,
         lineBackground: 0x363D42,
         lineText: 0x767677
