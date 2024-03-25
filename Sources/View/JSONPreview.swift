@@ -25,11 +25,13 @@ open class JSONPreview: UIView {
     }
     
     deinit {
+#if !os(visionOS)
         if !isOriginalGeneratingDeviceOrientationNotifications {
             UIDevice.current.endGeneratingDeviceOrientationNotifications()
         }
         
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+#endif
     }
     
     /// View skeleton, containing all subviews
@@ -93,8 +95,10 @@ open class JSONPreview: UIView {
     /// Record the direction of the last equipment.
     private lazy var lastOrientation: Orientation = .unknow
     
+#if !os(visionOS)
     // Record previous property values
     private lazy var isOriginalGeneratingDeviceOrientationNotifications = UIDevice.current.isGeneratingDeviceOrientationNotifications
+#endif
     
     /// Line Number Height Manager.
     private lazy var lineNumberHeightManager = LineNumberHeightManager()
@@ -299,17 +303,20 @@ private extension JSONPreview {
     }
     
     func listeningDeviceRotation() {
+#if !os(visionOS)
         if !isOriginalGeneratingDeviceOrientationNotifications {
             UIDevice.current.beginGeneratingDeviceOrientationNotifications()
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleDeviceOrientationChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
+#endif
     }
 }
 
 private extension JSONPreview {
     @objc
     func handleDeviceOrientationChange(_ notification: NSNotification) {
+#if !os(visionOS)
         switch UIDevice.current.orientation {
         case .portrait:
             lastOrientation = .portrait
@@ -322,6 +329,7 @@ private extension JSONPreview {
         default:
             break
         }
+#endif
     }
     
     func getLineHeight(at index: LineNumber) -> CGFloat {
