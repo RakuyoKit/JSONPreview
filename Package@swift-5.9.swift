@@ -4,7 +4,10 @@ import PackageDescription
 
 let package = Package(
     name: "JSONPreview",
-    platforms: [.iOS(.v12)],
+    platforms: [
+        .iOS(.v12),
+        .visionOS(.v1)
+    ],
     products: [
         .library(
             name: "JSONPreview",
