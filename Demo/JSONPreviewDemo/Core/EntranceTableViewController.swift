@@ -36,6 +36,11 @@ final class EntranceTableViewController: ListTableViewController {
                 desc: "Show how to use it in UITableView and dynamically adapt to Cell height.",
                 action: { TableViewExampleViewController() }
             ),
+            .init(
+                title: "Seach",
+                desc: "Related examples of search functionality.",
+                action: { SearchEntranceTableViewController() }
+            ),
         ])
     }
     
