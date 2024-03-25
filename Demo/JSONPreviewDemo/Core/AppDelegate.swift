@@ -11,12 +11,15 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
-
+    var window: UIWindow? = UIWindow(frame: UIScreen.main.bounds)
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        let vc = EntranceTableViewController()
+        let navi = UINavigationController(rootViewController: vc)
         
+        window?.rootViewController = navi
+        window?.makeKeyAndVisible()
         
         return true
     }
