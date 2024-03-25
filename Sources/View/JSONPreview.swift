@@ -9,6 +9,9 @@
 import UIKit
 
 open class JSONPreview: UIView {
+    /// Line numbers of this type start counting from 0.
+    public typealias LineNumber = Int
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -97,7 +100,7 @@ open class JSONPreview: UIView {
     private lazy var lineNumberHeightManager = LineNumberHeightManager()
     
     /// Data source for line number view
-    private var lineDataSource: [Int] = [] {
+    private var lineDataSource: [LineNumber] = [] {
         didSet { lineNumberTableView.reloadData() }
     }
 }
@@ -241,7 +244,7 @@ private extension JSONPreview {
         }
     }
     
-    func getLineHeight(at index: Int) -> CGFloat {
+    func getLineHeight(at index: LineNumber) -> CGFloat {
         guard let slices = decorator?.slices else { return 0 }
         
         let line = lineDataSource[index]
@@ -274,7 +277,7 @@ private extension JSONPreview {
         }
         
         let attributedText = AttributedString(string: "")
-        var lines: [Int] = []
+        var lines: [LineNumber] = []
         
         var foldedLevel: Int? = nil
         for (index, slice) in _decorator.slices.enumerated() {
@@ -459,7 +462,7 @@ extension JSONPreview: JSONTextViewDelegate {
             decorator.slices[realRow].state = .folded
             
             var isExecution = true
-            var lines: [Int] = []
+            var lines: [LineNumber] = []
             var length = clickSlice.expand.length
             
             for i in (realRow + 1) ..< slices.count {
@@ -515,7 +518,7 @@ extension JSONPreview: JSONTextViewDelegate {
             decorator.slices[realRow].state = .expand
             
             var isExecution = true
-            var lines: [Int] = []
+            var lines: [LineNumber] = []
             
             let replaceString = AttributedString(string: "")
             
