@@ -3,7 +3,7 @@
 //  JSONPreview
 //
 //  Created by Rakuyo on 2020/9/12.
-//  Copyright © 2020 Rakuyo. All rights reserved.
+//  Copyright © 2024 Rakuyo. All rights reserved.
 //
 
 import UIKit

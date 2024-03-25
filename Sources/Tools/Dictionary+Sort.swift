@@ -3,7 +3,7 @@
 //  JSONPreview
 //
 //  Created by Rakuyo on 2022/5/30.
-//  Copyright © 2022 Rakuyo. All rights reserved.
+//  Copyright © 2024 Rakuyo. All rights reserved.
 //
 
 import Foundation
