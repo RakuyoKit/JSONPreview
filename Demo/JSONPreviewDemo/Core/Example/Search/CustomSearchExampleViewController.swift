@@ -67,7 +67,7 @@ private extension CustomSearchExampleViewController {
             
             this.previewView.removeSearchStyle()
             this.previewView.highlightStyle.isBoldedSearchResult = $0
-            this.previewView.search(this.keyword)
+            this.keyword = this.keyword
         }
         
         let isBoldedSearchResult = previewView.highlightStyle.isBoldedSearchResult
@@ -99,7 +99,7 @@ private extension CustomSearchExampleViewController {
             guard let this = self else { return }
             
             this.previewView.highlightStyle.color.searchHitBackground = $0?.color
-            this.previewView.search(this.keyword)
+            this.keyword = this.keyword
         }
         
         let marianaSearchHitBackground = HighlightStyle.mariana.color.searchHitBackground

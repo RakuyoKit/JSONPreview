@@ -16,9 +16,21 @@ class BaseSearchExampleViewController: BaseJSONPreviewController {
     lazy var keyword: String = "" {
         didSet {
             if keyword.isEmpty {
-                previewView.removeSearchStyle()
+                previewView.removeSearchStyle { [weak self] _ in
+                    self?.previewView.lineNumberTableView.indexPathsForSelectedRows?.forEach {
+                        self?.previewView.lineNumberTableView.deselectRow(at: $0, animated: false)
+                    }
+                }
+                
             } else {
-                previewView.search(keyword)
+                previewView.search(keyword) { [weak self] (lines, _) in
+                    lines
+                        .lazy
+                        .map { IndexPath(row: $0, section: 0) }
+                        .forEach {
+                            self?.previewView.lineNumberTableView.selectRow(at: $0, animated: false, scrollPosition: .none)
+                        }
+                }
             }
         }
     }
