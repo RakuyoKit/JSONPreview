@@ -8,7 +8,9 @@
 
 import UIKit
 
+#if !os(tvOS)
 import SafariServices
+#endif
 
 import JSONPreview
 
@@ -32,9 +34,11 @@ extension BaseJSONPreviewController: JSONPreviewDelegate {
     func jsonPreview(_ view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
         print(url)
         
+#if !os(tvOS)
         let safari = SFSafariViewController(url: url)
         safari.modalPresentationStyle = .overFullScreen
         present(safari, animated: true, completion: nil)
+#endif
         
         return false
     }

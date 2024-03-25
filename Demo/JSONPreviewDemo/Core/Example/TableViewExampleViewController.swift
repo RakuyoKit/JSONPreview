@@ -203,7 +203,9 @@ private class BaseJSONCell: UITableViewCell {
     }
     
     func configPreview() {
+#if !os(tvOS)
         previewView.scrollsToTop = false
+#endif
     }
     
     func addLayout() {

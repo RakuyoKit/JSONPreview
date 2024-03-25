@@ -5,7 +5,7 @@
 //  Created by Rakuyo on 2024/3/25.
 //  Copyright © 2024 Rakuyo. All rights reserved.
 //
-
+#if !os(tvOS)
 import UIKit
 
 final class SearchEntranceTableViewController: ListTableViewController {
@@ -38,3 +38,4 @@ extension SearchEntranceTableViewController {
         title = "Search Example List"
     }
 }
+#endif

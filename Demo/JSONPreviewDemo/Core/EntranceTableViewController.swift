@@ -39,7 +39,13 @@ final class EntranceTableViewController: ListTableViewController {
             .init(
                 title: "Seach",
                 desc: "Related examples of search functionality.",
-                action: { SearchEntranceTableViewController() }
+                action: {
+#if os(tvOS)
+                    return nil
+#else
+                    return SearchEntranceTableViewController()
+#endif
+                }
             ),
         ])
     }
