@@ -268,7 +268,14 @@ private extension JSONPreview {
     
     enum Constant {
         /// Fixed width of `lineNumberTableView`
-        static let lineWith: CGFloat = 55
+        static let lineWith: CGFloat = {
+            let _width: CGFloat = 55
+            #if os(visionOS)
+            return _width + 20
+            #else
+            return _width
+            #endif
+        }()
     }
 }
 
@@ -526,8 +533,20 @@ extension JSONPreview: JSONTextViewDelegate {
         
         let slices = decorator.slices
         
+        let point: CGPoint = {
+            let x: CGFloat = {
+                let _x: CGFloat = 5
+                #if os(visionOS)
+                return _x + 15
+                #else
+                return _x
+                #endif
+            }()
+            return CGPoint(x: x, y: pointY)
+        }()
+        
         // 1. Get the number of rows
-        guard let indexPath = lineNumberTableView.indexPathForRow(at: CGPoint(x: 5, y: pointY)) else {
+        guard let indexPath = lineNumberTableView.indexPathForRow(at: point) else {
             return
         }
         
