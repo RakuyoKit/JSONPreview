@@ -2,6 +2,9 @@ import Foundation
 
 /// Used to enrich the information of the key of the object in json.
 public struct JSONObjectKey {
+    /// Used to mark an incorrect key.
+    public static let wrong: Self = .init(key: "", isWrong: true)
+    
     /// The object key.
     ///
     /// If this key is wrong, then the value is `""`.
@@ -10,16 +13,13 @@ public struct JSONObjectKey {
     /// Is the key wrong.
     public let isWrong: Bool
     
-    /// Used to mark an incorrect key.
-    public static let wrong: Self = .init(key: "", isWrong: true)
+    public init(_ key: String) {
+        self.init(key: key, isWrong: false)
+    }
     
     fileprivate init(key: String, isWrong: Bool) {
         self.key = key
         self.isWrong = isWrong
-    }
-    
-    public init(_ key: String) {
-        self.init(key: key, isWrong: false)
     }
 }
 

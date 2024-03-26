@@ -1,3 +1,5 @@
+// swiftlint:disable all
+
 //===----------------------------------------------------------------------===//
 //
 // This source file is part of the Swift.org open source project
@@ -26,3 +28,5 @@ public enum JSONError: Swift.Error, Equatable {
     case numberIsNotRepresentableInSwift(parsed: String)
     case singleFragmentFoundButNotAllowed
 }
+
+// swiftlint:enable all

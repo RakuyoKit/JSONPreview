@@ -1,0 +1,4 @@
+parent_config: .swiftlint_rules.yml
+
+included:
+    - ./Sources

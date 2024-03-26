@@ -10,16 +10,6 @@ import UIKit
 
 /// Responsible for beautifying JSON
 public final class JSONDecorator {
-    /// Initialization method
-    ///
-    /// - Parameters:
-    ///   - style: Style of highlight. See `HighlightStyle` for details.
-    ///   - initialState: The initial state of the rendering result.
-    public init(style: HighlightStyle, initialState: JSONSlice.State) {
-        self.style = style
-        self.initialState = initialState
-    }
-    
     /// Style of highlight. See `HighlightStyle` for details.
     public let style: HighlightStyle
     
@@ -62,13 +52,23 @@ public final class JSONDecorator {
     
     private lazy var placeholderStyle = createStyle(
         foregroundColor: style.color.lineText,
-        other: [.backgroundColor : style.color.lineBackground]
+        other: [.backgroundColor: style.color.lineBackground]
     )
     
     private lazy var unknownStyle = createStyle(
         foregroundColor: style.color.unknownText,
-        other: [.backgroundColor : style.color.unknownBackground]
+        other: [.backgroundColor: style.color.unknownBackground]
     )
+    
+    /// Initialization method
+    ///
+    /// - Parameters:
+    ///   - style: Style of highlight. See `HighlightStyle` for details.
+    ///   - initialState: The initial state of the rendering result.
+    public init(style: HighlightStyle, initialState: JSONSlice.State) {
+        self.style = style
+        self.initialState = initialState
+    }
 }
 
 // MARK: - Public
@@ -81,7 +81,8 @@ public extension JSONDecorator {
     /// - Parameters:
     ///   - json: The JSON string to be highlighted.
     ///   - style: style of highlight. See `HighlightStyle` for details.
-    ///   - initialState: The initial state of the rendering result. All nodes with a folding effect have an initial state consistent with this value.
+    ///   - initialState: The initial state of the rendering result. 
+    ///                   All nodes with a folding effect have an initial state consistent with this value.
     ///   - judgmentValid: Whether to check the validity of JSON.
     /// - Returns: Return `nil` when JSON is invalid. See `JSONDecorator` for details.
     static func highlight(
@@ -119,13 +120,21 @@ public extension JSONDecorator {
 // MARK: - Main Logic
 
 private extension JSONDecorator {
+    typealias CreateJSONSlice = (
+        _ expand: AttributedString,
+        _ fold: AttributedString?,
+        _ foldedTimes: Int,
+        _ currentCount: Int
+    ) -> JSONSlice
+    
+    typealias NeedConfig = (indent: Bool, comma: Bool)
+    
     func createSlices(from data: Data) -> [JSONSlice] {
         guard let jsonValue = createJSONValue(from: data) else { return [] }
         return processJSONValueRecursively(
             jsonValue,
             currentSlicesCount: 0,
-            isNeedIndent: false,
-            isNeedComma: false,
+            isNeed: (indent: false, comma: false),
             foldedTimes: 0)
     }
     
@@ -140,317 +149,421 @@ private extension JSONDecorator {
     func processJSONValueRecursively(
         _ jsonValue: JSONValue,
         currentSlicesCount: Int,
-        isNeedIndent: Bool,
-        isNeedComma: Bool,
+        isNeed: NeedConfig,
         foldedTimes: Int
     ) -> [JSONSlice] {
-        var result: [JSONSlice] = []
-        
-        /// Simplify the initialization of `JSONSlice`
-        func _append(expand: AttributedString, fold: AttributedString?, foldedTimes times: Int) {
+        let createJSONSlice: CreateJSONSlice = { [self] (expand, fold, times, currentCount) in
             // `initialState` is only valid for nodes with a folding effect.
             let state = fold != nil ? initialState : .`default`
             
-            let slice = JSONSlice(
+            return JSONSlice(
                 level: indent,
-                lineNumber: currentSlicesCount + result.count + 1,
+                lineNumber: currentSlicesCount + currentCount + 1,
                 state: state,
                 expand: expand,
                 folded: fold,
                 foldedTimes: times)
-            
-            result.append(slice)
-        }
-        
-        func createUnknownAttributedString(with string: String) -> AttributedString {
-            let newString = string.replacingOccurrences(of: "\n", with: "")
-            return .init(string: newString, attributes: unknownStyle)
-        }
-        
-        func calculateSubSlicesFoldedTimes(currentState: JSONSlice.State) -> Int {
-            switch currentState {
-            case .expand: return 0
-            case .folded: return foldedTimes + 1
-            }
         }
         
         // Process each json value
         switch jsonValue {
-        // MARK: array
         case .array(let values):
-            let subSlicesFoldedTimes = calculateSubSlicesFoldedTimes(currentState: initialState)
+            return processArrayValue(
+                with: values,
+                currentSlicesCount: currentSlicesCount,
+                isNeed: isNeed,
+                foldedTimes: foldedTimes,
+                createJSONSlice: createJSONSlice
+            )
             
-            let (startExpand, startFold) = createArrayStartAttribute(
-                isNeedIndent: isNeedIndent,
-                isNeedComma: isNeedComma)
-            
-            _append(expand: startExpand, fold: startFold, foldedTimes: foldedTimes)
-            
-            func _appendArrayEnd() {
-                let endExpand = createArrayEndAttribute(isNeedComma: isNeedComma)
-                _append(expand: endExpand, fold: nil, foldedTimes: subSlicesFoldedTimes)
-            }
-            
-            guard !values.isEmpty else {
-                // If the array is empty, add the end flag directly.
-                _appendArrayEnd()
-                return result
-            }
-            
-            incIndent()
-            
-            // Process each value
-            for (i, value) in values.enumerated() {
-                let _isNeedComma = i != (values.count - 1)
-                
-                let slices = processJSONValueRecursively(
-                    value,
-                    currentSlicesCount: currentSlicesCount + result.count,
-                    isNeedIndent: true,
-                    isNeedComma: _isNeedComma, 
-                    foldedTimes: subSlicesFoldedTimes)
-                result.append(contentsOf: slices)
-            }
-            
-            decIndent()
-            
-            // The end node is added only if the array is correct.
-            if case .wrong = values.last?.isRight { } else {
-                _appendArrayEnd()
-            }
-            
-            return result
-            
-        // MARK: object
         case .object(let object):
-            let subSlicesFoldedTimes = calculateSubSlicesFoldedTimes(currentState: initialState)
-            
-            let (startExpand, startFold) = createObjectStartAttribute(
-                isNeedIndent: isNeedIndent,
-                isNeedComma: isNeedComma)
-            
-            _append(expand: startExpand, fold: startFold, foldedTimes: foldedTimes)
-            
-            func _appendObjectEnd() {
-                let endExpand = createObjectEndAttribute(isNeedComma: isNeedComma)
-                _append(expand: endExpand, fold: nil, foldedTimes: subSlicesFoldedTimes)
-            }
-            
-            guard !object.isEmpty else {
-                // If the object is empty, add the end flag directly.
-                _appendObjectEnd()
-                return result
-            }
-            
-            // Sorting the key.
-            // The order of displaying each time the bail is taken is consistent.
-            let sortKeys = object.rankingUnknownKeyLast()
-            
-            incIndent()
-            
-            // Process each value
-            for (i, key) in sortKeys.enumerated() {
-                guard let value = object[key] else { continue }
-                
-                func createKeyAttribute(_ key: String, isNeedColon: Bool = true) -> AttributedString {
-                    let keyAttribute = AttributedString(string: key, attributes: keyStyle)
-                    if isNeedColon {
-                        keyAttribute.append(colonAttributeString)
-                    }
-                    return keyAttribute
-                }
-                
-                // Different treatment according to different situations
-                switch value.isRight {
-                case .wrong:
-                    let slices = processJSONValueRecursively(
-                        value,
-                        currentSlicesCount: currentSlicesCount + result.count,
-                        isNeedIndent: true,
-                        isNeedComma: false,
-                        foldedTimes: subSlicesFoldedTimes)
-                    
-                    if key.isWrong {
-                        result.append(contentsOf: slices)
-                        
-                    } else {
-                        let string = writeIndent() + "\"\(key.key)\""
-                        let expand = createKeyAttribute(string, isNeedColon: false)
-                        
-                        if let slice = slices.first {
-                            expand.append(slice.expand)
-                        }
-                        
-                        _append(expand: expand, fold: nil, foldedTimes: subSlicesFoldedTimes)
-                    }
-                    
-                case .right(let isContainer):
-                    let string = writeIndent() + "\"\(key.key)\""
-                    
-                    let _isNeedComma = (i != (object.count - 1)) && {
-                        guard sortKeys.indices.contains(i + 1) else { return false }
-                        switch object[sortKeys[i + 1]]?.isRight {
-                        case .right: return true
-                        default: return false
-                        }
-                    }()
-                    
-                    let expand = createKeyAttribute(string)
-                    
-                    if isContainer {
-                        let fold = createKeyAttribute(string)
-                        
-                        // Get the content of the subvalue
-                        var slices = processJSONValueRecursively(
-                            value,
-                            currentSlicesCount: currentSlicesCount + result.count,
-                            isNeedIndent: false,
-                            isNeedComma: _isNeedComma,
-                            foldedTimes: subSlicesFoldedTimes)
-                        
-                        if !slices.isEmpty {
-                            let startSlice = slices.removeFirst()
-                            expand.append(startSlice.expand)
-                            
-                            if let valueFold = startSlice.folded {
-                                fold.append(valueFold)
-                            }
-                            
-                            _append(expand: expand, fold: fold, foldedTimes: subSlicesFoldedTimes)
-                        }
-                        
-                        result.append(contentsOf: slices)
-                        
-                    } else {
-                        var fold: AttributedString? = nil
-                        
-                        // Get the content of the subvalue
-                        let slices = processJSONValueRecursively(
-                            value,
-                            currentSlicesCount: 0,
-                            isNeedIndent: false,
-                            isNeedComma: _isNeedComma,
-                            foldedTimes: subSlicesFoldedTimes)
-                        
-                        // Usually there is only one value for `slices` in this case,
-                        // so only the first value is taken
-                        if let slice = slices.first {
-                            expand.append(slice.expand)
-                            
-                            if let valueFold = slice.folded {
-                                fold = createKeyAttribute(string)
-                                fold?.append(valueFold)
-                            }
-                            
-                            _append(expand: expand, fold: fold, foldedTimes: subSlicesFoldedTimes)
-                        }
-                    }
-                }
-            }
-            
-            decIndent()
-            
-            // The end node is added only if the object is correct.
-            if let lastKey = sortKeys.last,
-               case .wrong = object[lastKey]?.isRight { }
-            else {
-                _appendObjectEnd()
-            }
-            
-            return result
+            return processObjectValue(
+                with: object,
+                currentSlicesCount: currentSlicesCount,
+                isNeed: isNeed,
+                foldedTimes: foldedTimes,
+                createJSONSlice: createJSONSlice
+            )
             
         case let .string(value, wrong):
-            let indent = isNeedIndent ? writeIndent() : ""
-            let string = indent + "\"\(value)\""
+            return processStringValue(
+                with: value,
+                wrong: wrong,
+                isNeed: isNeed,
+                foldedTimes: foldedTimes,
+                createJSONSlice: createJSONSlice
+            )
             
-            let expand: AttributedString
-            
-            if let url = value.validURL {
-                // MARK: link
-                expand = AttributedString(string: string, attributes: linkStyle)
-                
-                let urlString = url.urlString
-                let range = NSRange(location: indent.count + 1, length: urlString.count)
-                
-                expand.addAttribute(.link, value: urlString, range: range)
-                expand.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
-            } else {
-                
-                // MARK: string
-                expand = AttributedString(string: string, attributes: stringStyle)
-            }
-            
-            if isNeedComma {
-                expand.append(commaAttributeString)
-            }
-            
-            if let wrong = wrong {
-                expand.append(createUnknownAttributedString(with: wrong))
-            }
-            
-            _append(expand: expand, fold: nil, foldedTimes: foldedTimes)
-            return result
-            
-        // MARK: number
         case let .number(value, wrong):
-            let indent = isNeedIndent ? writeIndent() : ""
-            let string = indent + "\(value)"
-            let expand = AttributedString(string: string, attributes: numberStyle)
+            return processNumberValue(
+                with: value,
+                wrong: wrong,
+                isNeed: isNeed,
+                foldedTimes: foldedTimes,
+                createJSONSlice: createJSONSlice
+            )
             
-            if isNeedComma {
-                expand.append(commaAttributeString)
-            }
-            
-            if let wrong = wrong {
-                expand.append(createUnknownAttributedString(with: wrong))
-            }
-            
-            _append(expand: expand, fold: nil, foldedTimes: foldedTimes)
-            return result
-            
-        // MARK: bool
         case let .bool(value, wrong):
-            let indent = isNeedIndent ? writeIndent() : ""
-            let string = indent + (value ? "true" : "false")
-            let expand = AttributedString(string: string, attributes: boolStyle)
+            return processBoolValue(
+                with: value,
+                wrong: wrong,
+                isNeed: isNeed,
+                foldedTimes: foldedTimes,
+                createJSONSlice: createJSONSlice
+            )
             
-            if isNeedComma {
-                expand.append(commaAttributeString)
-            }
-            
-            if let wrong = wrong {
-                expand.append(createUnknownAttributedString(with: wrong))
-            }
-            
-            _append(expand: expand, fold: nil, foldedTimes: foldedTimes)
-            return result
-            
-        // MARK: null
         case .null(let wrong):
-            let indent = isNeedIndent ? writeIndent() : ""
-            let string = indent + "null"
-            let expand = AttributedString(string: string, attributes: nullStyle)
-            
-            if isNeedComma {
-                expand.append(commaAttributeString)
-            }
-            
-            if let wrong = wrong {
-                expand.append(createUnknownAttributedString(with: wrong))
-            }
-            
-            _append(expand: expand, fold: nil, foldedTimes: foldedTimes)
-            return result
+            return processNullValue(
+                with: wrong,
+                isNeed: isNeed,
+                foldedTimes: foldedTimes,
+                createJSONSlice: createJSONSlice
+            )
             
         // MARK: unknown
         case .unknown(let string):
-            let indent = isNeedIndent ? writeIndent() : ""
+            let indent = isNeed.indent ? writeIndent() : ""
             
             let expand = AttributedString(string: indent)
             expand.append(createUnknownAttributedString(with: string))
             
-            _append(expand: expand, fold: nil, foldedTimes: foldedTimes)
+            let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+            return [slice]
+        }
+    }
+    
+    // MARK: array
+    
+    func processArrayValue(
+        with values: [JSONValue],
+        currentSlicesCount: Int,
+        isNeed: NeedConfig,
+        foldedTimes: Int,
+        createJSONSlice: CreateJSONSlice
+    ) -> [JSONSlice] {
+        var result: [JSONSlice] = []
+        
+        let subSlicesFoldedTimes = calculateSubSlicesFoldedTimes(
+            currentState: initialState,
+            foldedTimes: foldedTimes)
+        
+        let (startExpand, startFold) = createArrayStartAttribute(
+            isNeedIndent: isNeed.indent,
+            isNeedComma: isNeed.comma)
+        
+        let slice = createJSONSlice(startExpand, startFold, foldedTimes, result.count)
+        result.append(slice)
+        
+        func _appendArrayEnd() {
+            let endExpand = createArrayEndAttribute(isNeedComma: isNeed.comma)
+            let slice = createJSONSlice(endExpand, nil, subSlicesFoldedTimes, result.count)
+            result.append(slice)
+        }
+        
+        guard !values.isEmpty else {
+            // If the array is empty, add the end flag directly.
+            _appendArrayEnd()
             return result
+        }
+        
+        incIndent()
+        
+        // Process each value
+        for (index, value) in values.enumerated() {
+            let _isNeedComma = index != (values.count - 1)
+            
+            let slices = processJSONValueRecursively(
+                value,
+                currentSlicesCount: currentSlicesCount + result.count, 
+                isNeed: (indent: true, comma: _isNeedComma),
+                foldedTimes: subSlicesFoldedTimes)
+            
+            result.append(contentsOf: slices)
+        }
+        
+        decIndent()
+        
+        // The end node is added only if the array is correct.
+        if case .wrong = values.last?.isRight { } else {
+            _appendArrayEnd()
+        }
+        
+        return result
+    }
+    
+    // MARK: object
+    
+    func processObjectValue(
+        with object: [JSONObjectKey: JSONValue],
+        currentSlicesCount: Int,
+        isNeed: NeedConfig,
+        foldedTimes: Int,
+        createJSONSlice: CreateJSONSlice
+    ) -> [JSONSlice] {
+        var result: [JSONSlice] = []
+        
+        let subSlicesFoldedTimes = calculateSubSlicesFoldedTimes(
+            currentState: initialState,
+            foldedTimes: foldedTimes)
+        
+        let (startExpand, startFold) = createObjectStartAttribute(
+            isNeedIndent: isNeed.indent,
+            isNeedComma: isNeed.comma)
+        
+        let slice = createJSONSlice(startExpand, startFold, foldedTimes, result.count)
+        result.append(slice)
+        
+        func _appendObjectEnd() {
+            let endExpand = createObjectEndAttribute(isNeedComma: isNeed.comma)
+            let slice = createJSONSlice(endExpand, nil, subSlicesFoldedTimes, result.count)
+            result.append(slice)
+        }
+        
+        guard !object.isEmpty else {
+            // If the object is empty, add the end flag directly.
+            _appendObjectEnd()
+            return result
+        }
+        
+        // Sorting the key.
+        // The order of displaying each time the bail is taken is consistent.
+        let sortKeys = object.rankingUnknownKeyLast()
+        
+        incIndent()
+        
+        // Process each value
+        for (index, key) in sortKeys.enumerated() {
+            guard let value = object[key] else { continue }
+            
+            func createKeyAttribute(_ key: String, isNeedColon: Bool = true) -> AttributedString {
+                let keyAttribute = AttributedString(string: key, attributes: keyStyle)
+                if isNeedColon {
+                    keyAttribute.append(colonAttributeString)
+                }
+                return keyAttribute
+            }
+            
+            // Different treatment according to different situations
+            switch value.isRight {
+            case .wrong:
+                let slices = processJSONValueRecursively(
+                    value,
+                    currentSlicesCount: currentSlicesCount + result.count, 
+                    isNeed: (indent: true, comma: false),
+                    foldedTimes: subSlicesFoldedTimes)
+                
+                if key.isWrong {
+                    result.append(contentsOf: slices)
+                    
+                } else {
+                    let string = writeIndent() + "\"\(key.key)\""
+                    let expand = createKeyAttribute(string, isNeedColon: false)
+                    
+                    if let slice = slices.first {
+                        expand.append(slice.expand)
+                    }
+                    
+                    let slice = createJSONSlice(expand, nil, subSlicesFoldedTimes, result.count)
+                    result.append(slice)
+                }
+                
+            case .right(let isContainer):
+                let string = writeIndent() + "\"\(key.key)\""
+                
+                let _isNeedComma = (index != (object.count - 1)) && {
+                    guard sortKeys.indices.contains(index + 1) else { return false }
+                    switch object[sortKeys[index + 1]]?.isRight {
+                    case .right: return true
+                    default: return false
+                    }
+                }()
+                
+                let expand = createKeyAttribute(string)
+                
+                if isContainer {
+                    let fold = createKeyAttribute(string)
+                    
+                    // Get the content of the subvalue
+                    var slices = processJSONValueRecursively(
+                        value,
+                        currentSlicesCount: currentSlicesCount + result.count, 
+                        isNeed: (indent: false, comma: _isNeedComma),
+                        foldedTimes: subSlicesFoldedTimes)
+                    
+                    if !slices.isEmpty {
+                        let startSlice = slices.removeFirst()
+                        expand.append(startSlice.expand)
+                        
+                        if let valueFold = startSlice.folded {
+                            fold.append(valueFold)
+                        }
+                        
+                        let slice = createJSONSlice(expand, fold, subSlicesFoldedTimes, result.count)
+                        result.append(slice)
+                    }
+                    
+                    result.append(contentsOf: slices)
+                    
+                } else {
+                    var fold: AttributedString? = nil
+                    
+                    // Get the content of the subvalue
+                    let slices = processJSONValueRecursively(
+                        value,
+                        currentSlicesCount: 0,
+                        isNeed: (indent: false, comma: _isNeedComma),
+                        foldedTimes: subSlicesFoldedTimes)
+                    
+                    // Usually there is only one value for `slices` in this case,
+                    // so only the first value is taken
+                    if let slice = slices.first {
+                        expand.append(slice.expand)
+                        
+                        if let valueFold = slice.folded {
+                            fold = createKeyAttribute(string)
+                            fold?.append(valueFold)
+                        }
+                        
+                        let slice = createJSONSlice(expand, fold, subSlicesFoldedTimes, result.count)
+                        result.append(slice)
+                    }
+                }
+            }
+        }
+        
+        decIndent()
+        
+        // The end node is added only if the object is correct.
+        if let lastKey = sortKeys.last,
+           case .wrong = object[lastKey]?.isRight { }
+        else {
+            _appendObjectEnd()
+        }
+        
+        return result
+    }
+    
+    // MARK: string & link
+    
+    func processStringValue(
+        with value: String,
+        wrong: String?,
+        isNeed: NeedConfig,
+        foldedTimes: Int,
+        createJSONSlice: CreateJSONSlice
+    ) -> [JSONSlice] {
+        let indent = isNeed.indent ? writeIndent() : ""
+        let string = indent + "\"\(value)\""
+        
+        let expand: AttributedString
+        
+        if let url = value.validURL {
+            // link
+            expand = AttributedString(string: string, attributes: linkStyle)
+            
+            let urlString = url.urlString
+            let range = NSRange(location: indent.count + 1, length: urlString.count)
+            
+            expand.addAttribute(.link, value: urlString, range: range)
+            expand.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
+        } else {
+            // string
+            expand = AttributedString(string: string, attributes: stringStyle)
+        }
+        
+        if isNeed.comma {
+            expand.append(commaAttributeString)
+        }
+        
+        if let wrong = wrong {
+            expand.append(createUnknownAttributedString(with: wrong))
+        }
+        
+        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        return [slice]
+    }
+    
+    // MARK: number
+    
+    func processNumberValue(
+        with value: String,
+        wrong: String?,
+        isNeed: NeedConfig,
+        foldedTimes: Int,
+        createJSONSlice: CreateJSONSlice
+    ) -> [JSONSlice] {
+        let indent = isNeed.indent ? writeIndent() : ""
+        let string = indent + "\(value)"
+        let expand = AttributedString(string: string, attributes: numberStyle)
+        
+        if isNeed.comma {
+            expand.append(commaAttributeString)
+        }
+        
+        if let wrong = wrong {
+            expand.append(createUnknownAttributedString(with: wrong))
+        }
+        
+        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        return [slice]
+    }
+    
+    // MARK: bool
+    
+    func processBoolValue(
+        with value: Bool,
+        wrong: String?,
+        isNeed: NeedConfig,
+        foldedTimes: Int,
+        createJSONSlice: CreateJSONSlice
+    ) -> [JSONSlice] {
+        let indent = isNeed.indent ? writeIndent() : ""
+        let string = indent + (value ? "true" : "false")
+        let expand = AttributedString(string: string, attributes: boolStyle)
+        
+        if isNeed.comma {
+            expand.append(commaAttributeString)
+        }
+        
+        if let wrong = wrong {
+            expand.append(createUnknownAttributedString(with: wrong))
+        }
+        
+        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        return [slice]
+    }
+    
+    // MARK: null
+    
+    func processNullValue(
+        with wrong: String?,
+        isNeed: NeedConfig,
+        foldedTimes: Int,
+        createJSONSlice: CreateJSONSlice
+    ) -> [JSONSlice] {
+        let indent = isNeed.indent ? writeIndent() : ""
+        let string = indent + "null"
+        let expand = AttributedString(string: string, attributes: nullStyle)
+        
+        if isNeed.comma {
+            expand.append(commaAttributeString)
+        }
+        
+        if let wrong = wrong {
+            expand.append(createUnknownAttributedString(with: wrong))
+        }
+        
+        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        return [slice]
+    }
+    
+    func calculateSubSlicesFoldedTimes(
+        currentState: JSONSlice.State,
+        foldedTimes: Int
+    ) -> Int {
+        switch currentState {
+        case .expand: return 0
+        case .folded: return foldedTimes + 1
         }
     }
 }
@@ -477,6 +590,7 @@ private extension JSONDecorator {
 // MARK: - Attributed String
 
 private extension JSONDecorator {
+    typealias ContainerAttributedStringPair = (AttributedString, AttributedString)
     
     /// An attribute string of ":"
     var colonAttributeString: AttributedString {
@@ -488,9 +602,19 @@ private extension JSONDecorator {
         createKeywordAttribute(key: ",")
     }
     
+    func createUnknownAttributedString(with string: String) -> AttributedString {
+        let newString = string.replacingOccurrences(of: "\n", with: "")
+        return .init(string: newString, attributes: unknownStyle)
+    }
+    
     /// Create an attribute string of "array - start node"
-    func createArrayStartAttribute(isNeedIndent: Bool, isNeedComma: Bool) -> (AttributedString, AttributedString) {
-        return createStartAttribute(expand: "[", fold: "[Array...]", isNeedIndent: isNeedIndent, isNeedComma: isNeedComma)
+    func createArrayStartAttribute(isNeedIndent: Bool, isNeedComma: Bool) -> ContainerAttributedStringPair {
+        return createStartAttribute(
+            expand: "[",
+            fold: "[Array...]",
+            isNeedIndent: isNeedIndent,
+            isNeedComma: isNeedComma
+        )
     }
     
     /// Create an attribute string of "Array - End Node"
@@ -499,8 +623,13 @@ private extension JSONDecorator {
     }
     
     /// Create an attribute string of "Object - Start Node"
-    func createObjectStartAttribute(isNeedIndent: Bool, isNeedComma: Bool) -> (AttributedString, AttributedString) {
-        return createStartAttribute(expand: "{", fold: "{Object...}", isNeedIndent: isNeedIndent, isNeedComma: isNeedComma)
+    func createObjectStartAttribute(isNeedIndent: Bool, isNeedComma: Bool) -> ContainerAttributedStringPair {
+        return createStartAttribute(
+            expand: "{",
+            fold: "{Object...}",
+            isNeedIndent: isNeedIndent,
+            isNeedComma: isNeedComma
+        )
     }
     
     /// Create an attribute string of "object - end node"
@@ -580,7 +709,7 @@ private extension JSONDecorator {
     }
     
     func createStyle(foregroundColor: UIColor?, other: StyleInfos? = nil) -> StyleInfos {
-        var newStyle: StyleInfos = [.font : style.jsonFont]
+        var newStyle: StyleInfos = [.font: style.jsonFont]
         
         if let color = foregroundColor {
             newStyle[.foregroundColor] = color
