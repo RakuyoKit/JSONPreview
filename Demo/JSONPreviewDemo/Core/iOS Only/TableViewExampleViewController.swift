@@ -117,6 +117,7 @@ extension TableViewExampleViewController {
         case .desc(let content):
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
             cell.textLabel?.numberOfLines = 0
+            cell.textLabel?.textColor = .black
             cell.textLabel?.text = content
             return cell
         }
