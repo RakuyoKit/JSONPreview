@@ -10,10 +10,31 @@ import UIKit
 
 public typealias AttributedString = NSMutableAttributedString
 public typealias AttributedKey = AttributedString.Key
-public typealias StyleInfos = [AttributedKey : Any]
+public typealias StyleInfos = [AttributedKey: Any]
 
 /// Highlight style configuration
 public struct HighlightStyle {
+    /// The icon of the expand button.
+    public var expandIcon: UIImage
+    
+    /// The icon of the fold button.
+    public var foldIcon: UIImage
+    
+    /// Color-related configuration, see `HighlightColor` for details.
+    public var color: HighlightColor
+    
+    /// Text font in line number area.
+    public var lineFont: UIFont
+    
+    /// Text font in json preview area.
+    public var jsonFont: UIFont
+    
+    /// Line height of JSON preview area.
+    public var lineHeight: CGFloat
+    
+    /// Whether to bold search results.
+    public var isBoldedSearchResult: Bool
+    
     /// Initialization method
     ///
     /// For all the following parameters, the default configuration will be used when it is `nil`
@@ -39,9 +60,9 @@ public struct HighlightStyle {
             #if SWIFT_PACKAGE
             let bundle = Bundle.module
             #else
-            guard 
+            guard
                 let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
-                let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle") 
+                let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle")
             else {
                 return UIImage(named: $0)
             }
@@ -50,35 +71,17 @@ public struct HighlightStyle {
             return UIImage(named: $0, in: bundle, compatibleWith: nil)
         }
         
-        self.expandIcon = expandIcon ?? getImage("expand")!
-        self.foldIcon = foldIcon ?? getImage("fold")!
         self.color = color
-        self.lineFont = lineFont ?? UIFont(name:"Helvetica Neue", size: 16)!
-        self.jsonFont = jsonFont ?? UIFont(name:"Helvetica Neue", size: 16)!
         self.lineHeight = lineHeight
         self.isBoldedSearchResult = boldedSearchResult
+        
+        // swiftlint:disable force_unwrapping
+        self.expandIcon = expandIcon ?? getImage("expand")!
+        self.foldIcon = foldIcon ?? getImage("fold")!
+        self.lineFont = lineFont ?? UIFont(name: "Helvetica Neue", size: 16)!
+        self.jsonFont = jsonFont ?? UIFont(name: "Helvetica Neue", size: 16)!
+        // swiftlint:enable force_unwrapping
     }
-    
-    /// The icon of the expand button.
-    public var expandIcon: UIImage
-    
-    /// The icon of the fold button.
-    public var foldIcon: UIImage
-    
-    /// Color-related configuration, see `HighlightColor` for details.
-    public var color: HighlightColor
-    
-    /// Text font in line number area.
-    public var lineFont: UIFont
-    
-    /// Text font in json preview area.
-    public var jsonFont: UIFont
-    
-    /// Line height of JSON preview area.
-    public var lineHeight: CGFloat
-    
-    /// Whether to bold search results.
-    public var isBoldedSearchResult: Bool
 }
 
 public extension HighlightStyle {
@@ -106,10 +109,8 @@ extension HighlightStyle {
 fileprivate extension UIImage {
     convenience init?(name: String) {
         if let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
-            let bundle = Bundle(path: resourcePath + "JSONPreview.bundle") {
-            
+           let bundle = Bundle(path: resourcePath + "JSONPreview.bundle") {
             self.init(named: name, in: bundle, compatibleWith: nil)
-            
         } else {
             self.init(named: name)
         }

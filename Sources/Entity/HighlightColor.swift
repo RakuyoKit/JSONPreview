@@ -10,37 +10,7 @@ import UIKit
 
 /// Color configuration for highlight
 public struct HighlightColor {
-    public init(
-        keyWord: ConvertibleToColor,
-        key: ConvertibleToColor,
-        link: ConvertibleToColor,
-        string: ConvertibleToColor,
-        number: ConvertibleToColor,
-        boolean: ConvertibleToColor,
-        null: ConvertibleToColor,
-        unknownText: ConvertibleToColor,
-        unknownBackground: ConvertibleToColor,
-        searchHitBackground: ConvertibleToColor? = nil,
-        jsonBackground: ConvertibleToColor,
-        lineBackground: ConvertibleToColor,
-        lineText: ConvertibleToColor
-    ) {
-        self.keyWord = keyWord.color
-        self.key = key.color
-        self.link = link.color
-        self.string = string.color
-        self.number = number.color
-        self.boolean = boolean.color
-        self.null = null.color
-        self.unknownText = unknownText.color
-        self.unknownBackground = unknownBackground.color
-        self.searchHitBackground = searchHitBackground?.color
-        self.jsonBackground = jsonBackground.color
-        self.lineBackground = lineBackground.color
-        self.lineText = lineText.color
-    }
-    
-    /// Keyword color. Including `{}`, `[]`, `:`, `,`
+    /// Keyword color. Including `{ }`, `[]`, `:`, `,`
     public var keyWord: UIColor
     
     /// The color of the key of the object
@@ -80,6 +50,36 @@ public struct HighlightColor {
     
     /// Text color in line number area
     public var lineText: UIColor
+    
+    public init(
+        keyWord: ConvertibleToColor,
+        key: ConvertibleToColor,
+        link: ConvertibleToColor,
+        string: ConvertibleToColor,
+        number: ConvertibleToColor,
+        boolean: ConvertibleToColor,
+        null: ConvertibleToColor,
+        unknownText: ConvertibleToColor,
+        unknownBackground: ConvertibleToColor,
+        searchHitBackground: ConvertibleToColor? = nil,
+        jsonBackground: ConvertibleToColor,
+        lineBackground: ConvertibleToColor,
+        lineText: ConvertibleToColor
+    ) {
+        self.keyWord = keyWord.color
+        self.key = key.color
+        self.link = link.color
+        self.string = string.color
+        self.number = number.color
+        self.boolean = boolean.color
+        self.null = null.color
+        self.unknownText = unknownText.color
+        self.unknownBackground = unknownBackground.color
+        self.searchHitBackground = searchHitBackground?.color
+        self.jsonBackground = jsonBackground.color
+        self.lineBackground = lineBackground.color
+        self.lineText = lineText.color
+    }
 }
 
 // MARK: - Built-in color style

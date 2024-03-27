@@ -17,6 +17,29 @@ public struct JSONSlice {
         case expand, folded
     }
     
+    /// Position in the complete structure.
+    public let lineNumber: Int
+    
+    /// The current display state of the slice.
+    public var state: State
+    
+    /// Indentation level.
+    public let level: Int
+    
+    /// The complete content of the JSON slice in the expanded state.
+    public var expand: AttributedString
+    
+    /// The summary content of the JSON slice in the folded state.
+    public var folded: AttributedString?
+    
+    /// The number of times the slice was folded.
+    ///
+    /// The initial value is 0, which means it is not folded.
+    /// Each time the slice is folded, the value increases by 1.
+    ///
+    /// Mainly used to assist in calculating click positions.
+    internal var foldedTimes: Int
+    
     /// Initialization method.
     ///
     /// - Parameters:
@@ -61,36 +84,13 @@ public struct JSONSlice {
     ) {
         self.init(
             level: level,
-            lineNumber: lineNumber, 
+            lineNumber: lineNumber,
             state: state,
             expand: .init(string: expand.0, attributes: expand.1),
             folded: folded.flatMap { .init(string: $0.0, attributes: $0.1) },
             foldedTimes: foldedTimes
         )
     }
-    
-    /// Position in the complete structure.
-    public let lineNumber: Int
-    
-    /// The current display state of the slice.
-    public var state: State
-    
-    /// Indentation level.
-    public let level: Int
-    
-    /// The complete content of the JSON slice in the expanded state.
-    public var expand: AttributedString
-    
-    /// The summary content of the JSON slice in the folded state.
-    public var folded: AttributedString?
-    
-    /// The number of times the slice was folded.
-    ///
-    /// The initial value is 0, which means it is not folded.
-    /// Each time the slice is folded, the value increases by 1.
-    ///
-    /// Mainly used to assist in calculating click positions.
-    internal var foldedTimes: Int
 }
 
 public extension JSONSlice {
