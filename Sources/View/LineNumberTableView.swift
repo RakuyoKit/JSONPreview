@@ -36,7 +36,7 @@ private extension LineNumberTableView {
         estimatedSectionFooterHeight = 0.0
         estimatedSectionHeaderHeight = 0.0
         
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15.0, tvOS 15.0, *) {
             sectionHeaderTopPadding = 0.0
         }
         

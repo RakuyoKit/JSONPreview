@@ -46,6 +46,7 @@
 		AEBD0FEF2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */; };
 		AEBD0FF12B4BF69E0080ED15 /* BaseJSONPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */; };
 		AEBD0FF42B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */; };
+		AED63AF82BB3D3D800345C81 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE15063A2BB18F4A0095EF5B /* SceneDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -292,6 +293,7 @@
 				AE2E25EC2BB1829D0050D5AE /* SearchEntranceTableViewController.swift in Sources */,
 				AE2E25ED2BB1829D0050D5AE /* ListTableViewController.swift in Sources */,
 				AE2E25EE2BB1829D0050D5AE /* BasicExampleViewController.swift in Sources */,
+				AED63AF82BB3D3D800345C81 /* SceneDelegate.swift in Sources */,
 				AE2E25EF2BB1829D0050D5AE /* BaseSearchExampleViewController.swift in Sources */,
 				AE2E25F02BB1829D0050D5AE /* InitialFoldedExampleViewController.swift in Sources */,
 				AE2E25F12BB1829D0050D5AE /* BasicSearchExampleViewController.swift in Sources */,
@@ -372,7 +374,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 13.0;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Debug;
 		};
@@ -406,7 +408,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 13.0;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Release;
 		};

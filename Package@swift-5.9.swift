@@ -6,7 +6,7 @@ let package = Package(
     name: "JSONPreview",
     platforms: [
         .iOS(.v12),
-        .tvOS(.v13),
+        .tvOS(.v12),
         .visionOS(.v1)
     ],
     products: [
