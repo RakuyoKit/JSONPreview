@@ -451,7 +451,6 @@ private extension JSONPreview {
 #if !os(tvOS)
     func handleZoomClick(at realRow: Int) {
         guard let slices = decorator?.slices else { return }
-        let clickSlice = slices[realRow]
         
         // Calculate the starting point of the replacement range
         let calculateLocation: () -> Int = {
@@ -466,6 +465,8 @@ private extension JSONPreview {
                 }($1)
             }
         }
+        
+        let clickSlice = slices[realRow]
         
         switch clickSlice.state {
         case .expand:
@@ -485,9 +486,12 @@ private extension JSONPreview {
     }
     
     func handleExpandSliceDidClick(clickSlice: JSONSlice, realRow: Int, location: () -> Int) {
-        guard let decorator = decorator else { return }
-        
-        guard let folded = clickSlice.folded else { return }
+        guard
+            let decorator = decorator,
+            let folded = clickSlice.folded
+        else {
+            return
+        }
         
         let slices = decorator.slices
         
@@ -545,9 +549,12 @@ private extension JSONPreview {
     }
     
     func handleFoldedSliceDidClick(clickSlice: JSONSlice, realRow: Int, location: () -> Int) {
-        guard let decorator = decorator else { return }
-        
-        guard let folded = clickSlice.folded else { return }
+        guard
+            let decorator = decorator,
+            let folded = clickSlice.folded
+        else {
+            return
+        }
         
         let slices = decorator.slices
         
