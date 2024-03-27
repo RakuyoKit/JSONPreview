@@ -41,13 +41,20 @@ private extension JSONTextView {
         canCancelContentTouches = true
         showsHorizontalScrollIndicator = false
         
-#if !os(tvOS)
-        isEditable = false
-#endif
         textAlignment = .left
         linkTextAttributes = [:]
         textContainer.lineFragmentPadding = 0
         layoutManager.allowsNonContiguousLayout = false
+        
+#if os(tvOS)
+        isUserInteractionEnabled = true
+        panGestureRecognizer.allowedTouchTypes = [
+            // swiftlint:disable:next legacy_objc_type
+            NSNumber(value: UITouch.TouchType.indirect.rawValue)
+        ]
+#else
+        isEditable = false
+#endif
     }
 }
 
