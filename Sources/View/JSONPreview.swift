@@ -15,7 +15,6 @@ open class JSONPreview: UIView {
         stackView.axis = .horizontal
         stackView.distribution = .fill
         stackView.alignment = .fill
-        
         return stackView
     }()
     
@@ -32,16 +31,15 @@ open class JSONPreview: UIView {
          with no spacing between Cells.
          */
         let tableView = LineNumberTableView(frame: .zero, style: .grouped)
+        tableView.specialTag = .lineView
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(LineNumberCell.self, forCellReuseIdentifier: "cell")
         
 #if os(tvOS)
         tableView.isHidden = true
 #endif
-        
-        tableView.specialTag = .lineView
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        tableView.register(LineNumberCell.self, forCellReuseIdentifier: "cell")
         
         return tableView
     }()
@@ -49,7 +47,6 @@ open class JSONPreview: UIView {
     /// TextView responsible for displaying JSON
     open lazy var jsonTextView: JSONTextView = {
         let textView = JSONTextView()
-        
         textView.specialTag = .jsonView
         
 #if !os(tvOS)
@@ -320,8 +317,10 @@ private extension JSONPreview {
         // lineNumberTableView
         addLineNumberTableViewLayout()
         
+#if !os(visionOS) && !os(tvOS)
         // Listening to device rotation in preparation for recalculating cell height
         listeningDeviceRotation()
+#endif
         
         updateHighlightStyle()
         
@@ -333,16 +332,12 @@ private extension JSONPreview {
     func addSkeletonStackViewLayout() {
         skeletonStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        var constraints = [
+        NSLayoutConstraint.activate([
             skeletonStackView.topAnchor.constraint(equalTo: topAnchor),
             skeletonStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-        ]
-        
-        constraints.append(skeletonStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor))
-        
-        constraints.append(skeletonStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor))
-        
-        NSLayoutConstraint.activate(constraints)
+            skeletonStackView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            skeletonStackView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor)
+        ])
     }
     
     func addLineNumberTableViewLayout() {
@@ -352,42 +347,9 @@ private extension JSONPreview {
             lineNumberTableView.widthAnchor.constraint(equalToConstant: Constant.lineWith),
         ])
     }
-    
-    func listeningDeviceRotation() {
-#if !os(visionOS) && !os(tvOS)
-        if !isGeneratingOrientationNotifications {
-            UIDevice.current.beginGeneratingDeviceOrientationNotifications()
-        }
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleDeviceOrientationChange(_:)),
-            name: UIDevice.orientationDidChangeNotification,
-            object: nil
-        )
-#endif
-    }
 }
 
 private extension JSONPreview {
-#if !os(visionOS) && !os(tvOS)
-    @objc
-    func handleDeviceOrientationChange(_ notification: Notification) {
-        switch UIDevice.current.orientation {
-        case .portrait:
-            lastOrientation = .portrait
-            lineNumberTableView.reloadData()
-            
-        case .landscapeLeft, .landscapeRight:
-            lastOrientation = .landscape
-            lineNumberTableView.reloadData()
-            
-        default:
-            break
-        }
-    }
-#endif
-    
     func getLineHeight(at index: Int) -> CGFloat {
         guard let slices = decorator?.slices else { return 0 }
         
@@ -464,6 +426,8 @@ private extension JSONPreview {
             
             this.jsonTextView.attributedText = attributedText
             this.lineDataSource = lines
+            
+            this.jsonTextView.contentSize.width = 1000
         }
     }
     
@@ -634,6 +598,38 @@ private extension JSONPreview {
             with: replaceString
         )
     }
+    
+#if !os(visionOS)
+    func listeningDeviceRotation() {
+        if !isGeneratingOrientationNotifications {
+            UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+        }
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDeviceOrientationChange(_:)),
+            name: UIDevice.orientationDidChangeNotification,
+            object: nil
+        )
+    }
+    
+    @objc
+    func handleDeviceOrientationChange(_ notification: Notification) {
+        switch UIDevice.current.orientation {
+        case .portrait:
+            lastOrientation = .portrait
+            lineNumberTableView.reloadData()
+            
+        case .landscapeLeft, .landscapeRight:
+            lastOrientation = .landscape
+            lineNumberTableView.reloadData()
+            
+        default:
+            break
+        }
+    }
+#endif
+    
 #endif
 }
 
