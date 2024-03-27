@@ -44,10 +44,20 @@ final class EntranceTableViewController: ListTableViewController {
                 title: "Seach",
                 desc: "Related examples of search functionality.",
                 action: { SearchEntranceTableViewController() }
-            )
+            ),
         ])
 #endif
-        super.init(dataSource: dataSource)
+        
+        super.init(dataSource: [
+            dataSource,
+            [
+                .init(
+                    title: "Test",
+                    desc: "Not used to demonstrate functionality, but used for internal testing.",
+                    action: { TestEntranceTableViewController() }
+                )
+            ]
+        ])
     }
     
     required init?(coder: NSCoder) {

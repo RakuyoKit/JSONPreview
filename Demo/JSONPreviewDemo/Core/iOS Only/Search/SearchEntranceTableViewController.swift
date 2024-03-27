@@ -11,16 +11,18 @@ import UIKit
 final class SearchEntranceTableViewController: ListTableViewController {
     init() {
         super.init(dataSource: [
-            .init(
-                title: "Basic",
-                desc: "Covers all basic usage of the search function.",
-                action: { BasicSearchExampleViewController() }
-            ),
-            .init(
-                title: "Custom Config",
-                desc: "Some examples of custom configurations.",
-                action: { CustomSearchExampleViewController() }
-            ),
+            [
+                .init(
+                    title: "Basic",
+                    desc: "Covers all basic usage of the search function.",
+                    action: { BasicSearchExampleViewController() }
+                ),
+                .init(
+                    title: "Custom Config",
+                    desc: "Some examples of custom configurations.",
+                    action: { CustomSearchExampleViewController() }
+                ),
+            ]
         ])
     }
     
