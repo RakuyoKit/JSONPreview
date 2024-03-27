@@ -29,12 +29,16 @@ private extension LineNumberTableView {
         canCancelContentTouches = true
         showsVerticalScrollIndicator = false
         showsHorizontalScrollIndicator = false
+        allowsMultipleSelection = true
         contentInsetAdjustmentBehavior = .never
         
-        allowsMultipleSelection = true
-        estimatedRowHeight = 0
-        estimatedSectionFooterHeight = 0
-        estimatedSectionHeaderHeight = 0
+        estimatedRowHeight = 0.0
+        estimatedSectionFooterHeight = 0.0
+        estimatedSectionHeaderHeight = 0.0
+        
+        if #available(iOS 15.0, tvOS 15.0, *) {
+            sectionHeaderTopPadding = 0.0
+        }
         
 #if !os(tvOS)
         scrollsToTop = false
