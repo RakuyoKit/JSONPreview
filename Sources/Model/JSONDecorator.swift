@@ -124,7 +124,7 @@ private extension JSONDecorator {
         _ expand: AttributedString,
         _ fold: AttributedString?,
         _ foldedTimes: Int,
-        _ currentCount: Int
+        _ currentCount: Int?
     ) -> JSONSlice
     
     typealias NeedConfig = (indent: Bool, comma: Bool)
@@ -158,7 +158,7 @@ private extension JSONDecorator {
             
             return JSONSlice(
                 level: indent,
-                lineNumber: currentSlicesCount + currentCount + 1,
+                lineNumber: currentSlicesCount + (currentCount ?? 0) + 1,
                 state: state,
                 expand: expand,
                 folded: fold,
@@ -227,7 +227,7 @@ private extension JSONDecorator {
             let expand = AttributedString(string: indent)
             expand.append(createUnknownAttributedString(with: string))
             
-            let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+            let slice = createJSONSlice(expand, nil, foldedTimes, nil)
             return [slice]
         }
     }
@@ -475,7 +475,7 @@ private extension JSONDecorator {
             expand.append(createUnknownAttributedString(with: wrong))
         }
         
-        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        let slice = createJSONSlice(expand, nil, foldedTimes, nil)
         return [slice]
     }
     
@@ -500,7 +500,7 @@ private extension JSONDecorator {
             expand.append(createUnknownAttributedString(with: wrong))
         }
         
-        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        let slice = createJSONSlice(expand, nil, foldedTimes, nil)
         return [slice]
     }
     
@@ -525,7 +525,7 @@ private extension JSONDecorator {
             expand.append(createUnknownAttributedString(with: wrong))
         }
         
-        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        let slice = createJSONSlice(expand, nil, foldedTimes, nil)
         return [slice]
     }
     
@@ -549,7 +549,7 @@ private extension JSONDecorator {
             expand.append(createUnknownAttributedString(with: wrong))
         }
         
-        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        let slice = createJSONSlice(expand, nil, foldedTimes, nil)
         return [slice]
     }
     
