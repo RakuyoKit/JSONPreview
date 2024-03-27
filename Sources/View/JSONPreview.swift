@@ -21,7 +21,17 @@ open class JSONPreview: UIView {
     
     /// TableView responsible for displaying row numbers
     open lazy var lineNumberTableView: LineNumberTableView = {
-        let tableView = LineNumberTableView(frame: .zero, style: .plain)
+        /*
+         Because there is currently no way to build a `.plain` style UITableView with 
+         no spacing between Cells on visionOS.
+         
+         The spacing between Cells will cause the line numbers and json lines to 
+         not correspond one to one, which will affect the folding and expanding functions.
+         
+         So you can only change the style to .grouped to construct a UITableView object
+         with no spacing between Cells.
+         */
+        let tableView = LineNumberTableView(frame: .zero, style: .grouped)
         
         tableView.specialTag = .lineView
         tableView.delegate = self
@@ -275,7 +285,13 @@ private extension JSONPreview {
         static let lineWith: CGFloat = {
             let _width: CGFloat = 55
             #if os(visionOS)
-            return _width + 20
+            /*
+             On visionOS, there is a gap on the left and right sides of the Cell that 
+             cannot be eliminated for the time being.
+             
+             So we need to increase the width so that the line number text can be fully displayed.
+             */
+            return _width + 10
             #else
             return _width
             #endif
@@ -618,6 +634,14 @@ extension JSONPreview: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return getLineHeight(at: indexPath.row)
     }
+    
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.001
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.001
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -716,6 +740,12 @@ extension JSONPreview: JSONTextViewDelegate {
             let x: CGFloat = {
                 let minX: CGFloat = 5
                 #if os(visionOS)
+                /*
+                 On visionOS, there is a gap on the left and right sides of the Cell that
+                 cannot be eliminated for the time being.
+                 
+                 So we need to increase the `x` value to get the corresponding Cell.
+                 */
                 return minX + 15
                 #else
                 return minX
