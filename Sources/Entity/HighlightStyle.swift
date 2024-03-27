@@ -57,17 +57,16 @@ public struct HighlightStyle {
         boldedSearchResult: Bool = true
     ) {
         let getImage: (String) -> UIImage? = {
-            #if SWIFT_PACKAGE
+#if SWIFT_PACKAGE
             let bundle = Bundle.module
-            #else
+#else
             guard
                 let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
                 let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle")
             else {
                 return UIImage(named: $0)
             }
-            #endif
-            
+#endif
             return UIImage(named: $0, in: bundle, compatibleWith: nil)
         }
         
