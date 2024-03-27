@@ -1,3 +1,5 @@
+// swiftlint:disable all
+
 //===----------------------------------------------------------------------===//
 //
 // This source file is part of the Swift.org open source project
@@ -88,8 +90,8 @@ extension JSONValue {
     }
 }
 
-extension JSONValue {
-    public var debugDataTypeDescription: String {
+public extension JSONValue {
+    var debugDataTypeDescription: String {
         switch self {
         case .array:
             return "an array"
@@ -108,3 +110,5 @@ extension JSONValue {
         }
     }
 }
+
+// swiftlint:enable all

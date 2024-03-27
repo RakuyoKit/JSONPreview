@@ -11,11 +11,13 @@ import UIKit
 open class LineNumberTableView: UITableView {
     public override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
+        
         config()
     }
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        
         config()
     }
 }

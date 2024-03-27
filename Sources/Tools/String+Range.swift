@@ -15,7 +15,7 @@ extension String {
         while let range = range(
             of: searchString,
             options: .literal,
-            range: searchStartIndex..<endIndex
+            range: searchStartIndex ..< endIndex
         ) {
             defer {
                 searchStartIndex = range.upperBound

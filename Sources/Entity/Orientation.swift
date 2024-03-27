@@ -9,7 +9,7 @@
 import Foundation
 
 internal enum Orientation: CaseIterable {
-    case unknow
-    case portrait
     case landscape
+    case portrait
+    case unknow
 }

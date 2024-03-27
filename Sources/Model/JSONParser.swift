@@ -1,3 +1,5 @@
+// swiftlint:disable all
+
 //===----------------------------------------------------------------------===//
 //
 // This source file is part of the Swift.org open source project
@@ -774,3 +776,5 @@ extension Array where Element == UInt8 {
     
     fileprivate static let _null = [UInt8(ascii: "n"), UInt8(ascii: "u"), UInt8(ascii: "l"), UInt8(ascii: "l")]
 }
+
+//swiftlint:enable all

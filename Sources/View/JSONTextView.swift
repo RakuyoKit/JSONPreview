@@ -18,18 +18,20 @@ public protocol JSONTextViewDelegate: NSObjectProtocol {
 }
 
 open class JSONTextView: UITextView {
+    /// Used for callback click
+    open weak var clickDelegate: JSONTextViewDelegate? = nil
+    
     public override init(frame: CGRect, textContainer: NSTextContainer? = nil) {
         super.init(frame: frame, textContainer: textContainer)
+        
         config()
     }
     
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
+        
         config()
     }
-    
-    /// Used for callback click
-    open weak var clickDelegate: JSONTextViewDelegate? = nil
 }
 
 private extension JSONTextView {
@@ -82,8 +84,8 @@ extension JSONTextView {
         }
         
         // Blur the scope of the click.
-        for i in -1 ... 2 {
-            let offset = characterIndex + i
+        for index in -1 ... 2 {
+            let offset = characterIndex + index
             
             guard offset >= 0 && offset < text.count else { break }
             
