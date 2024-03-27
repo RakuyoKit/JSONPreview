@@ -1,5 +1,6 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/Images/logo.png" alt="JSONPreview" title="JSONPreview" width="1000"/>
+<img src="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/Images/logo.png#gh-light-mode-only" alt="JSONPreview" title="JSONPreview" width="1000"/>
+<img src="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/Images/logo_dark.png#gh-dark-mode-only" alt="JSONPreview" title="JSONPreview" width="1000"/>
 </p>
 
 <p align="center">
@@ -18,12 +19,6 @@
 下面是一个大约25秒的gif（**大约2.5M**），它展示了使用本库预览 JSON 时的效果。
 
 ![screenshot](Images/screenshot.gif)
-
-## 基本要求
-
-- 运行 **iOS 12** 及以上版本的设备。
-- 使用 **Xcode 10** 及以上版本编译。
-- **Swift 5.0** 及以上版本。
 
 ## 安装
 
@@ -51,9 +46,10 @@ dependencies: [
 
 - [x] 支持**格式化**显示 JSON 数据。
 - [x] 支持**高亮** JSON 数据，提供多种颜色与字体配置选项。
-- [x] 针对 `Array` 与 `Object` 提供**折叠与展开**功能。
+- [x] 针对 `Array` 与 `Object` 提供**折叠与展开**功能（tvOS 除外）。
 - [x] 允许设置节点的初始状态，折叠或展开。
 - [x] 基于 `UITextView` 实现。意味着您可以复制 `JSONPreview` 中的任意内容。
+- [x] 使用文本搜索 JSON 的内容。
 
 > 细节补充：
 > 1. `JSONPreview` 提供有限的，不完整的格式检查功能，故该功能不作为主要功能提供。详情可以参考：[格式检查](#格式检查)。
@@ -61,7 +57,7 @@ dependencies: [
 
 ## 使用
 
-> 下载项目后，[`EntranceTableViewController.swift`](Demo/JSONPreviewDemo/Example/EntranceTableViewController.swift) 文件中包含部分示例代码，运行项目即可查看对应的效果。
+> 下载项目后，[Demo](Demo) 目录下包含示例项目，运行项目即可查看对应的效果。
 
 ### 基础用法及默认配置
 
@@ -83,7 +79,7 @@ previewView.preview(json)
 
 如果您想要自定义高亮样式，可通过 `HighlightStyle` 与 `HighlightColor` 这两个类型来进行设置：
 
-> [`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L117) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
+> [`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L126) 是一个用于提供颜色的协议。通过该协议，您可以直接使用 `UIColor` 对象，或轻松的将诸如 `0xffffff`、`#FF7F20` 以及  `[0.72, 0.18, 0.13]` 转换为 `UIColor` 对象。
 
 ```swift
 let highlightColor = HighlightColor(
@@ -96,6 +92,7 @@ let highlightColor = HighlightColor(
     null: ConvertibleToColor,
     unknownText: ConvertibleToColor,
     unknownBackground: ConvertibleToColor,
+    searchHitBackground: ConvertibleToColor?,
     jsonBackground: ConvertibleToColor,
     lineBackground: ConvertibleToColor,
     lineText: ConvertibleToColor
@@ -107,13 +104,14 @@ let style = HighlightStyle(
     color: highlightColor,
     lineFont: UIFont?,
     jsonFont: UIFont?,
-    lineHeight: CGFloat
+    lineHeight: CGFloat,
+    boldedSearchResult: Bool
 )
 
 previewView.preview(json, style: style)
 ```
 
-您还可以通过 initialState 参数配置 json 子节点的初始状态。
+您还可以通过 `initialState` 参数配置 json 子节点的初始状态。
 
 ```swift
 // 预览时，所有节点默认均为折叠状态
@@ -145,10 +143,6 @@ previewView.preview(json, style: style, initialState: .folded)
 ## DFD
 
 ![DFD](Images/DFD.jpg)
-
-## TODO
-
-- [ ] 支持 intel 版本的 macOS。
 
 ## 致谢
 

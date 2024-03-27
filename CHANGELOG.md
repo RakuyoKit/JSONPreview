@@ -6,6 +6,19 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.2.3...HEAD)
 
+### Added
+
+- Add search function. [#13](https://github.com/RakuyoKit/JSONPreview/pull/13) @rakuyoMo
+- Add visionOS support. [#12](https://github.com/RakuyoKit/JSONPreview/pull/12), [#17](https://github.com/RakuyoKit/JSONPreview/pull/17) @rakuyoMo
+- Add tvOS support. [#14](https://github.com/RakuyoKit/JSONPreview/pull/14), [#18](https://github.com/RakuyoKit/JSONPreview/pull/18) @rakuyoMo
+- Access SwiftLint and unify code format [#16](https://github.com/RakuyoKit/JSONPreview/pull/16) @rakuyoMo
+
+### Changed
+
+- The minimum supported version of the demo is consistent with the library. [#17](https://github.com/RakuyoKit/JSONPreview/pull/17) @rakuyoMo
+- Adjusted the directory structure of the demo. @rakuyoMo
+- Abandon plan to “support Intel version of macOS”.
+
 ---
 
 ## [2.2.3 - PrivacyInfo](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.2.3) (2024-1-24)
