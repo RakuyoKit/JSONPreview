@@ -13,11 +13,6 @@ let package = Package(
             name: "JSONPreview",
             targets: ["JSONPreview"]),
     ],
-    dependencies: [
-        .package(
-            url: "https://github.com/realm/SwiftLint.git",
-            from: "0.54.0"),
-    ],
     targets: [
         .target(
             name: "JSONPreview",
@@ -29,14 +24,3 @@ let package = Package(
             path: "Tests"),
     ]
 )
-
-let swiftlintPlugin = Target.PluginUsage.plugin(name: "SwiftLintPlugin", package: "SwiftLint")
-
-for i in package.targets.indices {
-    if package.targets[i].plugins == nil {
-        package.targets[i].plugins = [swiftlintPlugin]
-    } else {
-        package.targets[i].plugins?.append(swiftlintPlugin)
-    }
-}
-
