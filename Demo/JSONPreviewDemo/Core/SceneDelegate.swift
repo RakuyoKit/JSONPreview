@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder {
 
 // MARK: - UIWindowSceneDelegate
 
-@available(tvOS 13.0, *)
+@available(iOS 13.0, tvOS 13.0, *)
 extension SceneDelegate: UIWindowSceneDelegate {
     func scene(
         _ scene: UIScene,
