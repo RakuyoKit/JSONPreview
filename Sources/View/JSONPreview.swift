@@ -47,20 +47,16 @@ open class JSONPreview: UIView {
         let textView = JSONTextView()
         
         textView.specialTag = .jsonView
-        textView.clickDelegate = self
+        
+#if !os(tvOS)
         textView.delegate = self
+        textView.clickDelegate = self
+#endif
         
         return textView
     }()
     
     public var contentSize: CGSize { jsonTextView.contentSize }
-    
-#if !os(tvOS)
-    public var scrollsToTop: Bool {
-        get { jsonTextView.scrollsToTop }
-        set { jsonTextView.scrollsToTop = newValue }
-    }
-#endif
     
     /// Whether to hide the line number view
     public var isHiddenLineNumber: Bool {
@@ -68,8 +64,15 @@ open class JSONPreview: UIView {
         set { lineNumberTableView.isHidden = newValue }
     }
     
+#if !os(tvOS)
+    public var scrollsToTop: Bool {
+        get { jsonTextView.scrollsToTop }
+        set { jsonTextView.scrollsToTop = newValue }
+    }
+    
     /// delegate for `JSONPreview`.
     public weak var delegate: JSONPreviewDelegate? = nil
+#endif
     
     /// Highlight style
     public lazy var highlightStyle: HighlightStyle = .`default` {
@@ -363,9 +366,9 @@ private extension JSONPreview {
 }
 
 private extension JSONPreview {
+#if !os(visionOS) && !os(tvOS)
     @objc
     func handleDeviceOrientationChange(_ notification: Notification) {
-#if !os(visionOS) && !os(tvOS)
         switch UIDevice.current.orientation {
         case .portrait:
             lastOrientation = .portrait
@@ -378,8 +381,8 @@ private extension JSONPreview {
         default:
             break
         }
-#endif
     }
+#endif
     
     func getLineHeight(at index: Int) -> CGFloat {
         guard let slices = decorator?.slices else { return 0 }
@@ -460,6 +463,7 @@ private extension JSONPreview {
         }
     }
     
+#if !os(tvOS)
     func handleZoomClick(at realRow: Int) {
         guard let slices = decorator?.slices else { return }
         let clickSlice = slices[realRow]
@@ -626,6 +630,7 @@ private extension JSONPreview {
             with: replaceString
         )
     }
+#endif
 }
 
 // MARK: - UITableViewDelegate
@@ -699,6 +704,7 @@ extension JSONPreview: UIScrollViewDelegate {
     }
 }
 
+#if !os(tvOS)
 // MARK: - UITextViewDelegate
 
 extension JSONPreview: UITextViewDelegate {
@@ -774,6 +780,7 @@ extension JSONPreview: JSONTextViewDelegate {
         handleZoomClick(at: realRow)
     }
 }
+#endif
 
 // MARK: - Tools
 

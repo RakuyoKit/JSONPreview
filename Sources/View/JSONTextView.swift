@@ -8,6 +8,9 @@
 
 import UIKit
 
+@available(tvOS, unavailable,
+    message: "UITextView cannot be edited on tvOS, so the folding function cannot be implemented."
+)
 public protocol JSONTextViewDelegate: NSObjectProtocol {
     /// Execute when zoom is triggered.
     ///
@@ -18,8 +21,10 @@ public protocol JSONTextViewDelegate: NSObjectProtocol {
 }
 
 open class JSONTextView: UITextView {
+#if !os(tvOS)
     /// Used for callback click
     open weak var clickDelegate: JSONTextViewDelegate? = nil
+#endif
     
     public override init(frame: CGRect, textContainer: NSTextContainer? = nil) {
         super.init(frame: frame, textContainer: textContainer)
@@ -59,6 +64,7 @@ private extension JSONTextView {
 }
 
 extension JSONTextView {
+#if !os(tvOS)
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         defer { super.touchesBegan(touches, with: event) }
         
@@ -104,6 +110,7 @@ extension JSONTextView {
             break
         }
     }
+#endif
     
     open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         switch action {
