@@ -21,6 +21,10 @@ final class EntranceTableViewController: ListTableViewController {
                 desc: "This example only shows the usage when customizing colors, using another set of colors built into JSONPreview. You can follow suit to make your own color scheme.",
                 action: { CustomStyleExampleViewController() }
             ),
+        ]
+        
+#if !os(tvOS)
+        dataSource.append(contentsOf: [
             .init(
                 title: "Initial folded",
                 desc: "Initial collapse of all JSON nodes. You need to expand each node manually.",
@@ -36,14 +40,12 @@ final class EntranceTableViewController: ListTableViewController {
                 desc: "Show how to use it in UITableView and dynamically adapt to Cell height.",
                 action: { TableViewExampleViewController() }
             ),
-        ]
-        
-#if !os(tvOS)
-        dataSource.append(.init(
-            title: "Seach",
-            desc: "Related examples of search functionality.",
-            action: { SearchEntranceTableViewController() }
-        ))
+            .init(
+                title: "Seach",
+                desc: "Related examples of search functionality.",
+                action: { SearchEntranceTableViewController() }
+            )
+        ])
 #endif
         super.init(dataSource: dataSource)
     }

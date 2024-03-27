@@ -12,21 +12,11 @@
 		AE2E240A2BB140820050D5AE /* BaseSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E24092BB140820050D5AE /* BaseSearchExampleViewController.swift */; };
 		AE2E25462BB158E30050D5AE /* BasicSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25452BB158E30050D5AE /* BasicSearchExampleViewController.swift */; };
 		AE2E25482BB1594D0050D5AE /* CustomSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25472BB1594D0050D5AE /* CustomSearchExampleViewController.swift */; };
-		AE2E25E82BB1829D0050D5AE /* TableViewExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */; };
 		AE2E25E92BB1829D0050D5AE /* BaseJSONPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */; };
-		AE2E25EA2BB1829D0050D5AE /* CustomStyleExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */; };
-		AE2E25EB2BB1829D0050D5AE /* HideLineNumberExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */; };
-		AE2E25EC2BB1829D0050D5AE /* SearchEntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E24072BB13FAC0050D5AE /* SearchEntranceTableViewController.swift */; };
 		AE2E25ED2BB1829D0050D5AE /* ListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0F382B4BEE220080ED15 /* ListTableViewController.swift */; };
-		AE2E25EE2BB1829D0050D5AE /* BasicExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CE2DA2B47F88F00286E34 /* BasicExampleViewController.swift */; };
-		AE2E25EF2BB1829D0050D5AE /* BaseSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E24092BB140820050D5AE /* BaseSearchExampleViewController.swift */; };
-		AE2E25F02BB1829D0050D5AE /* InitialFoldedExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */; };
-		AE2E25F12BB1829D0050D5AE /* BasicSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25452BB158E30050D5AE /* BasicSearchExampleViewController.swift */; };
 		AE2E25F22BB1829D0050D5AE /* ExampleJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */; };
 		AE2E25F32BB1829D0050D5AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CE2D62B47F88F00286E34 /* AppDelegate.swift */; };
-		AE2E25F42BB1829D0050D5AE /* EntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */; };
 		AE2E25F52BB1829D0050D5AE /* DemoCaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */; };
-		AE2E25F62BB1829D0050D5AE /* CustomSearchExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E25472BB1594D0050D5AE /* CustomSearchExampleViewController.swift */; };
 		AE2E25F72BB1829D0050D5AE /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E932BB138CD0015D968 /* ListTableViewCell.swift */; };
 		AE2E25F92BB1829D0050D5AE /* JSONPreview in Frameworks */ = {isa = PBXBuildFile; productRef = AE2E25E62BB1829D0050D5AE /* JSONPreview */; };
 		AE2E25FC2BB1829D0050D5AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE4CE2DF2B47F89000286E34 /* Assets.xcassets */; };
@@ -47,6 +37,9 @@
 		AEBD0FF12B4BF69E0080ED15 /* BaseJSONPreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */; };
 		AEBD0FF42B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */; };
 		AED63AF82BB3D3D800345C81 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE15063A2BB18F4A0095EF5B /* SceneDelegate.swift */; };
+		AED63B052BB3DA3B00345C81 /* EntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */; };
+		AED63B062BB3DA6800345C81 /* CustomStyleExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */; };
+		AED63B072BB3DA6A00345C81 /* BasicExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE4CE2DA2B47F88F00286E34 /* BasicExampleViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -126,33 +119,10 @@
 		AE4CE2D52B47F88F00286E34 /* JSONPreviewDemo */ = {
 			isa = PBXGroup;
 			children = (
-				AEBD0F3A2B4BEE650080ED15 /* Core */,
+				AEBD0FF22B4BF7B80080ED15 /* Core */,
 				AEBD0F3B2B4BEE680080ED15 /* Other */,
 			);
 			path = JSONPreviewDemo;
-			sourceTree = "<group>";
-		};
-		AE780E922BB138BD0015D968 /* List */ = {
-			isa = PBXGroup;
-			children = (
-				AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */,
-				AE780E932BB138CD0015D968 /* ListTableViewCell.swift */,
-				AEBD0F382B4BEE220080ED15 /* ListTableViewController.swift */,
-			);
-			path = List;
-			sourceTree = "<group>";
-		};
-		AEBD0F3A2B4BEE650080ED15 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				AE4CE2D62B47F88F00286E34 /* AppDelegate.swift */,
-				AE15063A2BB18F4A0095EF5B /* SceneDelegate.swift */,
-				AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */,
-				AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */,
-				AE780E922BB138BD0015D968 /* List */,
-				AEBD0FF22B4BF7B80080ED15 /* Example */,
-			);
-			path = Core;
 			sourceTree = "<group>";
 		};
 		AEBD0F3B2B4BEE680080ED15 /* Other */ = {
@@ -166,18 +136,49 @@
 			path = Other;
 			sourceTree = "<group>";
 		};
-		AEBD0FF22B4BF7B80080ED15 /* Example */ = {
+		AEBD0FF22B4BF7B80080ED15 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				AED63AFC2BB3D97400345C81 /* AppDelegate */,
+				AED63AFB2BB3D8D400345C81 /* Global */,
+				AED63AFA2BB3D8CE00345C81 /* iOS Only */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		AED63AFA2BB3D8CE00345C81 /* iOS Only */ = {
 			isa = PBXGroup;
 			children = (
 				AE2E24062BB13F9D0050D5AE /* Search */,
-				AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */,
-				AE4CE2DA2B47F88F00286E34 /* BasicExampleViewController.swift */,
-				AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */,
+				AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */,
 				AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */,
 				AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */,
 				AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */,
 			);
-			path = Example;
+			path = "iOS Only";
+			sourceTree = "<group>";
+		};
+		AED63AFB2BB3D8D400345C81 /* Global */ = {
+			isa = PBXGroup;
+			children = (
+				AEBD0FF02B4BF69E0080ED15 /* BaseJSONPreviewController.swift */,
+				AE4CE2DA2B47F88F00286E34 /* BasicExampleViewController.swift */,
+				AEBD0FEE2B4BF66C0080ED15 /* CustomStyleExampleViewController.swift */,
+				AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */,
+				AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */,
+				AE780E932BB138CD0015D968 /* ListTableViewCell.swift */,
+				AEBD0F382B4BEE220080ED15 /* ListTableViewController.swift */,
+			);
+			path = Global;
+			sourceTree = "<group>";
+		};
+		AED63AFC2BB3D97400345C81 /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				AE4CE2D62B47F88F00286E34 /* AppDelegate.swift */,
+				AE15063A2BB18F4A0095EF5B /* SceneDelegate.swift */,
+			);
+			path = AppDelegate;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -286,22 +287,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE2E25E82BB1829D0050D5AE /* TableViewExampleViewController.swift in Sources */,
 				AE2E25E92BB1829D0050D5AE /* BaseJSONPreviewController.swift in Sources */,
-				AE2E25EA2BB1829D0050D5AE /* CustomStyleExampleViewController.swift in Sources */,
-				AE2E25EB2BB1829D0050D5AE /* HideLineNumberExampleViewController.swift in Sources */,
-				AE2E25EC2BB1829D0050D5AE /* SearchEntranceTableViewController.swift in Sources */,
+				AED63B062BB3DA6800345C81 /* CustomStyleExampleViewController.swift in Sources */,
 				AE2E25ED2BB1829D0050D5AE /* ListTableViewController.swift in Sources */,
-				AE2E25EE2BB1829D0050D5AE /* BasicExampleViewController.swift in Sources */,
 				AED63AF82BB3D3D800345C81 /* SceneDelegate.swift in Sources */,
-				AE2E25EF2BB1829D0050D5AE /* BaseSearchExampleViewController.swift in Sources */,
-				AE2E25F02BB1829D0050D5AE /* InitialFoldedExampleViewController.swift in Sources */,
-				AE2E25F12BB1829D0050D5AE /* BasicSearchExampleViewController.swift in Sources */,
 				AE2E25F22BB1829D0050D5AE /* ExampleJSON.swift in Sources */,
 				AE2E25F32BB1829D0050D5AE /* AppDelegate.swift in Sources */,
-				AE2E25F42BB1829D0050D5AE /* EntranceTableViewController.swift in Sources */,
+				AED63B072BB3DA6A00345C81 /* BasicExampleViewController.swift in Sources */,
+				AED63B052BB3DA3B00345C81 /* EntranceTableViewController.swift in Sources */,
 				AE2E25F52BB1829D0050D5AE /* DemoCaseConfig.swift in Sources */,
-				AE2E25F62BB1829D0050D5AE /* CustomSearchExampleViewController.swift in Sources */,
 				AE2E25F72BB1829D0050D5AE /* ListTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

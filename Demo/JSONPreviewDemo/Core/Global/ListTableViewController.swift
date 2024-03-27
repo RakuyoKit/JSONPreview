@@ -42,18 +42,12 @@ extension ListTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let config = dataSource[indexPath.row]
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
         
+        let config = dataSource[indexPath.row]
         cell.textLabel?.text = config.title
         cell.detailTextLabel?.text = config.desc
-        cell.detailTextLabel?.numberOfLines = 0
-        
-        if #available(iOS 13.0, tvOS 13.0, *) {
-            cell.detailTextLabel?.textColor = .secondaryLabel
-        }
-        
+
         return cell
     }
 }
