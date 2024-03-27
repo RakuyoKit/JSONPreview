@@ -1,5 +1,6 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/Images/logo.png" alt="JSONPreview" title="JSONPreview" width="1000"/>
+<img src="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/Images/logo.png#gh-light-mode-only" alt="JSONPreview" title="JSONPreview" width="1000"/>
+<img src="https://raw.githubusercontent.com/RakuyoKit/JSONPreview/master/Images/logo_dark.png#gh-dark-mode-only" alt="JSONPreview" title="JSONPreview" width="1000"/>
 </p>
 
 <p align="center">
