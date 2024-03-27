@@ -22,24 +22,30 @@ class BaseJSONPreviewController: UIViewController {
         
         view.backgroundColor = .white
         
+#if os(tvOS)
+        // Because on tvOS, the line number cannot be aligned with the json line,
+        // so the line number is hidden by default.
+        previewView.isHiddenLineNumber = true
+#else
         previewView.delegate = self
+#endif
         
         view.addSubview(previewView)
     }
 }
 
+#if !os(tvOS)
 // MARK: - UITextViewDelegate
 
 extension BaseJSONPreviewController: JSONPreviewDelegate {
     func jsonPreview(_ view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
         print(url)
         
-#if !os(tvOS)
         let safari = SFSafariViewController(url: url)
         safari.modalPresentationStyle = .overFullScreen
         present(safari, animated: true, completion: nil)
-#endif
         
         return false
     }
 }
+#endif
