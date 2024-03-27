@@ -15,6 +15,7 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 
+- Allow `bounces` to be enabled. [#20](https://github.com/RakuyoKit/JSONPreview/pull/20) @rakuyoMo
 - The minimum supported version of the demo is consistent with the library. [#17](https://github.com/RakuyoKit/JSONPreview/pull/17) @rakuyoMo
 - Adjusted the directory structure of the demo. @rakuyoMo
 - Abandon plan to “support Intel version of macOS”.

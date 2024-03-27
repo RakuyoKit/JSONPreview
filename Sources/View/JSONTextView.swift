@@ -41,7 +41,6 @@ open class JSONTextView: UITextView {
 
 private extension JSONTextView {
     func config() {
-        bounces = false
         delaysContentTouches = false
         canCancelContentTouches = true
         showsHorizontalScrollIndicator = false
