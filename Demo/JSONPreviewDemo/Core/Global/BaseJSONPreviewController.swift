@@ -22,11 +22,7 @@ class BaseJSONPreviewController: UIViewController {
         
         view.backgroundColor = .white
         
-#if os(tvOS)
-        // Because on tvOS, the line number cannot be aligned with the json line,
-        // so the line number is hidden by default.
-        previewView.isHiddenLineNumber = true
-#else
+#if !os(tvOS)
         previewView.delegate = self
 #endif
         

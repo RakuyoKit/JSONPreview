@@ -33,6 +33,10 @@ open class JSONPreview: UIView {
          */
         let tableView = LineNumberTableView(frame: .zero, style: .grouped)
         
+#if os(tvOS)
+        tableView.isHidden = true
+#endif
+        
         tableView.specialTag = .lineView
         tableView.delegate = self
         tableView.dataSource = self
@@ -705,6 +709,7 @@ extension JSONPreview: UIScrollViewDelegate {
 }
 
 #if !os(tvOS)
+
 // MARK: - UITextViewDelegate
 
 extension JSONPreview: UITextViewDelegate {
