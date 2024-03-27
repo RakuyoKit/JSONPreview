@@ -204,6 +204,8 @@ private class BaseJSONCell: UITableViewCell {
     }
     
     func configPreview() {
+        previewView.bounces = false
+        
 #if !os(tvOS)
         previewView.scrollsToTop = false
 #endif

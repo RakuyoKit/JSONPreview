@@ -125,8 +125,8 @@ public extension JSONPreview {
     }
     
     var bounces: Bool {
-        get { jsonTextView.isHidden }
-        set { jsonTextView.isHidden = newValue }
+        get { jsonTextView.bounces }
+        set { jsonTextView.bounces = newValue }
     }
     
     var showsHorizontalScrollIndicator: Bool {
