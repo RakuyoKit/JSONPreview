@@ -124,7 +124,7 @@ private extension JSONDecorator {
         _ expand: AttributedString,
         _ fold: AttributedString?,
         _ foldedTimes: Int,
-        _ currentCount: Int
+        _ currentCount: Int?
     ) -> JSONSlice
     
     typealias NeedConfig = (indent: Bool, comma: Bool)
@@ -158,7 +158,7 @@ private extension JSONDecorator {
             
             return JSONSlice(
                 level: indent,
-                lineNumber: currentSlicesCount + currentCount + 1,
+                lineNumber: currentSlicesCount + (currentCount ?? 0) + 1,
                 state: state,
                 expand: expand,
                 folded: fold,
@@ -227,7 +227,7 @@ private extension JSONDecorator {
             let expand = AttributedString(string: indent)
             expand.append(createUnknownAttributedString(with: string))
             
-            let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+            let slice = createJSONSlice(expand, nil, foldedTimes, nil)
             return [slice]
         }
     }
@@ -247,9 +247,7 @@ private extension JSONDecorator {
             currentState: initialState,
             foldedTimes: foldedTimes)
         
-        let (startExpand, startFold) = createArrayStartAttribute(
-            isNeedIndent: isNeed.indent,
-            isNeedComma: isNeed.comma)
+        let (startExpand, startFold) = createArrayStartAttribute(isNeed: isNeed)
         
         let slice = createJSONSlice(startExpand, startFold, foldedTimes, result.count)
         result.append(slice)
@@ -306,9 +304,7 @@ private extension JSONDecorator {
             currentState: initialState,
             foldedTimes: foldedTimes)
         
-        let (startExpand, startFold) = createObjectStartAttribute(
-            isNeedIndent: isNeed.indent,
-            isNeedComma: isNeed.comma)
+        let (startExpand, startFold) = createObjectStartAttribute(isNeed: isNeed)
         
         let slice = createJSONSlice(startExpand, startFold, foldedTimes, result.count)
         result.append(slice)
@@ -479,7 +475,7 @@ private extension JSONDecorator {
             expand.append(createUnknownAttributedString(with: wrong))
         }
         
-        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        let slice = createJSONSlice(expand, nil, foldedTimes, nil)
         return [slice]
     }
     
@@ -504,7 +500,7 @@ private extension JSONDecorator {
             expand.append(createUnknownAttributedString(with: wrong))
         }
         
-        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        let slice = createJSONSlice(expand, nil, foldedTimes, nil)
         return [slice]
     }
     
@@ -529,7 +525,7 @@ private extension JSONDecorator {
             expand.append(createUnknownAttributedString(with: wrong))
         }
         
-        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        let slice = createJSONSlice(expand, nil, foldedTimes, nil)
         return [slice]
     }
     
@@ -553,7 +549,7 @@ private extension JSONDecorator {
             expand.append(createUnknownAttributedString(with: wrong))
         }
         
-        let slice = createJSONSlice(expand, nil, foldedTimes, 1)
+        let slice = createJSONSlice(expand, nil, foldedTimes, nil)
         return [slice]
     }
     
@@ -608,12 +604,11 @@ private extension JSONDecorator {
     }
     
     /// Create an attribute string of "array - start node"
-    func createArrayStartAttribute(isNeedIndent: Bool, isNeedComma: Bool) -> ContainerAttributedStringPair {
+    func createArrayStartAttribute(isNeed: NeedConfig) -> ContainerAttributedStringPair {
         return createStartAttribute(
             expand: "[",
             fold: "[Array...]",
-            isNeedIndent: isNeedIndent,
-            isNeedComma: isNeedComma
+            isNeed: isNeed
         )
     }
     
@@ -623,12 +618,11 @@ private extension JSONDecorator {
     }
     
     /// Create an attribute string of "Object - Start Node"
-    func createObjectStartAttribute(isNeedIndent: Bool, isNeedComma: Bool) -> ContainerAttributedStringPair {
+    func createObjectStartAttribute(isNeed: NeedConfig) -> ContainerAttributedStringPair {
         return createStartAttribute(
             expand: "{",
             fold: "{Object...}",
-            isNeedIndent: isNeedIndent,
-            isNeedComma: isNeedComma
+            isNeed: isNeed
         )
     }
     
@@ -650,16 +644,14 @@ private extension JSONDecorator {
     /// - Parameters:
     ///   - expand: String when expand.
     ///   - fold: String when folded.
-    ///   - isNeedIndent: Indentation required.
-    ///   - isNeedComma: Comma required.
+    ///   - isNeed: Indentation & Comma required.
     /// - Returns: `AttributedString` object.
     func createStartAttribute(
         expand: String,
         fold: String,
-        isNeedIndent: Bool,
-        isNeedComma: Bool
+        isNeed: NeedConfig
     ) -> (AttributedString, AttributedString) {
-        let indent = isNeedIndent ? writeIndent() : ""
+        let indent = isNeed.indent ? writeIndent() : ""
         
         let expandString = AttributedString(
             string: indent + " " + expand,
@@ -667,7 +659,7 @@ private extension JSONDecorator {
         )
         
         let foldString = AttributedString(
-            string: fold + (isNeedComma ? "," : ""),
+            string: fold + (isNeed.comma ? "," : ""),
             attributes: placeholderStyle
         )
         

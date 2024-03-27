@@ -40,7 +40,6 @@ open class JSONPreview: UIView {
 #if os(tvOS)
         tableView.isHidden = true
 #endif
-        
         return tableView
     }()
     
@@ -53,24 +52,10 @@ open class JSONPreview: UIView {
         textView.delegate = self
         textView.clickDelegate = self
 #endif
-        
         return textView
     }()
     
-    public var contentSize: CGSize { jsonTextView.contentSize }
-    
-    /// Whether to hide the line number view
-    public var isHiddenLineNumber: Bool {
-        get { lineNumberTableView.isHidden }
-        set { lineNumberTableView.isHidden = newValue }
-    }
-    
 #if !os(tvOS)
-    public var scrollsToTop: Bool {
-        get { jsonTextView.scrollsToTop }
-        set { jsonTextView.scrollsToTop = newValue }
-    }
-    
     /// delegate for `JSONPreview`.
     public weak var delegate: JSONPreviewDelegate? = nil
 #endif
@@ -128,6 +113,38 @@ open class JSONPreview: UIView {
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
 #endif
     }
+}
+
+public extension JSONPreview {
+    var contentSize: CGSize { jsonTextView.contentSize }
+    
+    /// Whether to hide the line number view
+    var isHiddenLineNumber: Bool {
+        get { lineNumberTableView.isHidden }
+        set { lineNumberTableView.isHidden = newValue }
+    }
+    
+    var bounces: Bool {
+        get { jsonTextView.isHidden }
+        set { jsonTextView.isHidden = newValue }
+    }
+    
+    var showsHorizontalScrollIndicator: Bool {
+        get { jsonTextView.showsHorizontalScrollIndicator }
+        set { jsonTextView.showsHorizontalScrollIndicator = newValue }
+    }
+    
+    var showsVerticalScrollIndicator: Bool {
+        get { jsonTextView.showsVerticalScrollIndicator }
+        set { jsonTextView.showsVerticalScrollIndicator = newValue }
+    }
+    
+#if !os(tvOS)
+    var scrollsToTop: Bool {
+        get { jsonTextView.scrollsToTop }
+        set { jsonTextView.scrollsToTop = newValue }
+    }
+#endif
 }
 
 public extension JSONPreview {
@@ -434,7 +451,6 @@ private extension JSONPreview {
 #if !os(tvOS)
     func handleZoomClick(at realRow: Int) {
         guard let slices = decorator?.slices else { return }
-        let clickSlice = slices[realRow]
         
         // Calculate the starting point of the replacement range
         let calculateLocation: () -> Int = {
@@ -449,6 +465,8 @@ private extension JSONPreview {
                 }($1)
             }
         }
+        
+        let clickSlice = slices[realRow]
         
         switch clickSlice.state {
         case .expand:
@@ -468,9 +486,12 @@ private extension JSONPreview {
     }
     
     func handleExpandSliceDidClick(clickSlice: JSONSlice, realRow: Int, location: () -> Int) {
-        guard let decorator = decorator else { return }
-        
-        guard let folded = clickSlice.folded else { return }
+        guard
+            let decorator = decorator,
+            let folded = clickSlice.folded
+        else {
+            return
+        }
         
         let slices = decorator.slices
         
@@ -528,9 +549,12 @@ private extension JSONPreview {
     }
     
     func handleFoldedSliceDidClick(clickSlice: JSONSlice, realRow: Int, location: () -> Int) {
-        guard let decorator = decorator else { return }
-        
-        guard let folded = clickSlice.folded else { return }
+        guard
+            let decorator = decorator,
+            let folded = clickSlice.folded
+        else {
+            return
+        }
         
         let slices = decorator.slices
         
@@ -674,29 +698,14 @@ extension JSONPreview: UITableViewDataSource {
 
 extension JSONPreview: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset
+        let y = scrollView.contentOffset.y
         
         switch scrollView.specialTag {
         case .lineView:
-            jsonTextView.contentOffset = contentOffset
+            jsonTextView.contentOffset.y = y
             
         case .jsonView:
-            let y = contentOffset.y
-            
-            // Ignore the spring effect on the top half of the `jsonTextView`
-            if y <= 0 {
-                lineNumberTableView.contentOffset.y = 0
-                return
-            }
-            
-            // Ignore the spring effect on the bottom half of the `jsonTextView`
-            let diff = scrollView.contentSize.height - scrollView.frame.height
-            if y >= diff {
-                lineNumberTableView.contentOffset.y = diff
-                return
-            }
-            
-            lineNumberTableView.contentOffset = contentOffset
+            lineNumberTableView.contentOffset.y = y
             
         default:
             break
