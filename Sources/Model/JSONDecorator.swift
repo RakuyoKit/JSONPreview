@@ -81,7 +81,7 @@ public extension JSONDecorator {
     /// - Parameters:
     ///   - json: The JSON string to be highlighted.
     ///   - style: style of highlight. See `HighlightStyle` for details.
-    ///   - initialState: The initial state of the rendering result. 
+    ///   - initialState: The initial state of the rendering result.
     ///                   All nodes with a folding effect have an initial state consistent with this value.
     ///   - judgmentValid: Whether to check the validity of JSON.
     /// - Returns: Return `nil` when JSON is invalid. See `JSONDecorator` for details.
@@ -272,7 +272,7 @@ private extension JSONDecorator {
             
             let slices = processJSONValueRecursively(
                 value,
-                currentSlicesCount: currentSlicesCount + result.count, 
+                currentSlicesCount: currentSlicesCount + result.count,
                 isNeed: (indent: true, comma: _isNeedComma),
                 foldedTimes: subSlicesFoldedTimes)
             
@@ -344,7 +344,7 @@ private extension JSONDecorator {
             case .wrong:
                 let slices = processJSONValueRecursively(
                     value,
-                    currentSlicesCount: currentSlicesCount + result.count, 
+                    currentSlicesCount: currentSlicesCount + result.count,
                     isNeed: (indent: true, comma: false),
                     foldedTimes: subSlicesFoldedTimes)
                 
@@ -382,7 +382,7 @@ private extension JSONDecorator {
                     // Get the content of the subvalue
                     var slices = processJSONValueRecursively(
                         value,
-                        currentSlicesCount: currentSlicesCount + result.count, 
+                        currentSlicesCount: currentSlicesCount + result.count,
                         isNeed: (indent: false, comma: _isNeedComma),
                         foldedTimes: subSlicesFoldedTimes)
                     

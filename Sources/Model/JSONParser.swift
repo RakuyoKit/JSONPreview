@@ -26,13 +26,13 @@ public struct JSONParser {
             try reader.consumeWhitespace()
             let value = try self.parseValue()
             
-            #if DEBUG
+#if DEBUG
             defer {
                 guard self.depth == 0 else {
                     preconditionFailure("Expected to end parsing with a depth of 0")
                 }
             }
-            #endif
+#endif
             
             // ensure only white space is remaining
             var whitespace = 0
@@ -275,7 +275,7 @@ public struct JSONParser {
                 ///     // Missing `]`, which will cause some json content to be missing when rendering.
                 /// }
                 /// ```
-                #warning("TODO Handling nested scenarios with wrong value")
+#warning("TODO Handling nested scenarios with wrong value")
                 
                 var _jsonValue = jsonValue
                 if _jsonValue == nil {

@@ -21,10 +21,10 @@ open class JSONPreview: UIView {
     /// TableView responsible for displaying row numbers
     open lazy var lineNumberTableView: LineNumberTableView = {
         /*
-         Because there is currently no way to build a `.plain` style UITableView with 
+         Because there is currently no way to build a `.plain` style UITableView with
          no spacing between Cells on visionOS.
          
-         The spacing between Cells will cause the line numbers and json lines to 
+         The spacing between Cells will cause the line numbers and json lines to
          not correspond one to one, which will affect the folding and expanding functions.
          
          So you can only change the style to .grouped to construct a UITableView object
@@ -125,8 +125,8 @@ public extension JSONPreview {
     }
     
     var bounces: Bool {
-        get { jsonTextView.isHidden }
-        set { jsonTextView.isHidden = newValue }
+        get { jsonTextView.bounces }
+        set { jsonTextView.bounces = newValue }
     }
     
     var showsHorizontalScrollIndicator: Bool {
@@ -160,7 +160,7 @@ public extension JSONPreview {
     ///
     /// - Parameters:
     ///   - json: The json to be previewed
-    ///   - initialState: The initial state of the rendering result. 
+    ///   - initialState: The initial state of the rendering result.
     ///                   The initial state of all nodes will be consistent with this value.
     ///   - completion: Callback after rendering is completed.
     func preview(
@@ -204,7 +204,7 @@ public extension JSONPreview {
     ///
     /// - Parameters:
     ///   - content: What to search for
-    ///   - completion: Returns the line number where the search results are located. 
+    ///   - completion: Returns the line number where the search results are located.
     ///                 The subscript starts from 0 and is the index after the json is fully expanded.
     func search(_ content: String, completion: SearchCompletion? = nil) {
         guard let _decorator = decorator else {
@@ -305,17 +305,17 @@ private extension JSONPreview {
         /// Fixed width of `lineNumberTableView`
         static let lineWith: CGFloat = {
             let _width: CGFloat = 55
-            #if os(visionOS)
+#if os(visionOS)
             /*
-             On visionOS, there is a gap on the left and right sides of the Cell that 
+             On visionOS, there is a gap on the left and right sides of the Cell that
              cannot be eliminated for the time being.
              
              So we need to increase the width so that the line number text can be fully displayed.
              */
             return _width + 10
-            #else
+#else
             return _width
-            #endif
+#endif
         }()
     }
 }
@@ -328,10 +328,7 @@ private extension JSONPreview {
         skeletonStackView.addArrangedSubview(lineNumberTableView)
         skeletonStackView.addArrangedSubview(jsonTextView)
         
-        // skeletonStackView
         addSkeletonStackViewLayout()
-        
-        // lineNumberTableView
         addLineNumberTableViewLayout()
         
 #if !os(visionOS) && !os(tvOS)
@@ -755,7 +752,7 @@ extension JSONPreview: JSONTextViewDelegate {
         let point: CGPoint = {
             let x: CGFloat = {
                 let minX: CGFloat = 5
-                #if os(visionOS)
+#if os(visionOS)
                 /*
                  On visionOS, there is a gap on the left and right sides of the Cell that
                  cannot be eliminated for the time being.
@@ -763,9 +760,9 @@ extension JSONPreview: JSONTextViewDelegate {
                  So we need to increase the `x` value to get the corresponding Cell.
                  */
                 return minX + 15
-                #else
+#else
                 return minX
-                #endif
+#endif
             }()
             return CGPoint(x: x, y: pointY)
         }()
