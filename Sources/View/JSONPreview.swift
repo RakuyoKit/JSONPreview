@@ -674,15 +674,13 @@ extension JSONPreview: UITableViewDataSource {
 
 extension JSONPreview: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffset = scrollView.contentOffset
+        let y = scrollView.contentOffset.y
         
         switch scrollView.specialTag {
         case .lineView:
-            jsonTextView.contentOffset = contentOffset
+            jsonTextView.contentOffset.y = y
             
         case .jsonView:
-            let y = contentOffset.y
-            
             // Ignore the spring effect on the top half of the `jsonTextView`
             if y <= 0 {
                 lineNumberTableView.contentOffset.y = 0
@@ -696,7 +694,7 @@ extension JSONPreview: UIScrollViewDelegate {
                 return
             }
             
-            lineNumberTableView.contentOffset = contentOffset
+            lineNumberTableView.contentOffset.y = y
             
         default:
             break
