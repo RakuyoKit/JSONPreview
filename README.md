@@ -19,12 +19,6 @@ Below is a roughly 25-second gif (**approximately 2.5M**) demonstrating the effe
 
 ![screenshot](Images/screenshot.gif)
 
-## Requirements
-
-- **iOS 12 or later**.
-- **Xcode 10.0 or later** required.
-- **Swift 5.0 or later** required.
-
 ## Installation
 
 ### CocoaPods
@@ -51,9 +45,10 @@ dependencies: [
 
 - [x] Support for **formatting** JSON data.
 - [x] Support for syntax **highlighting** of JSON data, offering various color and font configuration options.
-- [x] **fold and expand** functionality for `Array` and `Object`.
+- [x] **fold and expand** functionality for `Array` and `Object` (except tvOS).
 - [x] Allow setting the initial state of nodes, `.folded` or `.expand`.
 - [x] Implemented based on `UITextView`. This means you can copy any content from `JSONPreview`.
+- [x] Search the contents of JSON using text.
 
 > Additional Details:
 > 1. `JSONPreview` provides limited and incomplete formatting checks, so this feature is not offered as a primary function. Details can be found in: [Format check](#format-check).
@@ -61,7 +56,7 @@ dependencies: [
 
 ## Usage
 
-> After downloading the project, [`EntranceTableViewController.swift`](Demo/JSONPreviewDemo/Example/EntranceTableViewController.swift) contains some example code. Run the project to see the corresponding effect.
+> After downloading the project, the [Demo](Demo) directory contains sample projects. You can run the project to see the corresponding effects.
 
 ### Basic Usage and Default Configuration
 
@@ -83,7 +78,7 @@ previewView.preview(json)
 
 If you want to customize the syntax highlighting style, you can set it using `HighlightStyle` and `HighlightColor`:
 
-> [`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L117) is a protocol for providing colors. Through this protocol, you can directly use `UIColor` objects or easily convert values like `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` into `UIColor` objects.
+> [`ConvertibleToColor`](Sources/Entity/HighlightColor.swift#L126) is a protocol for providing colors. Through this protocol, you can directly use `UIColor` objects or easily convert values like `0xffffff`, `#FF7F20` and `[0.72, 0.18, 0.13]` into `UIColor` objects.
 
 ```swift
 let highlightColor = HighlightColor(
@@ -96,6 +91,7 @@ let highlightColor = HighlightColor(
     null: ConvertibleToColor,
     unknownText: ConvertibleToColor,
     unknownBackground: ConvertibleToColor,
+    searchHitBackground: ConvertibleToColor?,
     jsonBackground: ConvertibleToColor,
     lineBackground: ConvertibleToColor,
     lineText: ConvertibleToColor
@@ -107,7 +103,8 @@ let style = HighlightStyle(
     color: highlightColor,
     lineFont: UIFont?,
     jsonFont: UIFont?,
-    lineHeight: CGFloat
+    lineHeight: CGFloat,
+    boldedSearchResult: Bool
 )
 
 previewView.preview(json, style: style)
@@ -143,10 +140,6 @@ It's recommended not to overly rely on the formatting check feature of `JSONPrev
 ## Data Flow Diagram
 
 ![DFD](Images/DFD.jpg)
-
-## TODO
-
-- [ ] Support for intel macOS.
 
 ## Thanks
 
