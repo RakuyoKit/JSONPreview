@@ -16,6 +16,10 @@ final class TestEntranceTableViewController: ListTableViewController {
                     title: "VisionOS TableView Test",
                     action: { VisionOSTestViewController() }
                 ),
+                .init(
+                    title: "Wrap Test",
+                    action: { WrapTestViewController() }
+                ),
             ]
         ])
     }

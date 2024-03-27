@@ -29,6 +29,7 @@
 		AE575C4D2BB419D7003C5E49 /* TestEntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C4C2BB419D7003C5E49 /* TestEntranceTableViewController.swift */; };
 		AE575C4E2BB41BC0003C5E49 /* VisionOSTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED63AF62BB3BA2800345C81 /* VisionOSTestViewController.swift */; };
 		AE575C4F2BB41BC1003C5E49 /* TestEntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C4C2BB419D7003C5E49 /* TestEntranceTableViewController.swift */; };
+		AE575C512BB41C92003C5E49 /* WrapTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C502BB41C92003C5E49 /* WrapTestViewController.swift */; };
 		AE780E942BB138CD0015D968 /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E932BB138CD0015D968 /* ListTableViewCell.swift */; };
 		AE780E962BB13AD30015D968 /* DemoCaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */; };
 		AE780E982BB13B7C0015D968 /* EntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */; };
@@ -61,6 +62,7 @@
 		AE4CE2E22B47F89000286E34 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AE4CE2E42B47F89000286E34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE575C4C2BB419D7003C5E49 /* TestEntranceTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestEntranceTableViewController.swift; sourceTree = "<group>"; };
+		AE575C502BB41C92003C5E49 /* WrapTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapTestViewController.swift; sourceTree = "<group>"; };
 		AE780E932BB138CD0015D968 /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
 		AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCaseConfig.swift; sourceTree = "<group>"; };
 		AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceTableViewController.swift; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 			children = (
 				AE575C4C2BB419D7003C5E49 /* TestEntranceTableViewController.swift */,
 				AED63AF62BB3BA2800345C81 /* VisionOSTestViewController.swift */,
+				AE575C502BB41C92003C5E49 /* WrapTestViewController.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				AEBD0FED2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift in Sources */,
 				AE2E25462BB158E30050D5AE /* BasicSearchExampleViewController.swift in Sources */,
 				AEBD0FEB2B4BF3130080ED15 /* ExampleJSON.swift in Sources */,
+				AE575C512BB41C92003C5E49 /* WrapTestViewController.swift in Sources */,
 				AE4CE2D72B47F88F00286E34 /* AppDelegate.swift in Sources */,
 				AE780E982BB13B7C0015D968 /* EntranceTableViewController.swift in Sources */,
 				AE780E962BB13AD30015D968 /* DemoCaseConfig.swift in Sources */,

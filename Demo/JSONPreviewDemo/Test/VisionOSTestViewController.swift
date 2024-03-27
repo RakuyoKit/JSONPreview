@@ -34,6 +34,9 @@ extension VisionOSTestViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "visionOS Test"
+        
+        view.backgroundColor = .white
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
