@@ -115,6 +115,8 @@ open class JSONPreview: UIView {
     }
 }
 
+// MARK: - Public
+
 public extension JSONPreview {
     var contentSize: CGSize { jsonTextView.contentSize }
     
@@ -290,7 +292,7 @@ public extension JSONPreview {
     }
 }
 
-// MARK: - Constant
+// MARK: - Config
 
 private extension JSONPreview {
     enum Tag: Int {
@@ -318,11 +320,7 @@ private extension JSONPreview {
 #endif
         }()
     }
-}
-
-// MARK: - Config
-
-private extension JSONPreview {
+    
     func config() {
         addSubview(skeletonStackView)
         skeletonStackView.addArrangedSubview(lineNumberTableView)
@@ -362,6 +360,8 @@ private extension JSONPreview {
         ])
     }
 }
+
+// MARK: - Private Logic
 
 private extension JSONPreview {
     func getLineHeight(at index: Int) -> CGFloat {
