@@ -30,6 +30,9 @@
 		AE575C4E2BB41BC0003C5E49 /* VisionOSTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED63AF62BB3BA2800345C81 /* VisionOSTestViewController.swift */; };
 		AE575C4F2BB41BC1003C5E49 /* TestEntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C4C2BB419D7003C5E49 /* TestEntranceTableViewController.swift */; };
 		AE575C512BB41C92003C5E49 /* WrapTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C502BB41C92003C5E49 /* WrapTestViewController.swift */; };
+		AE575C532BB521C0003C5E49 /* WrapExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C522BB521C0003C5E49 /* WrapExampleViewController.swift */; };
+		AE575C552BB5283D003C5E49 /* WrapTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C502BB41C92003C5E49 /* WrapTestViewController.swift */; };
+		AE575C592BB52B04003C5E49 /* TVOSWrapExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C562BB52AE0003C5E49 /* TVOSWrapExampleViewController.swift */; };
 		AE780E942BB138CD0015D968 /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E932BB138CD0015D968 /* ListTableViewCell.swift */; };
 		AE780E962BB13AD30015D968 /* DemoCaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */; };
 		AE780E982BB13B7C0015D968 /* EntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */; };
@@ -63,6 +66,8 @@
 		AE4CE2E42B47F89000286E34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE575C4C2BB419D7003C5E49 /* TestEntranceTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestEntranceTableViewController.swift; sourceTree = "<group>"; };
 		AE575C502BB41C92003C5E49 /* WrapTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapTestViewController.swift; sourceTree = "<group>"; };
+		AE575C522BB521C0003C5E49 /* WrapExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapExampleViewController.swift; sourceTree = "<group>"; };
+		AE575C562BB52AE0003C5E49 /* TVOSWrapExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVOSWrapExampleViewController.swift; sourceTree = "<group>"; };
 		AE780E932BB138CD0015D968 /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
 		AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCaseConfig.swift; sourceTree = "<group>"; };
 		AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceTableViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +149,14 @@
 			path = Test;
 			sourceTree = "<group>";
 		};
+		AE575C582BB52AE9003C5E49 /* tvOS only */ = {
+			isa = PBXGroup;
+			children = (
+				AE575C562BB52AE0003C5E49 /* TVOSWrapExampleViewController.swift */,
+			);
+			path = "tvOS only";
+			sourceTree = "<group>";
+		};
 		AEBD0F3B2B4BEE680080ED15 /* Other */ = {
 			isa = PBXGroup;
 			children = (
@@ -161,6 +174,7 @@
 				AED63AFC2BB3D97400345C81 /* AppDelegate */,
 				AED63AFB2BB3D8D400345C81 /* Global */,
 				AED63AFA2BB3D8CE00345C81 /* iOS Only */,
+				AE575C582BB52AE9003C5E49 /* tvOS only */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -172,6 +186,7 @@
 				AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */,
 				AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */,
 				AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */,
+				AE575C522BB521C0003C5E49 /* WrapExampleViewController.swift */,
 			);
 			path = "iOS Only";
 			sourceTree = "<group>";
@@ -312,10 +327,12 @@
 				AE575C4F2BB41BC1003C5E49 /* TestEntranceTableViewController.swift in Sources */,
 				AED63AF82BB3D3D800345C81 /* SceneDelegate.swift in Sources */,
 				AE575C4E2BB41BC0003C5E49 /* VisionOSTestViewController.swift in Sources */,
+				AE575C552BB5283D003C5E49 /* WrapTestViewController.swift in Sources */,
 				AE2E25F22BB1829D0050D5AE /* ExampleJSON.swift in Sources */,
 				AE2E25F32BB1829D0050D5AE /* AppDelegate.swift in Sources */,
 				AED63B072BB3DA6A00345C81 /* BasicExampleViewController.swift in Sources */,
 				AED63B052BB3DA3B00345C81 /* EntranceTableViewController.swift in Sources */,
+				AE575C592BB52B04003C5E49 /* TVOSWrapExampleViewController.swift in Sources */,
 				AE2E25F52BB1829D0050D5AE /* DemoCaseConfig.swift in Sources */,
 				AE2E25F72BB1829D0050D5AE /* ListTableViewCell.swift in Sources */,
 			);
@@ -343,6 +360,7 @@
 				AE780E962BB13AD30015D968 /* DemoCaseConfig.swift in Sources */,
 				AE2E25482BB1594D0050D5AE /* CustomSearchExampleViewController.swift in Sources */,
 				AE575C4D2BB419D7003C5E49 /* TestEntranceTableViewController.swift in Sources */,
+				AE575C532BB521C0003C5E49 /* WrapExampleViewController.swift in Sources */,
 				AED63AF72BB3BA2800345C81 /* VisionOSTestViewController.swift in Sources */,
 				AE780E942BB138CD0015D968 /* ListTableViewCell.swift in Sources */,
 			);

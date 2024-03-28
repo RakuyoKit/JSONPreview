@@ -26,11 +26,27 @@ final class WrapTestViewController: UIViewController {
         return _view
     }()
     
+    private lazy var scrollView: UIScrollView = {
+        let _view = UIScrollView()
+        _view.translatesAutoresizingMaskIntoConstraints = false
+        _view.backgroundColor = .cyan
+        return _view
+    }()
+    
     private lazy var textView: UITextView = {
         let _view = UITextView()
+        _view.backgroundColor = .brown
         _view.translatesAutoresizingMaskIntoConstraints = false
         _view.font = UIFont.systemFont(ofSize: 20)
-        _view.text = """
+        _view.text = testText
+        _view.isScrollEnabled = false
+#if !os(tvOS)
+        _view.isEditable = false
+#endif
+        return _view
+    }()
+    
+    private lazy var testText = """
         // MARK: - Life cycle
         
         extension WrapTestViewController {
@@ -112,9 +128,6 @@ final class WrapTestViewController: UIViewController {
             }
         }
         """
-        
-        return _view
-    }()
 }
 
 // MARK: - Life cycle
@@ -147,6 +160,10 @@ private extension WrapTestViewController {
     
     func withStackView() {
         view.addSubview(stackView)
+        stackView.addArrangedSubview(lineView)
+        stackView.addArrangedSubview(scrollView)
+        scrollView.addSubview(textView)
+        
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -154,11 +171,46 @@ private extension WrapTestViewController {
             stackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
         
-        stackView.addArrangedSubview(lineView)
         NSLayoutConstraint.activate([
             lineView.widthAnchor.constraint(equalToConstant: 55)
         ])
         
-        stackView.addArrangedSubview(textView)
+        let size = calculateSize(with: .init(string: testText))
+        
+        NSLayoutConstraint.activate([
+            textView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            textView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            textView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            textView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            textView.heightAnchor.constraint(greaterThanOrEqualToConstant: size.height),
+            textView.widthAnchor.constraint(greaterThanOrEqualToConstant: size.width),
+        ])
+    }
+}
+
+private extension WrapTestViewController {
+    /// Calculate the size of a rich text string in a container
+    func calculateSize(
+        with attributedString: NSMutableAttributedString,
+        width: CGFloat = .greatestFiniteMagnitude,
+        height: CGFloat = .greatestFiniteMagnitude
+    ) -> CGSize {
+        let size = CGSize(width: width, height: height)
+        
+        let textContainer = NSTextContainer(size: size)
+        textContainer.lineFragmentPadding = 0
+        
+        let layoutManager = NSLayoutManager()
+        layoutManager.addTextContainer(textContainer)
+        layoutManager.glyphRange(
+            forBoundingRect: CGRect(origin: .zero, size: size),
+            in: textContainer
+        )
+        
+        let textStorage = NSTextStorage(attributedString: attributedString)
+        textStorage.addLayoutManager(layoutManager)
+        
+        let rect = layoutManager.usedRect(for: textContainer)
+        return rect.size
     }
 }

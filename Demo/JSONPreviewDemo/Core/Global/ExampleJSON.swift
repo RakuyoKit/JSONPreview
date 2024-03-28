@@ -111,4 +111,21 @@ enum ExampleJSON {
         }
         """
     }
+    
+    static var veryLongText: String {
+        let desc = """
+        "desc": "This JSON is specially designed for large-screen devices and shows the effect of JSONPreview without wrapping. This example uses some very long text to demonstrate the effect. Not all of this text may make sense; most likely it's just for the sake of being long, like this description."
+        """
+        
+#if os(tvOS)
+        """
+        {
+            \(desc),
+            "action": "You can modify `previewView.automaticWrapEnabled = false` in the sample controller and change `false` to `true` to see the effect of line wrap display."
+        }
+        """
+#else
+        return "{\(desc)}"
+#endif
+    }
 }

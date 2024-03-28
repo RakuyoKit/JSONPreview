@@ -23,8 +23,21 @@ final class EntranceTableViewController: ListTableViewController {
             ),
         ]
         
-#if !os(tvOS)
+#if os(tvOS)
         dataSource.append(contentsOf: [
+            .init(
+                title: "Wrap",
+                desc: "This example shows the rendering and interactive effects of JSONPreview when displaying JSON without breaking lines. This example is built specifically for tvOS.",
+                action: { TVOSWrapExampleViewController() }
+            ),
+        ])
+#else
+        dataSource.append(contentsOf: [
+            .init(
+                title: "Automatic Wrap",
+                desc: "This example mainly demonstrates the rendering effect of JSON when lines are automatically wrapped and not.",
+                action: { WrapExampleViewController() }
+            ),
             .init(
                 title: "Initial folded",
                 desc: "Initial collapse of all JSON nodes. You need to expand each node manually.",

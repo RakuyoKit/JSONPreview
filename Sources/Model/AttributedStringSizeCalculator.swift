@@ -25,7 +25,7 @@ internal class AttributedStringSizeCalculator {
 
 extension AttributedStringSizeCalculator {
     /// Calculate the line height of the line number display area
-    func calculateHeight(with slice: JSONSlice, width: CGFloat) -> CGFloat {
+    func calculateHeight(with slice: JSONSlice, width: CGFloat? = nil) -> CGFloat {
         let attString: AttributedString = {
             switch slice.state {
             case .expand: return slice.expand
@@ -65,6 +65,10 @@ extension AttributedStringSizeCalculator {
         
         return stateValue
     }
+    
+    func clearCachedHeight() {
+        cachedHeight.removeAll()
+    }
 }
 
 // MARK: - Size
@@ -73,10 +77,13 @@ extension AttributedStringSizeCalculator {
     /// Calculate the size of a rich text string in a container
     func calculateSize(
         with attributedString: AttributedString,
-        width: CGFloat = .greatestFiniteMagnitude,
-        height: CGFloat = .greatestFiniteMagnitude
+        width: CGFloat? = nil,
+        height: CGFloat? = nil
     ) -> CGSize {
-        let size = CGSize(width: width, height: height)
+        let size = CGSize(
+            width: width ?? .greatestFiniteMagnitude,
+            height: height ?? .greatestFiniteMagnitude
+        )
         
         let textContainer = NSTextContainer(size: size)
         textContainer.lineFragmentPadding = 0

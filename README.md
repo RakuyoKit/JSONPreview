@@ -50,6 +50,7 @@ dependencies: [
 - [x] Allow setting the initial state of nodes, `.folded` or `.expand`.
 - [x] Implemented based on `UITextView`. This means you can copy any content from `JSONPreview`.
 - [x] Search the contents of JSON using text.
+- [x] Switch between displaying JSON with or without wrapping lines at any time.
 
 > Additional Details:
 > 1. `JSONPreview` provides limited and incomplete formatting checks, so this feature is not offered as a primary function. Details can be found in: [Format check](#format-check).

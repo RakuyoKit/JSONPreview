@@ -87,7 +87,7 @@ extension TableViewExampleViewController {
                             
                             // Sometimes the obtained height is inaccurate, differing by 5.
                             // If you don't care about this error, you can do this:
-                            model.height = cell.previewView.contentSize.height // + 5
+                            model.height = cell.previewView.contentSize.height + 5
                             
                             model.decorator = decorator
                             
