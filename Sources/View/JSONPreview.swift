@@ -78,6 +78,10 @@ open class JSONPreview: UIView {
         didSet { updateAutomaticWrapEnabled() }
     }
     
+    /// When switching the wrapping mode, whether to use animation to return to the top.
+    /// Default to `true`.
+    public lazy var shouldAnimateScrollToTopOnWrapModeChange = true
+    
     /// Highlight style
     public lazy var highlightStyle: HighlightStyle = .`default` {
         didSet { updateHighlightStyle() }
@@ -438,12 +442,17 @@ private extension JSONPreview {
     
     func updateAutomaticWrapEnabled() {
         stringSizeCalculator.clearCachedHeight()
-        lineNumberTableView.reloadData()
-        
         activeJSONWidthLayout()
         
         jsonTextView.setNeedsUpdateConstraints()
         jsonTextView.updateConstraintsIfNeeded()
+        
+        lineNumberTableView.scrollToRow(
+            at: .init(row: 0, section: 0),
+            at: .top,
+            animated: shouldAnimateScrollToTopOnWrapModeChange)
+        
+        lineNumberTableView.reloadData()
     }
     
     func updateHighlightStyle() {
