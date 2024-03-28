@@ -39,6 +39,29 @@ open class JSONTextView: UITextView {
     }
 }
 
+// MARK: - Life cycle
+
+extension JSONTextView {
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        /*
+         * When JSON is folded and expanded, the `textStorage.replaceCharacters`
+         * method is called back, which triggers the redrawing of UITextView,
+         * causing `contentOffset.y` to shift.
+         *
+         * Because the current UITextView is a subview of UIScrollView,
+         * this offset will cause confusion in the UI interface.
+         *
+         * And because UITextView does not participate in sliding,
+         * we can manually fix the value of `contentOffset.y` to `0` forever.
+         */
+        contentOffset.y = 0
+    }
+}
+
+// MARK: - Config
+
 private extension JSONTextView {
     func config() {
         delaysContentTouches = false
@@ -56,6 +79,8 @@ private extension JSONTextView {
 #endif
     }
 }
+
+// MARK: -
 
 extension JSONTextView {
 #if !os(tvOS)
