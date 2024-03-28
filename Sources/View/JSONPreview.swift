@@ -195,7 +195,9 @@ public extension JSONPreview {
     ///   - decorator: JSON Decoder.
     ///   - completion: Callback when rendering is complete. Always callback on the main thread.
     func update(with decorator: JSONDecorator?, completion: Completion? = nil) {
-        setJSONDecoratort(decorator, completion: completion)
+        DispatchQueue.main.async { [weak self] in
+            self?.setJSONDecoratort(decorator, completion: completion)
+        }
     }
 }
 
@@ -404,48 +406,15 @@ private extension JSONPreview {
     }
     
     func assembleAttributedText(with decorator: JSONDecorator, completion: Completion?) {
-        let attributedText = AttributedString(string: "")
-        var lines: [Int] = []
-        
-        var foldedLevel: Int? = nil
-        for (index, slice) in decorator.slices.enumerated() {
-            if let _level = foldedLevel {
-                if slice.level > _level { continue }
-                
-                if slice.level == _level {
-                    foldedLevel = nil
-                    continue
-                }
-            }
-            
-            switch slice.state {
-            case .expand:
-                attributedText.append(slice.expand)
-                attributedText.append(decorator.wrapString)
-                
-                lines.append(index + 1)
-                
-            case .folded:
-                guard let _folded = slice.folded else { continue }
-                
-                foldedLevel = slice.level
-                
-                attributedText.append(_folded)
-                attributedText.append(decorator.wrapString)
-                
-                lines.append(index + 1)
-            }
-        }
+        let (attributedText, lines) = decorator.assemble()
         
         DispatchQueue.main.async { [weak self] in
-            guard let this = self else { return }
-            
             defer { completion?(decorator) }
+            
+            guard let this = self else { return }
             
             this.jsonTextView.attributedText = attributedText
             this.lineDataSource = lines
-            
-            this.jsonTextView.contentSize.width = 1000
         }
     }
     
