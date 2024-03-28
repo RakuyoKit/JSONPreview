@@ -16,15 +16,6 @@ class BasicSearchExampleViewController: BaseSearchExampleViewController {
         
         title = "Basic Search Example"
         
-        preview()
-    }
-}
-
-// MARK: -
-
-private extension BasicSearchExampleViewController {
-    func preview() {
-        let json = ExampleJSON.mostComprehensive
-        previewView.preview(json)
+        previewView.preview(ExampleJSON.mostComprehensive)
     }
 }

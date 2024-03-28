@@ -22,7 +22,7 @@ class CustomSearchExampleViewController: BaseSearchExampleViewController {
         
         previewView.highlightStyle = .mariana
         
-        preview()
+        previewView.preview(ExampleJSON.mostComprehensive)
     }
 }
 
@@ -153,10 +153,5 @@ private extension CustomSearchExampleViewController {
         })
         
         present(alert, animated: true)
-    }
-    
-    func preview() {
-        let json = ExampleJSON.mostComprehensive
-        previewView.preview(json)
     }
 }

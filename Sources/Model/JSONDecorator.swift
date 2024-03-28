@@ -115,6 +115,44 @@ public extension JSONDecorator {
         guard let data = json.data(using: .utf8) else { return [] }
         return createSlices(from: data)
     }
+    
+    /// Assemble JSON slices into attributed string while returning the number of rows of JSON.
+    func assemble() -> (attributedText: AttributedString, lines: [Int]) {
+        let attributedText = AttributedString(string: "")
+        var lines: [Int] = []
+        
+        var foldedLevel: Int? = nil
+        for (index, slice) in slices.enumerated() {
+            if let _level = foldedLevel {
+                if slice.level > _level { continue }
+                
+                if slice.level == _level {
+                    foldedLevel = nil
+                    continue
+                }
+            }
+            
+            switch slice.state {
+            case .expand:
+                attributedText.append(slice.expand)
+                attributedText.append(wrapString)
+                
+                lines.append(index + 1)
+                
+            case .folded:
+                guard let _folded = slice.folded else { continue }
+                
+                foldedLevel = slice.level
+                
+                attributedText.append(_folded)
+                attributedText.append(wrapString)
+                
+                lines.append(index + 1)
+            }
+        }
+        
+        return (attributedText, lines)
+    }
 }
 
 // MARK: - Main Logic

@@ -9,13 +9,17 @@ All notable changes to this project are documented in this file.
 ### Added
 
 - Add search function. [#13](https://github.com/RakuyoKit/JSONPreview/pull/13) @rakuyoMo
+- Add the function of not automatically wrapping lines, and you can switch between wrapping and not wrapping at any time. [#22](https://github.com/RakuyoKit/JSONPreview/pull/22) @rakuyoMo
 - Add visionOS support. [#12](https://github.com/RakuyoKit/JSONPreview/pull/12), [#17](https://github.com/RakuyoKit/JSONPreview/pull/17) @rakuyoMo
 - Add tvOS support. [#14](https://github.com/RakuyoKit/JSONPreview/pull/14), [#18](https://github.com/RakuyoKit/JSONPreview/pull/18) @rakuyoMo
+- Moved the logic of "assembling attributed string from JSON slices" from JSONPreview into JSONDecorator. So you can now display JSON with the help of other text frames. [#22](https://github.com/RakuyoKit/JSONPreview/pull/22) @rakuyoMo
 - Access SwiftLint and unify code format [#16](https://github.com/RakuyoKit/JSONPreview/pull/16) @rakuyoMo
 
 ### Changed
 
 - Allow `bounces` to be enabled. [#20](https://github.com/RakuyoKit/JSONPreview/pull/20) @rakuyoMo
+- In order to achieve the non-wrapping function, the view hierarchy was modified. [#22](https://github.com/RakuyoKit/JSONPreview/pull/22) @rakuyoMo
+- rename: `LineNumberHeightManager` -> `AttributedStringSizeCalculator`. (internal) [#22](https://github.com/RakuyoKit/JSONPreview/pull/22) @rakuyoMo
 - The minimum supported version of the demo is consistent with the library. [#17](https://github.com/RakuyoKit/JSONPreview/pull/17) @rakuyoMo
 - Adjusted the directory structure of the demo. @rakuyoMo
 - Abandon plan to “support Intel version of macOS”.

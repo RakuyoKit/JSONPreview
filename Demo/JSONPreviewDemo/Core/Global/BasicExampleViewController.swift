@@ -10,7 +10,7 @@ import UIKit
 
 import JSONPreview
 
-class BasicExampleViewController: BaseJSONPreviewController {
+final class BasicExampleViewController: BaseJSONPreviewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,7 +30,7 @@ private extension BasicExampleViewController {
         
         NSLayoutConstraint.activate([
             previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            previewView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             previewView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])

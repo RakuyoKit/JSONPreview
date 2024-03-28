@@ -9,7 +9,9 @@
 import UIKit
 
 class ListTableViewController: UITableViewController {
-    init(dataSource: [DemoCaseConfig]) {
+    private let dataSource: [[DemoCaseConfig]]
+    
+    init(dataSource: [[DemoCaseConfig]]) {
         self.dataSource = dataSource
         
         super.init(style: .grouped)
@@ -18,8 +20,6 @@ class ListTableViewController: UITableViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private let dataSource: [DemoCaseConfig]
 }
 
 // MARK: - Life cycle
@@ -37,14 +37,18 @@ extension ListTableViewController {
 // MARK: - UITableViewDataSource
 
 extension ListTableViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return dataSource.count
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dataSource[section].count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
         
-        let config = dataSource[indexPath.row]
+        let config = dataSource[indexPath.section][indexPath.row]
         cell.textLabel?.text = config.title
         cell.detailTextLabel?.text = config.desc
 
@@ -56,7 +60,7 @@ extension ListTableViewController {
 
 extension ListTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let controller = dataSource[indexPath.row].action() else { return }
+        guard let controller = dataSource[indexPath.section][indexPath.row].action() else { return }
         navigationController?.pushViewController(controller, animated: true)
     }
     

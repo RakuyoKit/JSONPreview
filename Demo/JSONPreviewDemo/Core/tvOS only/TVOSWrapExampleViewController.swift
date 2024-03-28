@@ -1,8 +1,8 @@
 //
-//  InitialFoldedExampleViewController.swift
+//  TVOSWrapExampleViewController.swift
 //  JSONPreviewDemo
 //
-//  Created by Rakuyo on 2024/1/8.
+//  Created by Rakuyo on 2024/3/28.
 //  Copyright © 2024 Rakuyo. All rights reserved.
 //
 
@@ -10,41 +10,32 @@ import UIKit
 
 import JSONPreview
 
-final class InitialFoldedExampleViewController: BaseJSONPreviewController {
+final class TVOSWrapExampleViewController: BaseJSONPreviewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Initial Folded example"
+        title = "Wrap example"
+        
+        previewView.highlightStyle = .mariana
+        previewView.automaticWrapEnabled = false
         
         addPreviewViewLayout()
         
-        preview()
+        previewView.preview(ExampleJSON.veryLongText)
     }
 }
 
 // MARK: -
 
-private extension InitialFoldedExampleViewController {
+private extension TVOSWrapExampleViewController {
     func addPreviewViewLayout() {
         previewView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            previewView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             previewView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ])
-    }
-    
-    func preview() {
-        let json = ExampleJSON.legalJson
-        
-        print("will display json")
-        let start = Date().timeIntervalSince1970
-        
-        previewView.preview(json, initialState: .folded) { _ in
-            let end = Date().timeIntervalSince1970
-            print("did display json at: \(end - start)")
-        }
     }
 }
