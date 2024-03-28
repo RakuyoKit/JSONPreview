@@ -118,7 +118,7 @@ enum ExampleJSON {
         """
         
 #if os(tvOS)
-        """
+        return """
         {
             \(desc),
             "action": "You can modify `previewView.automaticWrapEnabled = false` in the sample controller and change `false` to `true` to see the effect of line wrap display."
