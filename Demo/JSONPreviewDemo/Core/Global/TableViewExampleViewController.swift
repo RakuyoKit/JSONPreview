@@ -48,8 +48,6 @@ final class TableViewExampleViewController: UITableViewController {
         
         title = "In TableView example"
         
-        view.backgroundColor = .white
-        
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
         

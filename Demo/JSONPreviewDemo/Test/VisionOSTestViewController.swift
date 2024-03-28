@@ -16,6 +16,8 @@ final class VisionOSTestViewController: UIViewController {
         _view.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         _view.delegate = self
         _view.dataSource = self
+        _view.separatorColor = .yellow
+        _view.separatorStyle = .singleLine
         
 //        _view.sectionHeaderHeight = 0.0
 //        _view.estimatedSectionHeaderHeight = 0.0
@@ -36,7 +38,7 @@ extension VisionOSTestViewController {
         
         title = "visionOS Test"
         
-        view.backgroundColor = .white
+        view.backgroundColor = .systemGroupedBackground
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
@@ -55,25 +57,25 @@ extension VisionOSTestViewController: UITableViewDelegate {
         return 24.3
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0.001))
-        view.backgroundColor = .green
-        return view
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let view = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0.001))
-        view.backgroundColor = .white
-        return view
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0.001
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.001
-    }
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        let view = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0.001))
+//        view.backgroundColor = .green
+//        return view
+//    }
+//    
+//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+//        let view = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0.001))
+//        view.backgroundColor = .white
+//        return view
+//    }
+//    
+//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+//        return 0.001
+//    }
+//    
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 0.001
+//    }
 }
 
 // MARK: - UITableViewDataSource
@@ -90,7 +92,8 @@ extension VisionOSTestViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.textLabel?.text = "\(indexPath)"
-        cell.backgroundColor = .blue
+        cell.backgroundColor = .green
+        cell.contentView.backgroundColor = .blue
         return cell
     }
 }

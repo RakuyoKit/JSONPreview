@@ -20,7 +20,7 @@ class BaseJSONPreviewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = .systemGroupedBackground
         
 #if !os(tvOS)
         previewView.delegate = self
