@@ -10,7 +10,7 @@ import UIKit
 
 final class VisionOSTestViewController: UIViewController {
     private lazy var tableView: UITableView = {
-        let _view = UITableView(frame: .zero, style: .grouped)
+        let _view = UITableView(frame: .zero, style: .plain)
         _view.translatesAutoresizingMaskIntoConstraints = false
         _view.backgroundColor = .red
         _view.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
