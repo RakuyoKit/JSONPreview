@@ -11,7 +11,7 @@ import UIKit
 open class JSONPreview: UIView {
     private typealias AutomaticWrapEnabled = Bool
     
-    /// View skeleton, containing all subviews
+    /// View skeleton, containing all subviews.
     open lazy var skeletonStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -20,7 +20,7 @@ open class JSONPreview: UIView {
         return stackView
     }()
     
-    /// TableView responsible for displaying row numbers
+    /// TableView responsible for displaying row numbers.
     open lazy var lineNumberTableView: LineNumberTableView = {
         /*
          Because there is currently no way to build a `.plain` style UITableView with
@@ -53,7 +53,7 @@ open class JSONPreview: UIView {
         return scrollView
     }()
     
-    /// TextView responsible for displaying JSON
+    /// TextView responsible for displaying JSON.
     open lazy var jsonTextView: JSONTextView = {
         let textView = JSONTextView()
         
