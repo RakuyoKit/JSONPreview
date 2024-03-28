@@ -10,7 +10,7 @@ import UIKit
 
 import JSONPreview
 
-class HideLineNumberExampleViewController: BaseJSONPreviewController {
+final class HideLineNumberExampleViewController: BaseJSONPreviewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         

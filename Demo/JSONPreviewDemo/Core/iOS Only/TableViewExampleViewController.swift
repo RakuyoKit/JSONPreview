@@ -10,7 +10,7 @@ import UIKit
 
 import JSONPreview
 
-class TableViewExampleViewController: UITableViewController {
+final class TableViewExampleViewController: UITableViewController {
     private lazy var dataSource: [ListConfig] = [
         .desc("""
             This file contains two sample scenes, which can also be treated as three, that is, a composite scene when the two scenes are used together.
@@ -223,6 +223,6 @@ private class BaseJSONCell: UITableViewCell {
     }
 }
 
-private class JSONCell: BaseJSONCell { }
+private final class JSONCell: BaseJSONCell { }
 
-private class JSONDelegateCell: BaseJSONCell { }
+private final class JSONDelegateCell: BaseJSONCell { }

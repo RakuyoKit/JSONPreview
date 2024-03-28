@@ -10,7 +10,7 @@ import UIKit
 
 import JSONPreview
 
-class BasicExampleViewController: BaseJSONPreviewController {
+final class BasicExampleViewController: BaseJSONPreviewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
