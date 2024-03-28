@@ -114,7 +114,9 @@ open class JSONPreview: UIView {
     /// Currently, this object stores the position index after json is fully expanded.
     private lazy var searchResultIndex: [Int] = []
     
+    /// Stores the width layout of the view in different wrapping modes.
     ///
+    /// key represents whether to turn on automatic line wrapping.
     private lazy var jsonWidthLayouts: [AutomaticWrapEnabled: NSLayoutConstraint] = [
         true: jsonTextView.widthAnchor.constraint(equalTo: jsonScrollView.widthAnchor),
         false: jsonTextView.widthAnchor.constraint(greaterThanOrEqualTo: jsonScrollView.widthAnchor)
