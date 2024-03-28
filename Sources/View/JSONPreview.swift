@@ -454,18 +454,22 @@ private extension JSONPreview {
     }
     
     func updateAutomaticWrapEnabled() {
-        stringSizeCalculator.clearCachedHeight()
         activeJSONWidthLayout()
         
         jsonTextView.setNeedsUpdateConstraints()
         jsonTextView.updateConstraintsIfNeeded()
         
-        lineNumberTableView.scrollToRow(
-            at: .init(row: 0, section: 0),
-            at: .top,
-            animated: shouldAnimateScrollToTopOnWrapModeChange)
-        
-        lineNumberTableView.reloadData()
+        if !lineNumberTableView.visibleCells.isEmpty {
+            stringSizeCalculator.clearCachedHeight()
+            
+            lineNumberTableView.scrollToRow(
+                at: .init(row: 0, section: 0),
+                at: .top,
+                animated: shouldAnimateScrollToTopOnWrapModeChange
+            )
+            
+            lineNumberTableView.reloadData()
+        }
     }
     
     func updateHighlightStyle() {
