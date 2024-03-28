@@ -78,8 +78,8 @@ open class JSONPreview: UIView {
     }()
 #endif
     
-    /// Line Number Height Manager.
-    private lazy var lineNumberHeightManager = LineNumberHeightManager()
+    /// calculating attributed string size.
+    private lazy var stringSizeCalculator = AttributedStringSizeCalculator()
     
     /// Data source for line number view
     private var lineDataSource: [Int] = [] {
@@ -370,13 +370,17 @@ private extension JSONPreview {
         let line = lineDataSource[index]
         let slice = slices[line - 1]
         
-        if let height = lineNumberHeightManager.height(at: index, orientation: lastOrientation, state: slice.state) {
+        if let height = stringSizeCalculator.height(
+            at: index,
+            orientation: lastOrientation,
+            state: slice.state
+        ) {
             return height
         }
         
         let width = jsonTextView.frame.width - { $0.left + $0.right }(jsonTextView.textContainerInset)
-        let height = lineNumberHeightManager.calculateHeight(with: slice, width: width)
-        lineNumberHeightManager.cache(height, at: index, orientation: lastOrientation, state: slice.state)
+        let height = stringSizeCalculator.calculateHeight(with: slice, width: width)
+        stringSizeCalculator.cache(height, at: index, orientation: lastOrientation, state: slice.state)
         
         return height
     }

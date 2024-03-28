@@ -1,5 +1,5 @@
 //
-//  LineHeightCache.swift
+//  AttributedStringSizeCalculator.swift
 //  JSONPreview
 //
 //  Created by Rakuyo on 2024/1/8.
@@ -8,29 +8,24 @@
 
 import UIKit
 
-/// Line Number Height Manager.
-internal class LineNumberHeightManager {
+/// Utility class for calculating attributed string size.
+internal class AttributedStringSizeCalculator {
     typealias SliceState = JSONSlice.State
     
     private typealias Storage = [Int: [SliceState: CGFloat]]
     
+    /// Because the height of a single JSON slice will be obtained multiple times,
+    /// caching is used to improve reading efficiency and reduce repeated calculations.
     private lazy var cachedHeight: [Orientation: Storage] = Orientation
         .allCases
         .reduce(into: [:], { $0[$1] = [:] })
 }
 
-extension LineNumberHeightManager {
+// MARK: - Height
+
+extension AttributedStringSizeCalculator {
     /// Calculate the line height of the line number display area
     func calculateHeight(with slice: JSONSlice, width: CGFloat) -> CGFloat {
-        let size = CGSize(width: width, height: .greatestFiniteMagnitude)
-        
-        let textContainer = NSTextContainer(size: size)
-        textContainer.lineFragmentPadding = 0
-        
-        let layoutManager = NSLayoutManager()
-        layoutManager.addTextContainer(textContainer)
-        layoutManager.glyphRange(forBoundingRect: CGRect(origin: .zero, size: size), in: textContainer)
-        
         let attString: AttributedString = {
             switch slice.state {
             case .expand: return slice.expand
@@ -38,11 +33,8 @@ extension LineNumberHeightManager {
             }
         }()
         
-        let textStorage = NSTextStorage(attributedString: attString)
-        textStorage.addLayoutManager(layoutManager)
-        
-        let rect = layoutManager.usedRect(for: textContainer)
-        return rect.size.height
+        let size = calculateSize(with: attString, width: width)
+        return size.height
     }
     
     func cache(_ height: CGFloat, at line: Int, orientation: Orientation, state: SliceState) {
@@ -72,5 +64,34 @@ extension LineNumberHeightManager {
         }
         
         return stateValue
+    }
+}
+
+// MARK: - Size
+
+extension AttributedStringSizeCalculator {
+    /// Calculate the size of a rich text string in a container
+    func calculateSize(
+        with attributedString: AttributedString,
+        width: CGFloat = .greatestFiniteMagnitude,
+        height: CGFloat = .greatestFiniteMagnitude
+    ) -> CGSize {
+        let size = CGSize(width: width, height: height)
+        
+        let textContainer = NSTextContainer(size: size)
+        textContainer.lineFragmentPadding = 0
+        
+        let layoutManager = NSLayoutManager()
+        layoutManager.addTextContainer(textContainer)
+        layoutManager.glyphRange(
+            forBoundingRect: CGRect(origin: .zero, size: size),
+            in: textContainer
+        )
+        
+        let textStorage = NSTextStorage(attributedString: attributedString)
+        textStorage.addLayoutManager(layoutManager)
+        
+        let rect = layoutManager.usedRect(for: textContainer)
+        return rect.size
     }
 }
