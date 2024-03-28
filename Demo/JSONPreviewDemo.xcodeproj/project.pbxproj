@@ -31,6 +31,7 @@
 		AE575C4F2BB41BC1003C5E49 /* TestEntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C4C2BB419D7003C5E49 /* TestEntranceTableViewController.swift */; };
 		AE575C532BB521C0003C5E49 /* WrapExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C522BB521C0003C5E49 /* WrapExampleViewController.swift */; };
 		AE575C592BB52B04003C5E49 /* TVOSWrapExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C562BB52AE0003C5E49 /* TVOSWrapExampleViewController.swift */; };
+		AE575C5A2BB54301003C5E49 /* TableViewExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */; };
 		AE780E942BB138CD0015D968 /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E932BB138CD0015D968 /* ListTableViewCell.swift */; };
 		AE780E962BB13AD30015D968 /* DemoCaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */; };
 		AE780E982BB13B7C0015D968 /* EntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */; };
@@ -181,7 +182,6 @@
 				AE2E24062BB13F9D0050D5AE /* Search */,
 				AEBD0FF32B4C02DB0080ED15 /* HideLineNumberExampleViewController.swift */,
 				AEBD0FEC2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift */,
-				AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */,
 				AE575C522BB521C0003C5E49 /* WrapExampleViewController.swift */,
 			);
 			path = "iOS Only";
@@ -198,6 +198,7 @@
 				AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */,
 				AE780E932BB138CD0015D968 /* ListTableViewCell.swift */,
 				AEBD0F382B4BEE220080ED15 /* ListTableViewController.swift */,
+				AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */,
 			);
 			path = Global;
 			sourceTree = "<group>";
@@ -328,6 +329,7 @@
 				AED63B072BB3DA6A00345C81 /* BasicExampleViewController.swift in Sources */,
 				AED63B052BB3DA3B00345C81 /* EntranceTableViewController.swift in Sources */,
 				AE575C592BB52B04003C5E49 /* TVOSWrapExampleViewController.swift in Sources */,
+				AE575C5A2BB54301003C5E49 /* TableViewExampleViewController.swift in Sources */,
 				AE2E25F52BB1829D0050D5AE /* DemoCaseConfig.swift in Sources */,
 				AE2E25F72BB1829D0050D5AE /* ListTableViewCell.swift in Sources */,
 			);

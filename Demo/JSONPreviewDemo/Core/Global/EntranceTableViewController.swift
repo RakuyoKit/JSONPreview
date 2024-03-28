@@ -23,6 +23,12 @@ final class EntranceTableViewController: ListTableViewController {
             ),
         ]
         
+        let tableViewExample = DemoCaseConfig(
+            title: "In UITableView",
+            desc: "Show how to use it in UITableView and dynamically adapt to Cell height.",
+            action: { TableViewExampleViewController() }
+        )
+        
 #if os(tvOS)
         dataSource.append(contentsOf: [
             .init(
@@ -30,6 +36,7 @@ final class EntranceTableViewController: ListTableViewController {
                 desc: "This example shows the rendering and interactive effects of JSONPreview when displaying JSON without breaking lines. This example is built specifically for tvOS.",
                 action: { TVOSWrapExampleViewController() }
             ),
+            tableViewExample,
         ])
 #else
         dataSource.append(contentsOf: [
@@ -48,11 +55,7 @@ final class EntranceTableViewController: ListTableViewController {
                 desc: "Example of how to hide line numbers.",
                 action: { HideLineNumberExampleViewController() }
             ),
-            .init(
-                title: "In UITableView",
-                desc: "Show how to use it in UITableView and dynamically adapt to Cell height.",
-                action: { TableViewExampleViewController() }
-            ),
+            tableViewExample,
             .init(
                 title: "Seach",
                 desc: "Related examples of search functionality.",

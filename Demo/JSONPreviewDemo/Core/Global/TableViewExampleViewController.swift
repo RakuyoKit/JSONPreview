@@ -127,7 +127,9 @@ extension TableViewExampleViewController {
             case .dynamic:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "JSON Delegate Cell", for: indexPath) as! JSONDelegateCell
                 
+#if !os(tvOS)
                 cell.previewView.delegate = self
+#endif
                 
                 _preview(initialState: .folded, cell: cell)
                 
@@ -162,6 +164,8 @@ extension TableViewExampleViewController {
     }
 }
 
+#if !os(tvOS)
+
 // MARK: - JSONPreviewDelegate
 
 extension TableViewExampleViewController: JSONPreviewDelegate {
@@ -170,6 +174,8 @@ extension TableViewExampleViewController: JSONPreviewDelegate {
         delayUpdate(view: view, decorator: decorator, indexPath: indexPath)
     }
 }
+
+#endif
 
 // MARK: - Config Model
 
