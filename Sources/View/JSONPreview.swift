@@ -148,6 +148,20 @@ open class JSONPreview: UIView {
 public extension JSONPreview {
     var contentSize: CGSize { jsonScrollView.contentSize }
     
+    var textLayoutSize: CGSize {
+        jsonTextView.layoutMarginsGuide.layoutFrame.size
+    }
+    
+    var isScrollEnabled: Bool {
+        get {
+            jsonScrollView.isScrollEnabled && lineNumberTableView.isScrollEnabled
+        }
+        set {
+            lineNumberTableView.isScrollEnabled = newValue
+            jsonScrollView.isScrollEnabled = newValue
+        }
+    }
+    
     /// Whether to hide the line number view
     var isHiddenLineNumber: Bool {
         get { lineNumberTableView.isHidden }
@@ -400,7 +414,6 @@ private extension JSONPreview {
             jsonTextView.bottomAnchor.constraint(equalTo: jsonScrollView.bottomAnchor),
             jsonTextView.leadingAnchor.constraint(equalTo: jsonScrollView.leadingAnchor),
             jsonTextView.trailingAnchor.constraint(equalTo: jsonScrollView.trailingAnchor),
-            jsonTextView.heightAnchor.constraint(greaterThanOrEqualTo: jsonScrollView.heightAnchor),
         ])
         
         activeJSONWidthLayout()

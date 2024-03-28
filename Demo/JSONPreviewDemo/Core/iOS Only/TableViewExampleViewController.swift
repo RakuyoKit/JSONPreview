@@ -59,6 +59,38 @@ final class TableViewExampleViewController: UITableViewController {
     }
 }
 
+private extension TableViewExampleViewController {
+    func delayUpdate(view: JSONPreview, decorator: JSONDecorator?, indexPath: IndexPath) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + .microseconds(1000)) { [weak self] in
+            self?.update(view: view, decorator: decorator, indexPath: indexPath)
+        }
+    }
+    
+    func update(view: JSONPreview, decorator: JSONDecorator?, indexPath: IndexPath) {
+        let index = indexPath.row
+        
+        guard case .json(var model) = dataSource[index] else { return }
+        
+        print("contentSize: \(view.contentSize)")
+        print("textLayoutSize: \(view.textLayoutSize)")
+        print("jsonScrollView.frame: \(view.jsonScrollView.frame)")
+        print("jsonScrollView.contentSize: \(view.jsonScrollView.contentSize)")
+        print("jsonTextView.frame: \(view.jsonTextView.frame)")
+        print("jsonTextView.contentSize: \(view.jsonTextView.contentSize)")
+        print("--------------------------------------------------------------------------------")
+        
+        // If `isScrollEnabled` is turned on, it needs to be replaced with `contentSize`
+        model.height = view.textLayoutSize.height
+        model.decorator = decorator
+        
+        dataSource[index] = .json(model)
+        
+        UIView.performWithoutAnimation {
+            tableView.reloadRows(at: [indexPath], with: .none)
+        }
+    }
+}
+
 // MARK: - UITableViewDataSource
 
 extension TableViewExampleViewController {
@@ -70,7 +102,7 @@ extension TableViewExampleViewController {
         let index = indexPath.row
         
         switch dataSource[index] {
-        case .json(var model):
+        case .json(let model):
             func _preview<C: BaseJSONCell>(initialState state: JSONSlice.State, cell: C) {
                 cell.previewView.tag = index
                 
@@ -79,21 +111,9 @@ extension TableViewExampleViewController {
                     cell.previewView.update(with: _decorator)
                     
                 } else {
-                    cell.previewView.preview(model.content, initialState: state) { (decorator) in
+                    cell.previewView.preview(model.content, initialState: state) { [weak self] in
                         guard model.height == nil else { return }
-                        
-                        DispatchQueue.main.async { [weak self] in
-                            guard let this = self else { return }
-                            
-                            // Sometimes the obtained height is inaccurate, differing by 5.
-                            // If you don't care about this error, you can do this:
-                            model.height = cell.previewView.contentSize.height + 5
-                            
-                            model.decorator = decorator
-                            
-                            this.dataSource[index] = .json(model)
-                            this.tableView.reloadRows(at: [indexPath], with: .automatic)
-                        }
+                        self?.delayUpdate(view: cell.previewView, decorator: $0, indexPath: indexPath)
                     }
                 }
             }
@@ -147,16 +167,7 @@ extension TableViewExampleViewController {
 extension TableViewExampleViewController: JSONPreviewDelegate {
     func jsonPreview(_ view: JSONPreview, didChangeSliceState slice: JSONSlice, decorator: JSONDecorator) {
         let indexPath = IndexPath(row: view.tag, section: 0)
-        let index = indexPath.row
-        
-        guard case .json(var model) = dataSource[index] else { return }
-        
-        model.height = view.contentSize.height
-        model.decorator = decorator
-        
-        dataSource[index] = .json(model)
-        
-        tableView.reloadRows(at: [indexPath], with: .none)
+        delayUpdate(view: view, decorator: decorator, indexPath: indexPath)
     }
 }
 
@@ -205,6 +216,7 @@ private class BaseJSONCell: UITableViewCell {
     
     func configPreview() {
         previewView.bounces = false
+        previewView.isScrollEnabled = false
         
 #if !os(tvOS)
         previewView.scrollsToTop = false
