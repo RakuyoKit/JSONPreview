@@ -4,7 +4,11 @@ All notable changes to this project are documented in this file.
 
 -----
 
-## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.2.3...HEAD)
+## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.3.0...HEAD)
+
+---
+
+## [2.3.0 - Spring brings blossoms](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.3.0) (2024-3-28)
 
 ### Added
 
