@@ -15,7 +15,9 @@ import SafariServices
 import JSONPreview
 
 class BaseJSONPreviewController: UIViewController {
-    lazy var previewView = JSONPreview()
+    lazy var previewView = JSONPreview(automaticWrapEnabled: automaticWrapEnabled)
+    
+    var automaticWrapEnabled: Bool { true }
     
     override func viewDidLoad() {
         super.viewDidLoad()

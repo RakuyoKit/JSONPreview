@@ -74,7 +74,7 @@ open class JSONPreview: UIView {
 #endif
     
     /// Indicates whether automatic wrapping is enabled. Default to `true`.
-    public lazy var automaticWrapEnabled = true {
+    public var automaticWrapEnabled = true {
         didSet { updateAutomaticWrapEnabled() }
     }
     
@@ -121,6 +121,14 @@ open class JSONPreview: UIView {
         true: jsonTextView.widthAnchor.constraint(equalTo: jsonScrollView.widthAnchor),
         false: jsonTextView.widthAnchor.constraint(greaterThanOrEqualTo: jsonScrollView.widthAnchor)
     ]
+    
+    public init(automaticWrapEnabled: Bool) {
+        self.automaticWrapEnabled = automaticWrapEnabled
+        
+        super.init(frame: .zero)
+        
+        config()
+    }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
