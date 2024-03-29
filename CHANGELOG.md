@@ -4,7 +4,19 @@ All notable changes to this project are documented in this file.
 
 -----
 
-## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.3.0...HEAD)
+## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.3.1...HEAD)
+
+---
+
+## [2.3.1 - Spring brings blossoms](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.3.1) (2024-3-29)
+
+### Added
+
+- Allow setting wrapping method during initialization. [#23](https://github.com/RakuyoKit/JSONPreview/pull/23) @rakuyoMo
+
+### Fixed
+
+- When folding JSON on non-top, the JSON area will be misaligned. [#23](https://github.com/RakuyoKit/JSONPreview/pull/23) @rakuyoMo
 
 ---
 
