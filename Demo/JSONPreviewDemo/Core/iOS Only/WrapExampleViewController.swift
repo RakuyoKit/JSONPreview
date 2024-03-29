@@ -11,6 +11,8 @@ import UIKit
 import JSONPreview
 
 final class WrapExampleViewController: BaseJSONPreviewController {
+    override var automaticWrapEnabled: Bool { false }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

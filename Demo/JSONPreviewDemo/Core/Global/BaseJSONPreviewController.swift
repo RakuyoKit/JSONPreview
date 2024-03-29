@@ -15,12 +15,17 @@ import SafariServices
 import JSONPreview
 
 class BaseJSONPreviewController: UIViewController {
-    lazy var previewView = JSONPreview()
+    lazy var previewView = JSONPreview(automaticWrapEnabled: automaticWrapEnabled)
+    
+    var automaticWrapEnabled: Bool { true }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = {
+            guard #available(iOS 13.0, *) else { return .white }
+            return .systemGroupedBackground
+        }()
         
 #if !os(tvOS)
         previewView.delegate = self

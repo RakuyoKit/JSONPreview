@@ -38,7 +38,11 @@ extension VisionOSTestViewController {
         
         title = "visionOS Test"
         
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = {
+            guard #available(iOS 13.0, *) else { return .white }
+            return .systemGroupedBackground
+        }()
+        
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
