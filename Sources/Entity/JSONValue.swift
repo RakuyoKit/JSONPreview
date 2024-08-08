@@ -1,4 +1,5 @@
 // swiftlint:disable all
+// swiftformat:disable all
 
 //===----------------------------------------------------------------------===//
 //
@@ -90,8 +91,8 @@ extension JSONValue {
     }
 }
 
-public extension JSONValue {
-    var debugDataTypeDescription: String {
+extension JSONValue {
+    public var debugDataTypeDescription: String {
         switch self {
         case .array:
             return "an array"
@@ -111,4 +112,5 @@ public extension JSONValue {
     }
 }
 
+// swiftformat:enable all
 // swiftlint:enable all

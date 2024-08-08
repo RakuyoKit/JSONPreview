@@ -14,6 +14,8 @@ import SafariServices
 
 import JSONPreview
 
+// MARK: - BaseJSONPreviewController
+
 class BaseJSONPreviewController: UIViewController {
     lazy var previewView = JSONPreview(automaticWrapEnabled: automaticWrapEnabled)
     
@@ -27,20 +29,21 @@ class BaseJSONPreviewController: UIViewController {
             return .systemGroupedBackground
         }()
         
-#if !os(tvOS)
+        #if !os(tvOS)
         previewView.delegate = self
-#endif
+        #endif
         
         view.addSubview(previewView)
     }
 }
 
 #if !os(tvOS)
+
 // MARK: - UITextViewDelegate
 
 extension BaseJSONPreviewController: JSONPreviewDelegate {
-    func jsonPreview(_ view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
-        print(url)
+    func jsonPreview(_: JSONPreview, didClickURL url: URL, on _: UITextView) -> Bool {
+        Log.debug(url)
         
         let safari = SFSafariViewController(url: url)
         safari.modalPresentationStyle = .overFullScreen

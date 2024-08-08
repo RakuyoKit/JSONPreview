@@ -12,6 +12,8 @@ public typealias AttributedString = NSMutableAttributedString
 public typealias AttributedKey = AttributedString.Key
 public typealias StyleInfos = [AttributedKey: Any]
 
+// MARK: - HighlightStyle
+
 /// Highlight style configuration
 public struct HighlightStyle {
     /// The icon of the expand button.
@@ -57,22 +59,22 @@ public struct HighlightStyle {
         boldedSearchResult: Bool = true
     ) {
         let getImage: (String) -> UIImage? = {
-#if SWIFT_PACKAGE
+            #if SWIFT_PACKAGE
             let bundle = Bundle.module
-#else
+            #else
             guard
                 let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
                 let bundle = Bundle(path: resourcePath + "/JSONPreviewBundle.bundle")
             else {
                 return UIImage(named: $0)
             }
-#endif
+            #endif
             return UIImage(named: $0, in: bundle, compatibleWith: nil)
         }
         
         self.color = color
         self.lineHeight = lineHeight
-        self.isBoldedSearchResult = boldedSearchResult
+        isBoldedSearchResult = boldedSearchResult
         
         // swiftlint:disable force_unwrapping
         self.expandIcon = expandIcon ?? getImage("expand")!
@@ -83,12 +85,12 @@ public struct HighlightStyle {
     }
 }
 
-public extension HighlightStyle {
+extension HighlightStyle {
     /// Default style configuration.
-    static let `default` = HighlightStyle()
+    public static let `default` = HighlightStyle()
     
     /// A darker style scheme that the author likes.
-    static let mariana = HighlightStyle(color: .mariana)
+    public static let mariana = HighlightStyle(color: .mariana)
 }
 
 extension HighlightStyle {
@@ -105,10 +107,12 @@ extension HighlightStyle {
     }
 }
 
-fileprivate extension UIImage {
-    convenience init?(name: String) {
-        if let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
-           let bundle = Bundle(path: resourcePath + "JSONPreview.bundle") {
+extension UIImage {
+    fileprivate convenience init?(name: String) {
+        if
+            let resourcePath = Bundle(for: JSONPreview.self).resourcePath,
+            let bundle = Bundle(path: resourcePath + "JSONPreview.bundle")
+        {
             self.init(named: name, in: bundle, compatibleWith: nil)
         } else {
             self.init(named: name)

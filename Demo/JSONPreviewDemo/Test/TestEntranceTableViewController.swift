@@ -8,19 +8,24 @@
 
 import UIKit
 
+// MARK: - TestEntranceTableViewController
+
 final class TestEntranceTableViewController: ListTableViewController {
     init() {
-        super.init(dataSource: [
+        let dataSource: [[DemoCaseConfig]] = [
             [
                 .init(
                     title: "VisionOS TableView Test",
                     action: { VisionOSTestViewController() }
                 ),
-            ]
-        ])
+            ],
+        ]
+
+        super.init(dataSource: dataSource)
     }
     
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

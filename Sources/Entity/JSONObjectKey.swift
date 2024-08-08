@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: - JSONObjectKey
+
 /// Used to enrich the information of the key of the object in json.
 public struct JSONObjectKey {
     /// Used to mark an incorrect key.
@@ -17,17 +19,17 @@ public struct JSONObjectKey {
         self.init(key: key, isWrong: false)
     }
     
-    fileprivate init(key: String, isWrong: Bool) {
+    private init(key: String, isWrong: Bool) {
         self.key = key
         self.isWrong = isWrong
     }
 }
 
-// MARK: - Hashable
+// MARK: Hashable
 
 extension JSONObjectKey: Hashable { }
 
-// MARK: - Comparable
+// MARK: Comparable
 
 extension JSONObjectKey: Comparable {
     public static func < (lhs: JSONObjectKey, rhs: JSONObjectKey) -> Bool {
@@ -37,7 +39,7 @@ extension JSONObjectKey: Comparable {
     }
 }
 
-// MARK: - ExpressibleByStringLiteral
+// MARK: ExpressibleByStringLiteral
 
 extension JSONObjectKey: ExpressibleByStringLiteral {
     public init(stringLiteral value: StringLiteralType) {
