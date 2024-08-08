@@ -32,12 +32,5 @@ let package = Package(
     ]
 )
 
-let swiftlintPlugin = Target.PluginUsage.plugin(name: "SwiftLintPlugin", package: "SwiftLint")
-
-for i in package.targets.indices {
-    if package.targets[i].plugins == nil {
-        package.targets[i].plugins = [swiftlintPlugin]
-    } else {
-        package.targets[i].plugins?.append(swiftlintPlugin)
-    }
-}
+// Add the Rakuyo Swift formatting plugin
+package.dependencies.append(.package(url: "https://github.com/RakuyoKit/swift.git", from: "1.3.1"))
