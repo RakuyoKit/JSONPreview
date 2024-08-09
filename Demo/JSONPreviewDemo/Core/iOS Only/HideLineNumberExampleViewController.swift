@@ -10,6 +10,8 @@ import UIKit
 
 import JSONPreview
 
+// MARK: - HideLineNumberExampleViewController
+
 final class HideLineNumberExampleViewController: BaseJSONPreviewController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,27 +28,27 @@ final class HideLineNumberExampleViewController: BaseJSONPreviewController {
 
 // MARK: -
 
-private extension HideLineNumberExampleViewController {
-    func addPreviewViewLayout() {
+extension HideLineNumberExampleViewController {
+    private func addPreviewViewLayout() {
         previewView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             previewView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
     }
     
-    func preview() {
+    private func preview() {
         let json = ExampleJSON.mostComprehensive
         
-        print("will display json")
+        Log.debug("will display json")
         let start = Date().timeIntervalSince1970
         
         previewView.preview(json, initialState: .folded) { _ in
             let end = Date().timeIntervalSince1970
-            print("did display json at: \(end - start)")
+            Log.debug("did display json at: \(end - start)")
         }
     }
 }

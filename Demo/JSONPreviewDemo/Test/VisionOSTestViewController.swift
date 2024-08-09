@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - VisionOSTestViewController
+
 final class VisionOSTestViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let _view = UITableView(frame: .zero, style: .plain)
@@ -49,16 +51,16 @@ extension VisionOSTestViewController {
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
     }
 }
 
-// MARK: - UITableViewDelegate
+// MARK: UITableViewDelegate
 
 extension VisionOSTestViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 24.3
+    func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
+        24.3
     }
     
 //    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -66,31 +68,31 @@ extension VisionOSTestViewController: UITableViewDelegate {
 //        view.backgroundColor = .green
 //        return view
 //    }
-//    
+//
 //    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 //        let view = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0.001))
 //        view.backgroundColor = .white
 //        return view
 //    }
-//    
+//
 //    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
 //        return 0.001
 //    }
-//    
+//
 //    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 //        return 0.001
 //    }
 }
 
-// MARK: - UITableViewDataSource
+// MARK: UITableViewDataSource
 
 extension VisionOSTestViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1//50
+    func numberOfSections(in _: UITableView) -> Int {
+        1 // 50
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 50//1
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        50 // 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

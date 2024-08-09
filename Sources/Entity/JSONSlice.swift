@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - JSONSlice
+
 /// Used to represent a certain part of JSON
 public struct JSONSlice {
     /// The current display state of the slice
@@ -30,7 +32,7 @@ public struct JSONSlice {
     public var expand: AttributedString
     
     /// The summary content of the JSON slice in the folded state.
-    public var folded: AttributedString?
+    public var folded: AttributedString? = nil
     
     /// The number of times the slice was folded.
     ///
@@ -38,7 +40,7 @@ public struct JSONSlice {
     /// Each time the slice is folded, the value increases by 1.
     ///
     /// Mainly used to assist in calculating click positions.
-    internal var foldedTimes: Int
+    var foldedTimes: Int
     
     /// Initialization method.
     ///
@@ -49,7 +51,7 @@ public struct JSONSlice {
     ///   - expand: The complete content of the JSON slice in the expanded state.
     ///   - folded: The summary content of the JSON slice in the folded state.
     ///   - foldedTimes: The number of times the slice was folded.
-    internal init(
+    init(
         level: Int,
         lineNumber: Int,
         state: State = .`default`,
@@ -74,7 +76,7 @@ public struct JSONSlice {
     ///   - expand: The complete content of the JSON slice in the expanded state.
     ///   - folded: The summary content of the JSON slice in the folded state.
     ///   - foldedTimes: The number of times the slice was folded.
-    internal init(
+    init(
         level: Int,
         lineNumber: Int,
         state: State = .`default`,
@@ -93,9 +95,9 @@ public struct JSONSlice {
     }
 }
 
-public extension JSONSlice {
+extension JSONSlice {
     /// According to different status, return the content that should be displayed currently.
-    var showContent: AttributedString? {
+    public var showContent: AttributedString? {
         switch state {
         case .expand: return expand
         case .folded: return folded

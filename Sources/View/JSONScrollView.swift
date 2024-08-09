@@ -9,11 +9,11 @@
 import UIKit
 
 open class JSONScrollView: UIScrollView {
-#if os(tvOS)
-    open override var canBecomeFocused: Bool { true }
-#endif
+    #if os(tvOS)
+    override open var canBecomeFocused: Bool { true }
+    #endif
     
-    public override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         
         config()
@@ -30,12 +30,12 @@ open class JSONScrollView: UIScrollView {
         delaysContentTouches = false
         canCancelContentTouches = true
         
-#if os(tvOS)
+        #if os(tvOS)
         isUserInteractionEnabled = true
         panGestureRecognizer.allowedTouchTypes = [
             // swiftlint:disable:next legacy_objc_type
-            NSNumber(value: UITouch.TouchType.indirect.rawValue)
+            NSNumber(value: UITouch.TouchType.indirect.rawValue),
         ]
-#endif
+        #endif
     }
 }

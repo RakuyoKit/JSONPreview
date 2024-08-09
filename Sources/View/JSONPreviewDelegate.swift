@@ -8,7 +8,11 @@
 
 import UIKit
 
-@available(tvOS, unavailable,
+// MARK: - JSONPreviewDelegate
+
+@available(
+    tvOS,
+    unavailable,
     message: "UITextView cannot be edited on tvOS, so the folding function cannot be implemented."
 )
 public protocol JSONPreviewDelegate: NSObjectProtocol {
@@ -33,10 +37,10 @@ public protocol JSONPreviewDelegate: NSObjectProtocol {
 // MARK: - Default
 
 @available(tvOS, unavailable)
-public extension JSONPreviewDelegate {
-    func jsonPreview(_ view: JSONPreview, didClickURL url: URL, on textView: UITextView) -> Bool {
-        return true
+extension JSONPreviewDelegate {
+    public func jsonPreview(_: JSONPreview, didClickURL _: URL, on _: UITextView) -> Bool {
+        true
     }
     
-    func jsonPreview(_ view: JSONPreview, didChangeSliceState slice: JSONSlice, decorator: JSONDecorator) { }
+    public func jsonPreview(_: JSONPreview, didChangeSliceState _: JSONSlice, decorator _: JSONDecorator) { }
 }
