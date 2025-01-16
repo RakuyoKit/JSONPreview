@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - ListTableViewController
+
 class ListTableViewController: UITableViewController {
     private let dataSource: [[DemoCaseConfig]]
     
@@ -17,7 +19,8 @@ class ListTableViewController: UITableViewController {
         super.init(style: .grouped)
     }
     
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -37,12 +40,12 @@ extension ListTableViewController {
 // MARK: - UITableViewDataSource
 
 extension ListTableViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return dataSource.count
+    override func numberOfSections(in _: UITableView) -> Int {
+        dataSource.count
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource[section].count
+    override func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
+        dataSource[section].count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -59,16 +62,16 @@ extension ListTableViewController {
 // MARK: - UITableViewDelegate
 
 extension ListTableViewController {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let controller = dataSource[indexPath.section][indexPath.row].action() else { return }
         navigationController?.pushViewController(controller, animated: true)
     }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0.01
+    override func tableView(_: UITableView, heightForHeaderInSection _: Int) -> CGFloat {
+        0.01
     }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return .init(frame: .init(origin: .zero, size: .init(width: 0, height: 0.01)))
+    override func tableView(_: UITableView, viewForHeaderInSection _: Int) -> UIView? {
+        .init(frame: .init(origin: .zero, size: .init(width: 0, height: 0.01)))
     }
 }

@@ -1,4 +1,5 @@
 // swiftlint:disable all
+// swiftformat:disable all
 
 //===----------------------------------------------------------------------===//
 //
@@ -777,4 +778,5 @@ extension Array where Element == UInt8 {
     fileprivate static let _null = [UInt8(ascii: "n"), UInt8(ascii: "u"), UInt8(ascii: "l"), UInt8(ascii: "l")]
 }
 
-//swiftlint:enable all
+// swiftformat:enable all
+// swiftlint:enable all

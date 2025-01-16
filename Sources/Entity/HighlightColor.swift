@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - HighlightColor
+
 /// Color configuration for highlight
 public struct HighlightColor {
     /// Keyword color. Including `{ }`, `[]`, `:`, `,`
@@ -40,7 +42,7 @@ public struct HighlightColor {
     /// This color is used to highlight text that matches within the search.
     ///
     /// This is optional because you may not need search functionality.
-    public var searchHitBackground: UIColor?
+    public var searchHitBackground: UIColor? = nil
     
     /// The background color of the JSON preview area
     public var jsonBackground: UIColor
@@ -84,9 +86,9 @@ public struct HighlightColor {
 
 // MARK: - Built-in color style
 
-public extension HighlightColor {
+extension HighlightColor {
     /// Default color configuration.
-    static let `default` = HighlightColor(
+    public static let `default` = HighlightColor(
         keyWord: UIColor.black,
         key: 0xB72E22,
         link: 0x1E4A9C,
@@ -103,7 +105,7 @@ public extension HighlightColor {
     )
     
     /// A darker color scheme that the author likes.
-    static let mariana = HighlightColor(
+    public static let mariana = HighlightColor(
         keyWord: 0x767677,
         key: 0xF2777B,
         link: 0x73AAD4,
@@ -128,9 +130,13 @@ public protocol ConvertibleToColor {
     var color: UIColor { get }
 }
 
+// MARK: - UIColor + ConvertibleToColor
+
 extension UIColor: ConvertibleToColor {
     public var color: UIColor { self }
 }
+
+// MARK: - Int + ConvertibleToColor
 
 /// Like `0x88B0BF`
 extension Int: ConvertibleToColor {
@@ -143,15 +149,17 @@ extension Int: ConvertibleToColor {
     }
 }
 
+// MARK: - String + ConvertibleToColor
+
 /// Like `#FF7F20`
 extension String: ConvertibleToColor {
     public var color: UIColor {
         let hex: Int = {
             var sum = 0
             
-            uppercased().utf8.forEach {
-                sum = sum * 16 + Int($0) - 48
-                if $0 >= 65 { sum -= 7 }
+            for item in uppercased().utf8 {
+                sum = sum * 16 + Int(item) - 48
+                if item >= 65 { sum -= 7 }
             }
             
             return sum

@@ -8,9 +8,11 @@
 
 import UIKit
 
+// MARK: - SearchEntranceTableViewController
+
 final class SearchEntranceTableViewController: ListTableViewController {
     init() {
-        super.init(dataSource: [
+        let dataSource: [[DemoCaseConfig]] = [
             [
                 .init(
                     title: "Basic",
@@ -22,11 +24,14 @@ final class SearchEntranceTableViewController: ListTableViewController {
                     desc: "Some examples of custom configurations.",
                     action: { CustomSearchExampleViewController() }
                 ),
-            ]
-        ])
+            ],
+        ]
+
+        super.init(dataSource: dataSource)
     }
     
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

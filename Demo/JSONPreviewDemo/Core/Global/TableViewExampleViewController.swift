@@ -10,6 +10,8 @@ import UIKit
 
 import JSONPreview
 
+// MARK: - TableViewExampleViewController
+
 final class TableViewExampleViewController: UITableViewController {
     private lazy var dataSource: [ListConfig] = [
         .desc("""
@@ -57,26 +59,26 @@ final class TableViewExampleViewController: UITableViewController {
     }
 }
 
-private extension TableViewExampleViewController {
-    func delayUpdate(view: JSONPreview, decorator: JSONDecorator?, indexPath: IndexPath) {
+extension TableViewExampleViewController {
+    private func delayUpdate(view: JSONPreview, decorator: JSONDecorator?, indexPath: IndexPath) {
         DispatchQueue.main.asyncAfter(deadline: .now() + .microseconds(1000)) { [weak self] in
             self?.update(view: view, decorator: decorator, indexPath: indexPath)
         }
     }
     
-    func update(view: JSONPreview, decorator: JSONDecorator?, indexPath: IndexPath) {
+    private func update(view: JSONPreview, decorator: JSONDecorator?, indexPath: IndexPath) {
         let index = indexPath.row
         
         guard case .json(var model) = dataSource[index] else { return }
         
-        print("contentSize: \(view.contentSize)")
-        print("textLayoutSize: \(view.textLayoutSize)")
-        print("jsonScrollView.frame: \(view.jsonScrollView.frame)")
-        print("jsonScrollView.contentSize: \(view.jsonScrollView.contentSize)")
-        print("jsonTextView.frame: \(view.jsonTextView.frame)")
-        print("jsonTextView.contentSize: \(view.jsonTextView.contentSize)")
-        print("--------------------------------------------------------------------------------")
-        
+        Log.debug("contentSize: \(view.contentSize)")
+        Log.debug("textLayoutSize: \(view.textLayoutSize)")
+        Log.debug("jsonScrollView.frame: \(view.jsonScrollView.frame)")
+        Log.debug("jsonScrollView.contentSize: \(view.jsonScrollView.contentSize)")
+        Log.debug("jsonTextView.frame: \(view.jsonTextView.frame)")
+        Log.debug("jsonTextView.contentSize: \(view.jsonTextView.contentSize)")
+        Log.debug("--------------------------------------------------------------------------------")
+
         // If `isScrollEnabled` is turned on, it needs to be replaced with `contentSize`
         model.height = view.textLayoutSize.height
         model.decorator = decorator
@@ -92,8 +94,8 @@ private extension TableViewExampleViewController {
 // MARK: - UITableViewDataSource
 
 extension TableViewExampleViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource.count
+    override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        dataSource.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -118,16 +120,25 @@ extension TableViewExampleViewController {
             
             switch model.heightStyle {
             case .fixed:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "JSON Cell", for: indexPath) as! JSONCell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "JSON Cell", for: indexPath) as? JSONCell else {
+                    fatalError("Failed to obtain Cell")
+                }
                 _preview(initialState: .expand, cell: cell)
                 return cell
                 
             case .dynamic:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "JSON Delegate Cell", for: indexPath) as! JSONDelegateCell
-                
-#if !os(tvOS)
+                guard
+                    let cell = tableView.dequeueReusableCell(
+                        withIdentifier: "JSON Delegate Cell",
+                        for: indexPath
+                    ) as? JSONDelegateCell
+                else {
+                    fatalError("Failed to obtain Cell")
+                }
+
+                #if !os(tvOS)
                 cell.previewView.delegate = self
-#endif
+                #endif
                 
                 _preview(initialState: .folded, cell: cell)
                 
@@ -147,7 +158,7 @@ extension TableViewExampleViewController {
 // MARK: - UITableViewDelegate
 
 extension TableViewExampleViewController {
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch dataSource[indexPath.row] {
         case .desc:
             return UITableView.automaticDimension
@@ -167,7 +178,7 @@ extension TableViewExampleViewController {
 // MARK: - JSONPreviewDelegate
 
 extension TableViewExampleViewController: JSONPreviewDelegate {
-    func jsonPreview(_ view: JSONPreview, didChangeSliceState slice: JSONSlice, decorator: JSONDecorator) {
+    func jsonPreview(_ view: JSONPreview, didChangeSliceState _: JSONSlice, decorator: JSONDecorator) {
         let indexPath = IndexPath(row: view.tag, section: 0)
         delayUpdate(view: view, decorator: decorator, indexPath: indexPath)
     }
@@ -175,31 +186,28 @@ extension TableViewExampleViewController: JSONPreviewDelegate {
 
 #endif
 
-// MARK: - Config Model
+// MARK: - ListConfig
 
 private enum ListConfig {
+    case json(JSON)
+    case desc(String)
+
     struct JSON {
         enum HeightStyle {
-            case fixed
-            
-            case dynamic
+            case fixed, dynamic
         }
-        
+
         let content: String
-        
-        var decorator :JSONDecorator? = nil
-        
+
+        var decorator: JSONDecorator? = nil
+
         var height: CGFloat? = nil
-        
+
         var heightStyle: HeightStyle
     }
-    
-    case json(JSON)
-    
-    case desc(String)
 }
 
-// MARK: - Cell
+// MARK: - BaseJSONCell
 
 private class BaseJSONCell: UITableViewCell {
     lazy var previewView = JSONPreview()
@@ -214,7 +222,8 @@ private class BaseJSONCell: UITableViewCell {
         addLayout()
     }
     
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -222,9 +231,9 @@ private class BaseJSONCell: UITableViewCell {
         previewView.bounces = false
         previewView.isScrollEnabled = false
         
-#if !os(tvOS)
+        #if !os(tvOS)
         previewView.scrollsToTop = false
-#endif
+        #endif
     }
     
     func addLayout() {
@@ -239,6 +248,10 @@ private class BaseJSONCell: UITableViewCell {
     }
 }
 
+// MARK: - JSONCell
+
 private final class JSONCell: BaseJSONCell { }
+
+// MARK: - JSONDelegateCell
 
 private final class JSONDelegateCell: BaseJSONCell { }

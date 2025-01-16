@@ -9,7 +9,7 @@
 import UIKit
 
 open class LineNumberCell: UITableViewCell {
-    open override func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         
         // Modify the left spacing of the label.

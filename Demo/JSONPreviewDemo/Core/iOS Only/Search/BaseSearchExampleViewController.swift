@@ -10,10 +10,12 @@ import UIKit
 
 import JSONPreview
 
+// MARK: - BaseSearchExampleViewController
+
 class BaseSearchExampleViewController: BaseJSONPreviewController {
     private lazy var searchBar = UISearchBar()
     
-    lazy var keyword: String = "" {
+    lazy var keyword = "" {
         didSet {
             if keyword.isEmpty {
                 previewView.removeSearchStyle { [weak self] _ in
@@ -23,7 +25,7 @@ class BaseSearchExampleViewController: BaseJSONPreviewController {
                 }
                 
             } else {
-                previewView.search(keyword) { [weak self] (lines, _) in
+                previewView.search(keyword) { [weak self] lines, _ in
                     lines
                         .lazy
                         .map { IndexPath(row: $0, section: 0) }
@@ -46,15 +48,15 @@ class BaseSearchExampleViewController: BaseJSONPreviewController {
 
 // MARK: -
 
-private extension BaseSearchExampleViewController {
-    func configSearchBar() {
+extension BaseSearchExampleViewController {
+    private func configSearchBar() {
         searchBar.delegate = self
         searchBar.searchBarStyle = .minimal
         
         addSearchBar()
     }
     
-    func addSearchBar() {
+    private func addSearchBar() {
         view.addSubview(searchBar)
         
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -62,25 +64,25 @@ private extension BaseSearchExampleViewController {
         NSLayoutConstraint.activate([
             searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            searchBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
         
         searchBar.setContentHuggingPriority(.required, for: .vertical)
     }
     
-    func addPreviewViewLayout() {
+    private func addPreviewViewLayout() {
         previewView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             previewView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             previewView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             previewView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
     }
 }
 
-// MARK: - UISearchBarDelegate
+// MARK: UISearchBarDelegate
 
 extension BaseSearchExampleViewController: UISearchBarDelegate {
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {

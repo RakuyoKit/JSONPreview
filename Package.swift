@@ -6,12 +6,13 @@ let package = Package(
     name: "JSONPreview",
     platforms: [
         .iOS(.v12),
-        .tvOS(.v12)
+        .tvOS(.v12),
     ],
     products: [
         .library(
             name: "JSONPreview",
-            targets: ["JSONPreview"]),
+            targets: ["JSONPreview"]
+        ),
     ],
     targets: [
         .target(
@@ -19,10 +20,18 @@ let package = Package(
             path: "Sources",
             resources: [
                 .copy("PrivacyInfo.xcprivacy"),
-                .process("./Resources/Assets.xcassets")]),
+                .process("./Resources/Assets.xcassets")
+            ]
+        ),
         .testTarget(
             name: "JSONPreviewTests",
             dependencies: ["JSONPreview"],
-            path: "Tests"),
+            path: "Tests"
+        ),
     ]
 )
+
+#if swift(>=5.6)
+// Add the Rakuyo Swift formatting plugin if possible
+package.dependencies.append(.package(url: "https://github.com/RakuyoKit/swift.git", from: "1.3.1"))
+#endif
