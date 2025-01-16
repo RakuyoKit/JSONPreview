@@ -18,7 +18,10 @@ let package = Package(
         .target(
             name: "JSONPreview",
             path: "Sources",
-            resources: [.process("./Resources/Assets.xcassets")]
+            resources: [
+                .copy("PrivacyInfo.xcprivacy"),
+                .process("./Resources/Assets.xcassets")
+            ]
         ),
         .testTarget(
             name: "JSONPreviewTests",
