@@ -1,3 +1,6 @@
+# Please do not modify the contents of this file.
+# If you need to add a new rake method, please create a separate ruby ​​file in the `script` folder.
+
 module Tools
   def mise_exec_prefix
     'mise exec --'
@@ -12,25 +15,13 @@ module Tools
   end
 end
 
-# Reference other rake files to avoid adding the -f parameter when executing the rake command
-FileList['**/*.rb'].each { |rf| require_relative rf }
+# The folders under this array are mutually exclusive, only the first folder that exists is loaded
+mutual_exclusion_rakes_dirs = ['./script']
 
-namespace :swift do
-  FORMAT_COMMAND = 'swift package --allow-writing-to-package-directory format'
-  BUILD_COMMAND = 'xcodebuild -scheme RaLog -destination'
-
-  desc 'Run Format'
-  task :format do
-    sh FORMAT_COMMAND
-  end
-
-  desc 'Run Lint'
-  task :lint do
-    sh FORMAT_COMMAND + ' --lint'
-  end
-
-  desc 'Build'
-  task :build do
-    sh BUILD_COMMAND + " 'platform=iOS Simulator,OS=17.4,name=iPhone 15 Pro'"
+# Check and load the first existing directory
+mutual_exclusion_rakes_dirs.each do |dir|
+  if Dir.exist?(dir)
+    Dir.glob("#{dir}/*.rb").each { |rf| require_relative rf if File.file?(rf) }
+    break  # Because of mutual exclusion, stop after finding the first valid directory
   end
 end
