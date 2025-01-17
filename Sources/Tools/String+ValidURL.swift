@@ -10,13 +10,15 @@ import Foundation
 
 /// Used to match any url, including ip addresses.
 private let predicate = NSPredicate(format: "SELF MATCHES %@", argumentArray: [
-    "((?:http|https)://)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)"
+    "((?:http|https)://)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)",
 ])
 
 /// Used to match ip addresses.
 private let ipPredicate = NSPredicate(format: "SELF MATCHES %@", argumentArray: [
-    "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"
+    "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$",
 ])
+
+// MARK: - ValidURL
 
 struct ValidURL {
     let urlString: String
@@ -63,7 +65,7 @@ extension String {
     /// Remove escape characters in the string.
     ///
     /// Currently only supports replacement of "\\/".
-    fileprivate func removeEscaping() -> String {
+    private func removeEscaping() -> String {
         var string = self
         
         if string.contains("\\/") {

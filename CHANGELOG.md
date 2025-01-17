@@ -4,7 +4,19 @@ All notable changes to this project are documented in this file.
 
 -----
 
-## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.3.1...HEAD)
+## [Unreleased](https://github.com/RakuyoKit/JSONPreview/compare/2.3.2...HEAD)
+
+---
+
+## [2.3.2 - Chinese New Year](https://github.com/RakuyoKit/JSONPreview/releases/tag/2.3.2) (2025-1-17)
+
+### Changed
+
+- Use RakuyoKit/swift instead of SwiftLint. [#26](https://github.com/RakuyoKit/JSONPreview/pull/26) @rakuyoMo
+
+### Fixed
+
+- Add target paths and xcprivacy file copying. [#27](https://github.com/RakuyoKit/JSONPreview/pull/27) @ag601t
 
 ---
 

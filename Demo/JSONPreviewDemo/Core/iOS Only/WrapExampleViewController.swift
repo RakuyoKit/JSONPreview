@@ -10,6 +10,8 @@ import UIKit
 
 import JSONPreview
 
+// MARK: - WrapExampleViewController
+
 final class WrapExampleViewController: BaseJSONPreviewController {
     override var automaticWrapEnabled: Bool { false }
     
@@ -30,34 +32,34 @@ final class WrapExampleViewController: BaseJSONPreviewController {
 
 // MARK: -
 
-private extension WrapExampleViewController {
-    func addPreviewViewLayout() {
+extension WrapExampleViewController {
+    private func addPreviewViewLayout() {
         previewView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             previewView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             previewView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
     }
     
-    func preview() {
-#if os(visionOS)
+    private func preview() {
+        #if os(visionOS)
         let json = ExampleJSON.veryLongText
-#else
+        #else
         let json = ExampleJSON.mostComprehensive
-#endif
+        #endif
         previewView.preview(json)
     }
 }
 
-private extension WrapExampleViewController {
-    var barButtonTitle: String {
+extension WrapExampleViewController {
+    private var barButtonTitle: String {
         previewView.automaticWrapEnabled ? "not wrap" : "auto wrap"
     }
     
-    func configBarButtonItem() {
+    private func configBarButtonItem() {
         let button = UIButton(type: .system)
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -71,7 +73,7 @@ private extension WrapExampleViewController {
     }
     
     @objc
-    func barButtonDidClick(_ button: UIButton) {
+    private func barButtonDidClick(_ button: UIButton) {
         previewView.automaticWrapEnabled.toggle()
         button.setTitle(barButtonTitle, for: .normal)
     }

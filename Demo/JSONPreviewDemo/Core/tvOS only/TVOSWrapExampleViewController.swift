@@ -10,6 +10,8 @@ import UIKit
 
 import JSONPreview
 
+// MARK: - TVOSWrapExampleViewController
+
 final class TVOSWrapExampleViewController: BaseJSONPreviewController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,15 +29,15 @@ final class TVOSWrapExampleViewController: BaseJSONPreviewController {
 
 // MARK: -
 
-private extension TVOSWrapExampleViewController {
-    func addPreviewViewLayout() {
+extension TVOSWrapExampleViewController {
+    private func addPreviewViewLayout() {
         previewView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             previewView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             previewView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             previewView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            previewView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
         ])
     }
 }

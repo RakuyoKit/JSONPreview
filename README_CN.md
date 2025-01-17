@@ -32,13 +32,13 @@ pod 'JSONPreview'
 
 - 依次选择 File > Swift Packages > Add Package Dependency
 - 输入 https://github.com/RakuyoKit/JSONPreview.git
-- 选择 "Up to Next Major" 并填入 "2.3.1"
+- 选择 "Up to Next Major" 并填入 "2.3.2"
 
 或者将下面的内容添加到 `Package.swift` 文件中：
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/RakuyoKit/JSONPreview.git", from: "2.3.1")
+  .package(url: "https://github.com/RakuyoKit/JSONPreview.git", from: "2.3.2")
 ]
 ```
 
@@ -144,6 +144,14 @@ previewView.preview(json, style: style, initialState: .folded)
 ## DFD
 
 ![DFD](Images/DFD.jpg)
+
+## 贡献
+
+您可能觉得 `JSONPreview` 的更新频率较低，但请放心，这个项目并未被抛弃或停止维护，我一直都在。
+
+如果您在使用过程中遇到任何问题，请随时[提出](https://github.com/RakuyoKit/JSONPreview/issues/new?template=Blank+issue)，我会尽快回复并提供帮助。
+
+此外，如果您希望提交 PR，请基于 [`develop`](https://github.com/RakuyoKit/JSONPreview/tree/develop) 分支进行开发并提交您的代码。感谢您的支持和贡献！
 
 ## 致谢
 

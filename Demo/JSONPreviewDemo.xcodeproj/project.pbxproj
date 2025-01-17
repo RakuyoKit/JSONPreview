@@ -32,6 +32,7 @@
 		AE575C532BB521C0003C5E49 /* WrapExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C522BB521C0003C5E49 /* WrapExampleViewController.swift */; };
 		AE575C592BB52B04003C5E49 /* TVOSWrapExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE575C562BB52AE0003C5E49 /* TVOSWrapExampleViewController.swift */; };
 		AE575C5A2BB54301003C5E49 /* TableViewExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */; };
+		AE667EFD2C64703300136064 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE667EFC2C64703200136064 /* Log.swift */; };
 		AE780E942BB138CD0015D968 /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E932BB138CD0015D968 /* ListTableViewCell.swift */; };
 		AE780E962BB13AD30015D968 /* DemoCaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */; };
 		AE780E982BB13B7C0015D968 /* EntranceTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */; };
@@ -66,6 +67,7 @@
 		AE575C4C2BB419D7003C5E49 /* TestEntranceTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestEntranceTableViewController.swift; sourceTree = "<group>"; };
 		AE575C522BB521C0003C5E49 /* WrapExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapExampleViewController.swift; sourceTree = "<group>"; };
 		AE575C562BB52AE0003C5E49 /* TVOSWrapExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVOSWrapExampleViewController.swift; sourceTree = "<group>"; };
+		AE667EFC2C64703200136064 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		AE780E932BB138CD0015D968 /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
 		AE780E952BB13AD30015D968 /* DemoCaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCaseConfig.swift; sourceTree = "<group>"; };
 		AE780E972BB13B7C0015D968 /* EntranceTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntranceTableViewController.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 				AEBD0FEA2B4BF3130080ED15 /* ExampleJSON.swift */,
 				AE780E932BB138CD0015D968 /* ListTableViewCell.swift */,
 				AEBD0F382B4BEE220080ED15 /* ListTableViewController.swift */,
+				AE667EFC2C64703200136064 /* Log.swift */,
 				AEB5D5282B4CE0C500105EED /* TableViewExampleViewController.swift */,
 			);
 			path = Global;
@@ -347,6 +350,7 @@
 				AEBD0F392B4BEE220080ED15 /* ListTableViewController.swift in Sources */,
 				AE4CE2DB2B47F88F00286E34 /* BasicExampleViewController.swift in Sources */,
 				AE15063B2BB18F4A0095EF5B /* SceneDelegate.swift in Sources */,
+				AE667EFD2C64703300136064 /* Log.swift in Sources */,
 				AE2E240A2BB140820050D5AE /* BaseSearchExampleViewController.swift in Sources */,
 				AEBD0FED2B4BF4B10080ED15 /* InitialFoldedExampleViewController.swift in Sources */,
 				AE2E25462BB158E30050D5AE /* BasicSearchExampleViewController.swift in Sources */,
@@ -396,7 +400,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
@@ -430,7 +434,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
@@ -581,7 +585,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
@@ -615,7 +619,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.3.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rakuyo.JSONPreviewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";

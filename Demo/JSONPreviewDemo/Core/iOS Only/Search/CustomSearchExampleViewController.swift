@@ -10,6 +10,8 @@ import UIKit
 
 import JSONPreview
 
+// MARK: - CustomSearchExampleViewController
+
 class CustomSearchExampleViewController: BaseSearchExampleViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,9 +30,9 @@ class CustomSearchExampleViewController: BaseSearchExampleViewController {
 
 // MARK: -
 
-private extension CustomSearchExampleViewController {
+extension CustomSearchExampleViewController {
     @available(iOS 15.0, *)
-    func configBarButtonItem() {
+    private func configBarButtonItem() {
         let button = UIButton(type: .system)
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +55,7 @@ private extension CustomSearchExampleViewController {
                         createBoldMenu(),
                         createBackgroundMenu(),
                     ]
-                )
+                ),
             ]
         )
         
@@ -61,7 +63,7 @@ private extension CustomSearchExampleViewController {
     }
     
     @available(iOS 15.0, *)
-    func createBoldMenu() -> UIMenu {
+    private func createBoldMenu() -> UIMenu {
         let updateBoldedSearchResult: (Bool) -> Void = { [weak self] in
             guard let this = self else { return }
             
@@ -78,7 +80,7 @@ private extension CustomSearchExampleViewController {
             options: .singleSelection,
             children: [
                 UIAction(
-                    title: "Bold", 
+                    title: "Bold",
                     state: isBoldedSearchResult ? .on : .off
                 ) { _ in
                     updateBoldedSearchResult(true)
@@ -94,7 +96,7 @@ private extension CustomSearchExampleViewController {
     }
     
     @available(iOS 15.0, *)
-    func createBackgroundMenu() -> UIMenu {
+    private func createBackgroundMenu() -> UIMenu {
         let updateSearchResultBackground: (ConvertibleToColor?) -> Void = { [weak self] in
             guard let this = self else { return }
             
@@ -135,7 +137,7 @@ private extension CustomSearchExampleViewController {
         )
     }
     
-    func showCustomColorInputAlert() {
+    private func showCustomColorInputAlert() {
         let alert = UIAlertController(title: "Please enter", message: "Like \"#FDA700\"", preferredStyle: .alert)
         
         alert.addTextField()

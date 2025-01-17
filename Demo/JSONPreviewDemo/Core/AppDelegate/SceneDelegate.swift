@@ -8,18 +8,20 @@
 
 import UIKit
 
+// MARK: - SceneDelegate
+
 class SceneDelegate: UIResponder {
     var window: UIWindow?
 }
 
-// MARK: - UIWindowSceneDelegate
+// MARK: UIWindowSceneDelegate
 
 @available(iOS 13.0, tvOS 13.0, *)
 extension SceneDelegate: UIWindowSceneDelegate {
     func scene(
         _ scene: UIScene,
-        willConnectTo session: UISceneSession,
-        options connectionOptions: UIScene.ConnectionOptions
+        willConnectTo _: UISceneSession,
+        options _: UIScene.ConnectionOptions
     ) {
         guard let windowScene = scene as? UIWindowScene else { return }
         
@@ -33,9 +35,9 @@ extension SceneDelegate: UIWindowSceneDelegate {
         self.window = window
     }
     
-    func sceneDidEnterBackground(_ scene: UIScene) { }
+    func sceneDidEnterBackground(_: UIScene) { }
     
-    func sceneWillEnterForeground(_ scene: UIScene) { }
+    func sceneWillEnterForeground(_: UIScene) { }
     
-    func sceneDidBecomeActive(_ scene: UIScene) { }
+    func sceneDidBecomeActive(_: UIScene) { }
 }

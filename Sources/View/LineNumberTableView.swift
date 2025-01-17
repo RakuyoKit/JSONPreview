@@ -8,8 +8,10 @@
 
 import UIKit
 
+// MARK: - LineNumberTableView
+
 open class LineNumberTableView: UITableView {
-    public override init(frame: CGRect, style: UITableView.Style) {
+    override public init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         
         config()
@@ -22,8 +24,8 @@ open class LineNumberTableView: UITableView {
     }
 }
 
-private extension LineNumberTableView {
-    func config() {
+extension LineNumberTableView {
+    private func config() {
         bounces = false
         delaysContentTouches = false
         canCancelContentTouches = true
@@ -40,9 +42,9 @@ private extension LineNumberTableView {
             sectionHeaderTopPadding = 0.0
         }
         
-#if !os(tvOS)
+        #if !os(tvOS)
         scrollsToTop = false
         separatorStyle = .none
-#endif
+        #endif
     }
 }

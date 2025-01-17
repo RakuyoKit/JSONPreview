@@ -32,13 +32,13 @@ pod 'JSONPreview'
 
 - Select File > Swift Packages > Add Package Dependency
 - Add https://github.com/RakuyoKit/JSONPreview.git
-- Select "Up to Next Major" with "2.3.1"
+- Select "Up to Next Major" with "2.3.2"
 
 Or add the following content to your `Package.swift` file:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/RakuyoKit/JSONPreview.git", from: "2.3.1")
+  .package(url: "https://github.com/RakuyoKit/JSONPreview.git", from: "2.3.2")
 ]
 ```
 
@@ -142,6 +142,14 @@ It's recommended not to overly rely on the formatting check feature of `JSONPrev
 ## Data Flow Diagram
 
 ![DFD](Images/DFD.jpg)
+
+## Contribution
+
+You might feel that updates to `JSONPreview` are infrequent, but rest assured, this project has not been abandoned or stopped - I am still following it.
+
+If you encounter any issues while using it, please feel free to [let me know](https://github.com/RakuyoKit/JSONPreview/issues/new?template=Blank+issue), and I’ll respond and assist as soon as possible.
+
+Additionally, if you’d like to submit a PR, please base your development on the [`develop`](https://github.com/RakuyoKit/JSONPreview/tree/develop) branch before submitting your code. Thank you for your support and contributions!
 
 ## Thanks
 

@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - EntranceTableViewController
+
 final class EntranceTableViewController: ListTableViewController {
     init() {
         var dataSource: [DemoCaseConfig] = [
@@ -29,7 +31,7 @@ final class EntranceTableViewController: ListTableViewController {
             action: { TableViewExampleViewController() }
         )
         
-#if os(tvOS)
+        #if os(tvOS)
         dataSource.append(contentsOf: [
             .init(
                 title: "Wrap",
@@ -38,7 +40,7 @@ final class EntranceTableViewController: ListTableViewController {
             ),
             tableViewExample,
         ])
-#else
+        #else
         dataSource.append(contentsOf: [
             .init(
                 title: "Automatic Wrap",
@@ -62,21 +64,24 @@ final class EntranceTableViewController: ListTableViewController {
                 action: { SearchEntranceTableViewController() }
             ),
         ])
-#endif
+        #endif
         
-        super.init(dataSource: [
+        let result = [
             dataSource,
             [
-                .init(
+                DemoCaseConfig(
                     title: "Test",
                     desc: "Not used to demonstrate functionality, but used for internal testing.",
                     action: { TestEntranceTableViewController() }
-                )
-            ]
-        ])
+                ),
+            ],
+        ]
+
+        super.init(dataSource: result)
     }
     
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

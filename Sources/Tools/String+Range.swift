@@ -12,11 +12,13 @@ extension String {
     func findNSRanges(of searchString: Self) -> [NSRange] {
         var results: [NSRange] = []
         var searchStartIndex = startIndex
-        while let range = range(
-            of: searchString,
-            options: .literal,
-            range: searchStartIndex ..< endIndex
-        ) {
+        while
+            let range = range(
+                of: searchString,
+                options: .literal,
+                range: searchStartIndex ..< endIndex
+            )
+        {
             defer {
                 searchStartIndex = range.upperBound
             }
@@ -37,11 +39,13 @@ extension String {
     private func findAllRanges(of searchString: Self) -> [Range<Self.Index>] {
         var ranges: [Range<Self.Index>] = []
         var searchStartIndex = startIndex
-        while let range = range(
-            of: searchString,
-            options: .literal,
-            range: searchStartIndex ..< endIndex
-        ) {
+        while
+            let range = range(
+                of: searchString,
+                options: .literal,
+                range: searchStartIndex ..< endIndex
+            )
+        {
             ranges.append(range)
             searchStartIndex = range.upperBound
         }

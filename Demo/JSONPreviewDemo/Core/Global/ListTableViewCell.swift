@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - ListTableViewCell
+
 final class ListTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
@@ -15,21 +17,22 @@ final class ListTableViewCell: UITableViewCell {
         config()
     }
     
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 // MARK: - Config
 
-private extension ListTableViewCell {
-    func config() {
+extension ListTableViewCell {
+    private func config() {
         detailTextLabel?.numberOfLines = 0
         
-#if !os(tvOS)
+        #if !os(tvOS)
         if #available(iOS 13.0, *) {
             detailTextLabel?.textColor = .secondaryLabel
         }
-#endif
+        #endif
     }
 }

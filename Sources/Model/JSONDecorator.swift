@@ -8,6 +8,8 @@
 
 import UIKit
 
+// MARK: - JSONDecorator
+
 /// Responsible for beautifying JSON
 public final class JSONDecorator {
     /// Style of highlight. See `HighlightStyle` for details.
@@ -73,7 +75,7 @@ public final class JSONDecorator {
 
 // MARK: - Public
 
-public extension JSONDecorator {
+extension JSONDecorator {
     /// Highlight the incoming JSON string.
     ///
     /// Serve for `JSONPreview`. Will split JSON into arrays that meet the requirements of `JSONPreview` display.
@@ -85,7 +87,7 @@ public extension JSONDecorator {
     ///                   All nodes with a folding effect have an initial state consistent with this value.
     ///   - judgmentValid: Whether to check the validity of JSON.
     /// - Returns: Return `nil` when JSON is invalid. See `JSONDecorator` for details.
-    static func highlight(
+    public static func highlight(
         _ json: String,
         style: HighlightStyle = .`default`,
         initialState: JSONSlice.State = .`default`,
@@ -93,8 +95,10 @@ public extension JSONDecorator {
     ) -> JSONDecorator? {
         guard let data = json.data(using: .utf8) else { return nil }
         
-        if judgmentValid,
-           (try? JSONSerialization.jsonObject(with: data, options: .mutableContainers)) == nil {
+        if
+            judgmentValid,
+            (try? JSONSerialization.jsonObject(with: data, options: .mutableContainers)) == nil
+        {
             return nil
         }
         
@@ -111,13 +115,13 @@ public extension JSONDecorator {
     ///
     /// - Parameter json: The JSON string to be highlighted.
     /// - Returns: json slice. Returns an empty array in case of a json error.
-    func createSlices(from json: String) -> [JSONSlice] {
+    public func createSlices(from json: String) -> [JSONSlice] {
         guard let data = json.data(using: .utf8) else { return [] }
         return createSlices(from: data)
     }
     
     /// Assemble JSON slices into attributed string while returning the number of rows of JSON.
-    func assemble() -> (attributedText: AttributedString, lines: [Int]) {
+    public func assemble() -> (attributedText: AttributedString, lines: [Int]) {
         let attributedText = AttributedString(string: "")
         var lines: [Int] = []
         
@@ -157,40 +161,41 @@ public extension JSONDecorator {
 
 // MARK: - Main Logic
 
-private extension JSONDecorator {
-    typealias CreateJSONSlice = (
+extension JSONDecorator {
+    fileprivate typealias CreateJSONSlice = (
         _ expand: AttributedString,
         _ fold: AttributedString?,
         _ foldedTimes: Int,
         _ currentCount: Int?
     ) -> JSONSlice
     
-    typealias NeedConfig = (indent: Bool, comma: Bool)
+    fileprivate typealias NeedConfig = (indent: Bool, comma: Bool)
     
-    func createSlices(from data: Data) -> [JSONSlice] {
+    private func createSlices(from data: Data) -> [JSONSlice] {
         guard let jsonValue = createJSONValue(from: data) else { return [] }
         return processJSONValueRecursively(
             jsonValue,
             currentSlicesCount: 0,
             isNeed: (indent: false, comma: false),
-            foldedTimes: 0)
+            foldedTimes: 0
+        )
     }
     
-    func createJSONValue(from data: Data) -> JSONValue? {
-        return try? data.withUnsafeBytes {
+    private func createJSONValue(from data: Data) -> JSONValue? {
+        try? data.withUnsafeBytes {
             // we got utf8... happy path
             var parser = JSONParser(bytes: Array($0[0 ..< $0.count]))
             return try parser.parse()
         }
     }
     
-    func processJSONValueRecursively(
+    private func processJSONValueRecursively(
         _ jsonValue: JSONValue,
         currentSlicesCount: Int,
         isNeed: NeedConfig,
         foldedTimes: Int
     ) -> [JSONSlice] {
-        let createJSONSlice: CreateJSONSlice = { [self] (expand, fold, times, currentCount) in
+        let createJSONSlice: CreateJSONSlice = { [self] expand, fold, times, currentCount in
             // `initialState` is only valid for nodes with a folding effect.
             let state = fold != nil ? initialState : .`default`
             
@@ -200,7 +205,8 @@ private extension JSONDecorator {
                 state: state,
                 expand: expand,
                 folded: fold,
-                foldedTimes: times)
+                foldedTimes: times
+            )
         }
         
         // Process each json value
@@ -223,7 +229,7 @@ private extension JSONDecorator {
                 createJSONSlice: createJSONSlice
             )
             
-        case let .string(value, wrong):
+        case .string(let value, let wrong):
             return processStringValue(
                 with: value,
                 wrong: wrong,
@@ -232,7 +238,7 @@ private extension JSONDecorator {
                 createJSONSlice: createJSONSlice
             )
             
-        case let .number(value, wrong):
+        case .number(let value, let wrong):
             return processNumberValue(
                 with: value,
                 wrong: wrong,
@@ -241,7 +247,7 @@ private extension JSONDecorator {
                 createJSONSlice: createJSONSlice
             )
             
-        case let .bool(value, wrong):
+        case .bool(let value, let wrong):
             return processBoolValue(
                 with: value,
                 wrong: wrong,
@@ -259,6 +265,7 @@ private extension JSONDecorator {
             )
             
         // MARK: unknown
+
         case .unknown(let string):
             let indent = isNeed.indent ? writeIndent() : ""
             
@@ -272,7 +279,7 @@ private extension JSONDecorator {
     
     // MARK: array
     
-    func processArrayValue(
+    private func processArrayValue(
         with values: [JSONValue],
         currentSlicesCount: Int,
         isNeed: NeedConfig,
@@ -283,7 +290,8 @@ private extension JSONDecorator {
         
         let subSlicesFoldedTimes = calculateSubSlicesFoldedTimes(
             currentState: initialState,
-            foldedTimes: foldedTimes)
+            foldedTimes: foldedTimes
+        )
         
         let (startExpand, startFold) = createArrayStartAttribute(isNeed: isNeed)
         
@@ -312,7 +320,8 @@ private extension JSONDecorator {
                 value,
                 currentSlicesCount: currentSlicesCount + result.count,
                 isNeed: (indent: true, comma: _isNeedComma),
-                foldedTimes: subSlicesFoldedTimes)
+                foldedTimes: subSlicesFoldedTimes
+            )
             
             result.append(contentsOf: slices)
         }
@@ -329,7 +338,8 @@ private extension JSONDecorator {
     
     // MARK: object
     
-    func processObjectValue(
+    // swiftlint:disable:next function_body_length
+    private func processObjectValue(
         with object: [JSONObjectKey: JSONValue],
         currentSlicesCount: Int,
         isNeed: NeedConfig,
@@ -340,7 +350,8 @@ private extension JSONDecorator {
         
         let subSlicesFoldedTimes = calculateSubSlicesFoldedTimes(
             currentState: initialState,
-            foldedTimes: foldedTimes)
+            foldedTimes: foldedTimes
+        )
         
         let (startExpand, startFold) = createObjectStartAttribute(isNeed: isNeed)
         
@@ -384,7 +395,8 @@ private extension JSONDecorator {
                     value,
                     currentSlicesCount: currentSlicesCount + result.count,
                     isNeed: (indent: true, comma: false),
-                    foldedTimes: subSlicesFoldedTimes)
+                    foldedTimes: subSlicesFoldedTimes
+                )
                 
                 if key.isWrong {
                     result.append(contentsOf: slices)
@@ -422,7 +434,8 @@ private extension JSONDecorator {
                         value,
                         currentSlicesCount: currentSlicesCount + result.count,
                         isNeed: (indent: false, comma: _isNeedComma),
-                        foldedTimes: subSlicesFoldedTimes)
+                        foldedTimes: subSlicesFoldedTimes
+                    )
                     
                     if !slices.isEmpty {
                         let startSlice = slices.removeFirst()
@@ -446,7 +459,8 @@ private extension JSONDecorator {
                         value,
                         currentSlicesCount: 0,
                         isNeed: (indent: false, comma: _isNeedComma),
-                        foldedTimes: subSlicesFoldedTimes)
+                        foldedTimes: subSlicesFoldedTimes
+                    )
                     
                     // Usually there is only one value for `slices` in this case,
                     // so only the first value is taken
@@ -468,8 +482,9 @@ private extension JSONDecorator {
         decIndent()
         
         // The end node is added only if the object is correct.
-        if let lastKey = sortKeys.last,
-           case .wrong = object[lastKey]?.isRight { }
+        if
+            let lastKey = sortKeys.last,
+            case .wrong = object[lastKey]?.isRight { }
         else {
             _appendObjectEnd()
         }
@@ -479,7 +494,7 @@ private extension JSONDecorator {
     
     // MARK: string & link
     
-    func processStringValue(
+    private func processStringValue(
         with value: String,
         wrong: String?,
         isNeed: NeedConfig,
@@ -519,7 +534,7 @@ private extension JSONDecorator {
     
     // MARK: number
     
-    func processNumberValue(
+    private func processNumberValue(
         with value: String,
         wrong: String?,
         isNeed: NeedConfig,
@@ -544,7 +559,7 @@ private extension JSONDecorator {
     
     // MARK: bool
     
-    func processBoolValue(
+    private func processBoolValue(
         with value: Bool,
         wrong: String?,
         isNeed: NeedConfig,
@@ -569,7 +584,7 @@ private extension JSONDecorator {
     
     // MARK: null
     
-    func processNullValue(
+    private func processNullValue(
         with wrong: String?,
         isNeed: NeedConfig,
         foldedTimes: Int,
@@ -591,7 +606,7 @@ private extension JSONDecorator {
         return [slice]
     }
     
-    func calculateSubSlicesFoldedTimes(
+    private func calculateSubSlicesFoldedTimes(
         currentState: JSONSlice.State,
         foldedTimes: Int
     ) -> Int {
@@ -604,46 +619,46 @@ private extension JSONDecorator {
 
 // MARK: - Indent
 
-private extension JSONDecorator {
+extension JSONDecorator {
     /// Fixed value of the number of contractions per increase or decrease
-    static let indentAmount = 1
+    fileprivate static let indentAmount = 1
     
-    func incIndent() {
+    private func incIndent() {
         indent += Self.indentAmount
     }
     
-    func decIndent() {
+    private func decIndent() {
         indent -= Self.indentAmount
     }
     
-    func writeIndent() -> String {
-        return (0 ..< indent).map { _ in "\t" }.joined()
+    private func writeIndent() -> String {
+        (0 ..< indent).map { _ in "\t" }.joined()
     }
 }
 
 // MARK: - Attributed String
 
-private extension JSONDecorator {
-    typealias ContainerAttributedStringPair = (AttributedString, AttributedString)
+extension JSONDecorator {
+    fileprivate typealias ContainerAttributedStringPair = (AttributedString, AttributedString)
     
     /// An attribute string of ":"
-    var colonAttributeString: AttributedString {
+    private var colonAttributeString: AttributedString {
         createKeywordAttribute(key: " : ")
     }
     
     /// An attribute string of ","
-    var commaAttributeString: AttributedString {
+    private var commaAttributeString: AttributedString {
         createKeywordAttribute(key: ",")
     }
     
-    func createUnknownAttributedString(with string: String) -> AttributedString {
+    private func createUnknownAttributedString(with string: String) -> AttributedString {
         let newString = string.replacingOccurrences(of: "\n", with: "")
         return .init(string: newString, attributes: unknownStyle)
     }
     
     /// Create an attribute string of "array - start node"
-    func createArrayStartAttribute(isNeed: NeedConfig) -> ContainerAttributedStringPair {
-        return createStartAttribute(
+    private func createArrayStartAttribute(isNeed: NeedConfig) -> ContainerAttributedStringPair {
+        createStartAttribute(
             expand: "[",
             fold: "[Array...]",
             isNeed: isNeed
@@ -651,13 +666,13 @@ private extension JSONDecorator {
     }
     
     /// Create an attribute string of "Array - End Node"
-    func createArrayEndAttribute(isNeedComma: Bool) -> AttributedString {
-        return createEndAttribute(key: "]", isNeedComma: isNeedComma)
+    private func createArrayEndAttribute(isNeedComma: Bool) -> AttributedString {
+        createEndAttribute(key: "]", isNeedComma: isNeedComma)
     }
     
     /// Create an attribute string of "Object - Start Node"
-    func createObjectStartAttribute(isNeed: NeedConfig) -> ContainerAttributedStringPair {
-        return createStartAttribute(
+    private func createObjectStartAttribute(isNeed: NeedConfig) -> ContainerAttributedStringPair {
+        createStartAttribute(
             expand: "{",
             fold: "{Object...}",
             isNeed: isNeed
@@ -665,16 +680,16 @@ private extension JSONDecorator {
     }
     
     /// Create an attribute string of "object - end node"
-    func createObjectEndAttribute(isNeedComma: Bool) -> AttributedString {
-        return createEndAttribute(key: "}", isNeedComma: isNeedComma)
+    private func createObjectEndAttribute(isNeedComma: Bool) -> AttributedString {
+        createEndAttribute(key: "}", isNeedComma: isNeedComma)
     }
     
     /// Create an attribute string of "keyword".
     ///
     /// - Parameter key: keyword
     /// - Returns: `AttributedString` object.
-    func createKeywordAttribute(key: String) -> AttributedString {
-        return .init(string: key, attributes: keyWordStyle)
+    private func createKeywordAttribute(key: String) -> AttributedString {
+        .init(string: key, attributes: keyWordStyle)
     }
     
     /// Create an attribute string of "begin node".
@@ -684,7 +699,7 @@ private extension JSONDecorator {
     ///   - fold: String when folded.
     ///   - isNeed: Indentation & Comma required.
     /// - Returns: `AttributedString` object.
-    func createStartAttribute(
+    private func createStartAttribute(
         expand: String,
         fold: String,
         isNeed: NeedConfig
@@ -715,7 +730,7 @@ private extension JSONDecorator {
     ///   - key: Node characters, such as `}` or `]`.
     ///   - isNeedComma: Comma required.
     /// - Returns: `AttributedString` object.
-    func createEndAttribute(key: String, isNeedComma: Bool) -> AttributedString {
+    private func createEndAttribute(key: String, isNeedComma: Bool) -> AttributedString {
         let indent = writeIndent()
         let string = key + (isNeedComma ? "," : "")
         return .init(string: indent + string, attributes: startStyle)
@@ -725,7 +740,7 @@ private extension JSONDecorator {
     ///
     /// - Parameter image: The image to be displayed.
     /// - Returns: `AttributedString` object.
-    func createIconAttributedString(with image: UIImage) -> AttributedString {
+    private func createIconAttributedString(with image: UIImage) -> AttributedString {
         let expandAttach = NSTextAttachment()
         expandAttach.image = image
         
@@ -738,7 +753,7 @@ private extension JSONDecorator {
         return .init(attachment: expandAttach)
     }
     
-    func createStyle(foregroundColor: UIColor?, other: StyleInfos? = nil) -> StyleInfos {
+    private func createStyle(foregroundColor: UIColor?, other: StyleInfos? = nil) -> StyleInfos {
         var newStyle: StyleInfos = [.font: style.jsonFont]
         
         if let color = foregroundColor {

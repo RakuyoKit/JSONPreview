@@ -8,8 +8,10 @@
 
 import UIKit
 
+// MARK: - AttributedStringSizeCalculator
+
 /// Utility class for calculating attributed string size.
-internal class AttributedStringSizeCalculator {
+final class AttributedStringSizeCalculator {
     typealias SliceState = JSONSlice.State
     
     private typealias Storage = [Int: [SliceState: CGFloat]]
