@@ -145,6 +145,14 @@ previewView.preview(json, style: style, initialState: .folded)
 
 ![DFD](Images/DFD.jpg)
 
+## 贡献
+
+您可能觉得 `JSONPreview` 的更新频率较低，但请放心，这个项目并未被抛弃或停止维护，我一直都在。
+
+如果您在使用过程中遇到任何问题，请随时[提出](https://github.com/RakuyoKit/JSONPreview/issues/new?template=Blank+issue)，我会尽快回复并提供帮助。
+
+此外，如果您希望提交 PR，请基于 [`develop`](https://github.com/RakuyoKit/JSONPreview/tree/develop) 分支进行开发并提交您的代码。感谢您的支持和贡献！
+
 ## 致谢
 
 感谢 [Awhisper](https://github.com/Awhisper) 在 `JSONPreview` 的开发过程中提出的宝贵意见。

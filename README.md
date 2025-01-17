@@ -143,6 +143,14 @@ It's recommended not to overly rely on the formatting check feature of `JSONPrev
 
 ![DFD](Images/DFD.jpg)
 
+## Contribution
+
+You might feel that updates to `JSONPreview` are infrequent, but rest assured, this project has not been abandoned or stopped - I am still following it.
+
+If you encounter any issues while using it, please feel free to [let me know](https://github.com/RakuyoKit/JSONPreview/issues/new?template=Blank+issue), and I’ll respond and assist as soon as possible.
+
+Additionally, if you’d like to submit a PR, please base your development on the [`develop`](https://github.com/RakuyoKit/JSONPreview/tree/develop) branch before submitting your code. Thank you for your support and contributions!
+
 ## Thanks
 
 Thanks to [Awhisper](https://github.com/Awhisper) for valuable insights during the development of `JSONPreview`.
