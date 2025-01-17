@@ -51,7 +51,7 @@ namespace :lib do
   end
 
   def execute_pod(command, subcommand, name)
-    sh "pod #{command} #{subcommand} #{name}.podspec --allow-warnings --skip-tests"
+    sh mise_exec_prefix + " pod #{command} #{subcommand} #{name}.podspec --allow-warnings --skip-tests"
   end
 
   def has_develop_branch?
