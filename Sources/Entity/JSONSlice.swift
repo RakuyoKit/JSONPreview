@@ -14,7 +14,7 @@ import Foundation
 public struct JSONSlice {
     /// The current display state of the slice
     public enum State: Hashable {
-        public static let `default`: Self = .expand
+        public static let `default` = Self.expand
         
         case expand, folded
     }

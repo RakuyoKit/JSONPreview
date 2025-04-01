@@ -83,7 +83,7 @@ open class JSONPreview: UIView {
     public lazy var shouldAnimateScrollToTopOnWrapModeChange = true
     
     /// Highlight style
-    public lazy var highlightStyle: HighlightStyle = .`default` {
+    public lazy var highlightStyle = HighlightStyle.`default` {
         didSet { updateHighlightStyle() }
     }
     
@@ -91,7 +91,7 @@ open class JSONPreview: UIView {
     private lazy var decorator: JSONDecorator? = nil
     
     /// Record the direction of the last equipment.
-    private lazy var lastOrientation: Orientation = .unknow
+    private lazy var lastOrientation = Orientation.unknow
     
     #if !os(visionOS) && !os(tvOS)
     /// Record previous property values
@@ -597,8 +597,8 @@ extension JSONPreview {
         // Delete the hidden line number
         var tmpDataSource = lineDataSource
         
-        lines.forEach {
-            guard let index = tmpDataSource.firstIndex(of: $0) else { return }
+        for line in lines {
+            guard let index = tmpDataSource.firstIndex(of: line) else { continue }
             tmpDataSource.remove(at: index)
         }
         
