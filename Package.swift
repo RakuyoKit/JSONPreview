@@ -32,6 +32,6 @@ let package = Package(
 )
 
 #if swift(>=5.6)
-// Add the Rakuyo Swift formatting plugin if possible
-package.dependencies.append(.package(url: "https://github.com/RakuyoKit/swift.git", from: "1.3.1"))
+// Add the Swift formatting plugin if possible
+package.dependencies.append(.package(url: "https://github.com/RakuyoKit/swift.git", branch: "release/1.4.0"))
 #endif

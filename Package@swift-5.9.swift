@@ -32,5 +32,5 @@ let package = Package(
     ]
 )
 
-// Add the Rakuyo Swift formatting plugin
-package.dependencies.append(.package(url: "https://github.com/RakuyoKit/swift.git", from: "1.3.1"))
+// Add the Swift formatting plugin
+package.dependencies.append(.package(url: "https://github.com/RakuyoKit/swift.git", branch: "release/1.4.0"))
