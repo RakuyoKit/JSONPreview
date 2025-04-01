@@ -20,7 +20,7 @@ let package = Package(
             path: "Sources",
             resources: [
                 .copy("PrivacyInfo.xcprivacy"),
-                .process("./Resources/Assets.xcassets")
+                .process("./Resources/Assets.xcassets"),
             ]
         ),
         .testTarget(

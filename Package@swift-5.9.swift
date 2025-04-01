@@ -28,7 +28,7 @@ let package = Package(
             name: "JSONPreviewTests",
             dependencies: ["JSONPreview"],
             path: "Tests"
-        )
+        ),
     ]
 )
 

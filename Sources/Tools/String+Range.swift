@@ -36,22 +36,6 @@ extension String {
         return results
     }
     
-    private func findAllRanges(of searchString: Self) -> [Range<Self.Index>] {
-        var ranges: [Range<Self.Index>] = []
-        var searchStartIndex = startIndex
-        while
-            let range = range(
-                of: searchString,
-                options: .literal,
-                range: searchStartIndex ..< endIndex
-            )
-        {
-            ranges.append(range)
-            searchStartIndex = range.upperBound
-        }
-        return ranges
-    }
-    
     private func nsRange(from range: Range<Self.Index>) -> NSRange? {
         guard
             let utf16LowerBound = range.lowerBound.samePosition(in: utf16),
